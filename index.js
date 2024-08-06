@@ -9,6 +9,7 @@ const {
     makeCacheableSignalKeyStore,
     makeInMemoryStore
 } = require("@whiskeysockets/baileys");
+const { Boom } = require('@hapi/boom')
 const fs = require("fs");
 const P = require("pino");
 var os = require("os");
@@ -70,6 +71,12 @@ const store = makeInMemoryStore({
         stream: 'store'
     })
 })
+
+const reatart = () => {
+  console.log(chalk.yellow("restarting........"));
+  const { exec } = require("child_process");
+  exec("npm restart");
+}
 // channel link
 global.link = "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g";
 // <<==========PORTS===========>>
@@ -106,22 +113,61 @@ async function connectToWA() {
     
     store.readFromFile("store.json")
     store.bind(conn.ev)
-    //setInterval(() => {
-     //       store.writeToFile("store.json");
-     //   }, 3000);
+    setInterval(() => {
+         store.writeToFile("store.json");
+     }, 3000);
     conn.ev.on("connection.update", async update => {
         const { connection, lastDisconnect } = update;
         if (connection === "connecting") {
                 console.log("ℹ️ Connection in progress...");
-        }else if (connection === "close") {
-            if (
-                lastDisconnect.error.output.statusCode !==
-                DisconnectReason.loggedOut
-            ) {
-                connectToWA();
-                console.log("reconneting because of disconnection");
-            }
+        } else if (connection === "close") {
+          let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+          if (reason === DisconnectReason.badSession ) {
+            console.log("bad session please get a new session id or creds.json asap !")
+          } else if (
+              reason ===
+              DisconnectReason.connectionClosed
+          ) {
+              console.log(
+                  "!!!  connection closed reconection in progress ..."
+              );
+              connectToWa();
+          } else if (
+              reason ===
+              DisconnectReason.connectionLost
+          ) {
+              console.log(
+                  "connection to server lost 😞 ,,, reconnection in progress ... "
+              );
+              connectToWa();
+          } else if (
+              reason ===
+              DisconnectReason?.connectionReplaced
+          ) {
+              console.log(
+                  "connection replaced but session alread open please close it ASAP !!!"
+              );
+          } else if (
+              reason === DisconnectReason.loggedOut
+          ) {
+              console.log(
+                  "youve been disconnected please get a new session id ASAP"
+              );
+          } else if (
+              reason ===
+              DisconnectReason.restartRequired
+          ) {
+              console.log("Reboot in progress ▶️");
+              connectToWa();
+          } else {
+              console.log(
+                  "Restarting immediatly after an error  ",
+                  reason
+              );
+              restart();
+        }
         } else if (connection === "open") {
+          const MODE = config.MODE === 'private' ? 'private' : 'public';
           console.log(chalk.green("✅ connection successfull! ☺️"));
           conn.sendMessage(conn.user.id,{text: "TKM-BOT V3 connected sucessfully"});
             console.log(chalk.yellow("Installing plugins 🔌... "));
@@ -240,6 +286,8 @@ async function connectToWA() {
             const isbot = botNumber.includes(senderNumber);
             const isdev = developers.includes(senderNumber);
             const isMe = isbot ? isbot : isdev;
+            const sudo = [...ownerNumber, ...developers];
+            const isSudo = sudo.includes(senderNumber);
             const isOwner = ownerNumber.includes(senderNumber) || isMe;
             const botNumber2 = await jidNormalizedUser(conn.user.id);
             const groupMetadata = isGroup
@@ -256,7 +304,16 @@ async function connectToWA() {
                 ? groupAdmins.includes(botNumber2)
                 : false;
             const isAdmins = isGroup ? groupAdmins.includes(sender) : false;
-
+            var etat = config.PRESENCE || config.PRESENCE !== 'available' ? config.PRESENCE === 'composing' ? 2 : config.PRESENCE === 'recording'? 3 : config.PRESENCE === 'unavailable' ? 4 : 1 : 1;
+            if (etat == 1) {
+                await conn.sendPresenceUpdate("available", origineMessage);
+            } else if (etat == 2) {
+                await conn.sendPresenceUpdate("composing", origineMessage);
+            } else if (etat == 3) {
+                await conn.sendPresenceUpdate("recording", origineMessage);
+            } else {
+                await conn.sendPresenceUpdate("unavailable", origineMessage);
+            }
             const isAnti = teks => {
                 let getdata = teks;
                 for (let i = 0; i < getdata.length; i++) {
@@ -300,7 +357,7 @@ async function connectToWA() {
                     { quoted: mek }
                 );
             };
-            const NON_BUTTON = false; // Implement a switch to on/off this feature...
+            const NON_BUTTON = !config.BUTTON; // Implement a switch to on/off this feature...
             conn.buttonMessage2 = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
                     await conn.sendMessage(jid, msgData);
@@ -728,6 +785,7 @@ async function connectToWA() {
 
             if (config.ONLY_GROUP && !isMe && !isGroup) return;
             if (from === "120363043598019970@g.us" && !isdev) return;
+            if (MODE === "private" && !isSudo && !isbot ) return;
             //==================================plugin map================================
             const events = require("./command");
             const cmdName = isCmd
@@ -740,6 +798,7 @@ async function connectToWA() {
                         cmd => cmd.alias && cmd.alias.includes(cmdName)
                     );
                 if (cmd) {
+                    
                     if (cmd.react)
                         conn.sendMessage(from, {
                             react: { text: cmd.react, key: mek.key }
@@ -1089,6 +1148,19 @@ async function connectToWA() {
             console.error(isError);
         }
     });
+    conn.ev.on("contacts.upsert", async contacts => {
+            const insertContact = newContact => {
+                for (const contact of newContact) {
+                    if (store.contacts[contact.id]) {
+                        Object.assign(store.contacts[contact.id], contact);
+                    } else {
+                        store.contacts[contact.id] = contact;
+                    }
+                }
+                return;
+            };
+            insertContact(contacts);
+        });
 }
 app.get("/", (req, res) => {
     res.send("📟 TKM-BOT Working successfully!");

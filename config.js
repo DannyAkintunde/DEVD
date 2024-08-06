@@ -5,6 +5,7 @@ function convertToBool(text, fault = "true") {
     return text === fault ? true : false;
 }
 
+
 module.exports = {
     SESSION_ID: process.env.SESSION_ID || "youre session id",
     POSTGRESQL_URL:
@@ -25,10 +26,12 @@ module.exports = {
     ANTI_BOT: process.env.ANTI_BOT || "false",
     ALIVE: process.env.ALIVE || `default`,
     AUTHOR: process.env.AUTHOR || 'TKM',
-    FOOTER: process.env.FOOTER || "",
+    FOOTER: process.env.FOOTER || "𝙿𝚘𝚠𝚎𝚛𝚎𝚍 𝚋𝚢 𝚃𝙺𝙼-𝙱𝙾𝚃",
     LOGO:
-        process.env.LOGO || `https://telegra.ph/file/e07a3d933fb4cad0b3791.jpg`,
+        process.env.LOGO || `https://i.ibb.co/dcB0bXK/IMG-20240806-WA0011.jpg`,
     MENU_MEDIA: process.env.MENU_LINKS || '',
     PORT: parseInt(process.env.PORT) || 8000,
-    BUTTON: convertToBool(process.env.BUTTON) || true
+    BUTTON: convertToBool(process.env.BUTTON, fault="false")? false : true,
+    PRESENCE: process.env.PRESENCE || 'avaliable',
+   // PM_PERMIT: convertToBool(process.env.PM_PERMIT || process.env.PERMIT || true);
 };
