@@ -13,7 +13,7 @@ module.exports = {
         "youre POSTGRESQL url",
     LANG: process.env.BOT_LANG || "EN",
     PREFIX: process.env.PREFIX || ".",
-    MODE: process.env.MODE.toLowerCase() || "private",
+    MODE: process.env.MODE? process.env.MODE.toLowerCase(): "private",
     BOT: process.env.BOT || "TKM-BOT",
     OWNER_NAME: process.env.OWNER_NAME || process.env.OWNER || "",
     OWNER_NUMBER:
