@@ -300,7 +300,7 @@ async function connectToWA() {
                     { quoted: mek }
                 );
             };
-            const NON_BUTTON = true; // Implement a switch to on/off this feature...
+            const NON_BUTTON = !config.BUTTON; // Implement a switch to on/off this feature...
             conn.buttonMessage2 = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
                     await conn.sendMessage(jid, msgData);

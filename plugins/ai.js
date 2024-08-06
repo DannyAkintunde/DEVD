@@ -375,14 +375,14 @@ cmd(
             const msg = await conn.sendMessage(
                 from,
                 { text: "thinking......" },
-                { quoted: ms }
+                { quoted: mek }
             );
             res = await gpt4(args.join(" "));
             if (res.status === 200) {
                 await conn.sendMessage(
                     from,
                     { text: res.reply, edit: msg.key },
-                    { quoted: ms }
+                    { quoted: mek }
                 );
                 await mek.react("🤖");
             } else {

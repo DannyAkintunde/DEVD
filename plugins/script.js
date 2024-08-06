@@ -104,7 +104,7 @@ Experience the best with TKM-BOT! ✨`,
                         body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
                         mediaType: 1,
                         sourceUrl: global.link,
-                        thumbnailUrl: conf.LOGO,
+                        thumbnailUrl: config.LOGO,
                         renderLargerThumbnail: false,
                         showAdAttribution: true
                     }

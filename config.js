@@ -29,5 +29,6 @@ module.exports = {
     LOGO:
         process.env.LOGO || `https://telegra.ph/file/e07a3d933fb4cad0b3791.jpg`,
     MENU_MEDIA: process.env.MENU_LINKS || '',
-    PORT: parseInt(process.env.PORT) || 8000
+    PORT: parseInt(process.env.PORT) || 8000,
+    BUTTON: convertToBool(process.env.BUTTON) || true
 };
