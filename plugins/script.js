@@ -11,7 +11,7 @@ cmd(
         pattern: "sc",
         react: "👨‍💻",
         alias: ["script", "repo"],
-        desc: tsmg,
+        desc: tmsg,
         category: "main",
         use: ".alive",
         filename: __filename
