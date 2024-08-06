@@ -8,7 +8,6 @@ const { spawn } = require("child_process");
 const ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
 const ffmpeg = require("fluent-ffmpeg");
 ffmpeg.setFfmpegPath(ffmpegPath);
-const fs = require("fs");
 const fileType = require("file-type");
 const wabetainfo = require("@sasmeee/wabetainfo");
 
