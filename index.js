@@ -75,7 +75,7 @@ const store = makeInMemoryStore({
 const reatart = () => {
   console.log(chalk.yellow("restarting........"));
   const { exec } = require("child_process");
-  exec("npm restart");
+  exec("pm2 restart all");
 }
 // channel link
 global.link = "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g";
@@ -1172,11 +1172,7 @@ setTimeout(async () => {
     await connectToWA();
 }, 3000);
 
-const restart = () => {
-    const { exec } = require("child_process");
-    console.log(`Restarting`);
-    exec("pm2 restart all");
-};
+
 
 //catch exections
 process.on("uncaughtException", function (err) {
