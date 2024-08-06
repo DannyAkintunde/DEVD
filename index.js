@@ -306,13 +306,13 @@ async function connectToWA() {
             const isAdmins = isGroup ? groupAdmins.includes(sender) : false;
             var etat = config.PRESENCE || config.PRESENCE !== 'available' ? config.PRESENCE === 'composing' ? 2 : config.PRESENCE === 'recording'? 3 : config.PRESENCE === 'unavailable' ? 4 : 1 : 1;
             if (etat == 1) {
-                await conn.sendPresenceUpdate("available", origineMessage);
+                await conn.sendPresenceUpdate("available", from);
             } else if (etat == 2) {
-                await conn.sendPresenceUpdate("composing", origineMessage);
+                await conn.sendPresenceUpdate("composing", from);
             } else if (etat == 3) {
-                await conn.sendPresenceUpdate("recording", origineMessage);
+                await conn.sendPresenceUpdate("recording", from);
             } else {
-                await conn.sendPresenceUpdate("unavailable", origineMessage);
+                await conn.sendPresenceUpdate("unavailable", from);
             }
             const isAnti = teks => {
                 let getdata = teks;
