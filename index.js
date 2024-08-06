@@ -167,7 +167,7 @@ async function connectToWA() {
               restart();
         }
         } else if (connection === "open") {
-          const MODE = config.MODE === 'private' ? 'private' : 'public';
+          global.MODE = config.MODE === 'private' ? 'private' : 'public';
           console.log(chalk.green("✅ connection successfull! ☺️"));
           conn.sendMessage(conn.user.id,{text: "TKM-BOT V3 connected sucessfully"});
             console.log(chalk.yellow("Installing plugins 🔌... "));
@@ -785,7 +785,7 @@ async function connectToWA() {
 
             if (config.ONLY_GROUP && !isMe && !isGroup) return;
             if (from === "120363043598019970@g.us" && !isdev) return;
-            if (MODE === "private" && !isSudo && !isbot ) return;
+            if (global.MODE === "private" && !isSudo && !isbot ) return;
             //==================================plugin map================================
             const events = require("./command");
             const cmdName = isCmd
