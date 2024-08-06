@@ -63,7 +63,7 @@ if (!fs.existsSync(__dirname + "/session/creds.json")) {
             });
         });
     }
-}
+} else console.log("using creds.json")
 const store = makeInMemoryStore({
     logger: P().child({
         level: 'silent',
@@ -106,9 +106,9 @@ async function connectToWA() {
     
     store.readFromFile("store.json")
     store.bind(conn.ev)
-    setInterval(() => {
-            store.writeToFile("store.json");
-        }, 3000);
+    //setInterval(() => {
+     //       store.writeToFile("store.json");
+     //   }, 3000);
     conn.ev.on("connection.update", async update => {
         const { connection, lastDisconnect } = update;
         if (connection === "connecting") {
@@ -1098,7 +1098,7 @@ app.listen(port, () =>
 );
 setTimeout(async () => {
     await connectToWA();
-}, 1000);
+}, 3000);
 
 const restart = () => {
     const { exec } = require("child_process");
