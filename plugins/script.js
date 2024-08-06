@@ -55,24 +55,24 @@ cmd(
             else hostname = os.hostname();
             let monspace = "```";
             let monspacenew = "`";
-            const sections = [
+            var buttons = [
                 {
-                    title: "",
-                    rows: [
-                        {
-                            title: "1",
-                            rowId: prefix + "menu",
-                            description: "COMMANDS MENU"
-                        },
-                        {
-                            title: "2",
-                            rowId: prefix + "ping",
-                            description: "QUEEN-IZUMI-MD SPEED"
-                        }
-                    ]
+                    buttonId:
+                        prefix +
+                        "menu",
+                    buttonText: { displayText: "COMMAND MENU" },
+                    type: 1
+                },
+                {
+                    buttonId:
+                        prefix +
+                        "ping",
+                    buttonText: { displayText: "CHECK SPEED" },
+                    type: 1
                 }
             ];
-            const listMessage = {
+            const buttonMessage = {
+                headerType: 1,
                 caption: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱
 
 Discover TKM-BOT's extraordinary features: 🌟b
@@ -97,7 +97,7 @@ Experience the best with TKM-BOT! ✨`,
                 image: { url: config.LOGO },
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
-                sections,
+                buttons,
                 contextInfo: {
                     externalAdReply: {
                         title: `「 ${config.BOT} 」`,
@@ -111,7 +111,7 @@ Experience the best with TKM-BOT! ✨`,
                 }
             };
 
-            return await conn.replyList(from, listMessage, { quoted: msg });
+            return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
             reply("*Error !!*");
             l(e);
