@@ -8,7 +8,7 @@ const {
     getContentType,
     makeCacheableSignalKeyStore,
     makeInMemoryStore
-} = require("@adiwajshing/baileys");
+} = require("@whiskeysockets/baileys");
 const fs = require("fs");
 const P = require("pino");
 var os = require("os");
@@ -84,9 +84,10 @@ async function connectToWA() {
         "./session/"
     );
     const conn = makeWASocket({
+      version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-         browser: ['Chrome (TKM-BOT)', '', ''],
+         browser: ['Chrome (Linux)', '', ''],
         generateHighQualityLinkPreview: true,
         auth: {
          creds: state.creds,
@@ -103,11 +104,16 @@ async function connectToWA() {
       },
     });
     
+    store.readFromFile("store.json")
     store.bind(conn.ev)
-
+    setInterval(() => {
+            store.writeToFile("store.json");
+        }, 3000);
     conn.ev.on("connection.update", async update => {
         const { connection, lastDisconnect } = update;
-        if (connection === "close") {
+        if (connection === "connecting") {
+                console.log("ℹ️ Connection in progress...");
+        }else if (connection === "close") {
             if (
                 lastDisconnect.error.output.statusCode !==
                 DisconnectReason.loggedOut
@@ -116,6 +122,8 @@ async function connectToWA() {
                 console.log("reconneting because of disconnection");
             }
         } else if (connection === "open") {
+          console.log(chalk.green("✅ connection successfull! ☺️"));
+          conn.sendMessage(conn.user.id,{text: "TKM-BOT V3 connected sucessfully"});
             console.log(chalk.yellow("Installing plugins 🔌... "));
             const path = require("path");
             fs.readdirSync("./plugins/").forEach(plugin => {
