@@ -5,7 +5,9 @@ const {
     getDevice,
     fetchLatestBaileysVersion,
     jidNormalizedUser,
-    getContentType
+    getContentType,
+    makeCacheableSignalKeyStore,
+    makeInMemoryStore
 } = require("@adiwajshing/baileys");
 const fs = require("fs");
 const P = require("pino");
@@ -62,6 +64,12 @@ if (!fs.existsSync(__dirname + "/session/creds.json")) {
         });
     }
 }
+const store = makeInMemoryStore({
+    logger: P().child({
+        level: 'silent',
+        stream: 'store'
+    })
+})
 // channel link
 global.link = "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g";
 // <<==========PORTS===========>>
@@ -73,16 +81,29 @@ async function connectToWA() {
     const { version, isLatest } = await fetchLatestBaileysVersion();
     console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
     const { state, saveCreds } = await useMultiFileAuthState(
-        __dirname + "/session/"
+        "./session/"
     );
     const conn = makeWASocket({
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
+         browser: ['Chrome (TKM-BOT)', '', ''],
         generateHighQualityLinkPreview: true,
-        auth: state,
+        auth: {
+         creds: state.creds,
+         keys: makeCacheableSignalKeyStore(state.keys, P({ level: "fatal" }).child({ level: "fatal" })),
+      },
+        markOnlineOnConnect: true, 
         defaultQueryTimeoutMs: undefined,
-        msgRetryCounterCache
+        msgRetryCounterCache,
+        getMessage: async (key) => {
+         let jid = jidNormalizedUser(key.remoteJid)
+         let msg = await store.loadMessage(jid, key.id)
+
+         return msg?.message || ""
+      },
     });
+    
+    store.bind(conn.ev)
 
     conn.ev.on("connection.update", async update => {
         const { connection, lastDisconnect } = update;
