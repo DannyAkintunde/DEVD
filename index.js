@@ -130,9 +130,9 @@ async function connectToWA() {
                 if (path.extname(plugin).toLowerCase() == ".js") {
                   try {
                     require("./plugins/" + plugin);
-                    lsuss("Sucessfully installed " + plugin + ""):
+                    lsuss("Sucessfully installed " + plugin + "");
                   } catch (e) {
-                    console.error("An error occored while installing " plugin + "Error: " + e.message + " :\n" + e.stack );
+                    console.error("An error occored while installing " + plugin + "Error: " + e.message + " :\n" + e.stack );
                   }
                 }
             });
