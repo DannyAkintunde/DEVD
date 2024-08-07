@@ -10,7 +10,7 @@ function cmd(info, func) {
     if (!info.category) data.category = 'misc';
     if(!info.filename) data.filename = "Not Provided";
     commands.push(data);
-    if (!categories.includes(data.category)) categories.push(data.categories);
+    if (!categories.includes(data.category)) categories.push(data.category);
     return data;
 }
 module.exports = {
