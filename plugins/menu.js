@@ -40,7 +40,7 @@ function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtB
       }}};
       
         let buttonMessaged = {
-          image: { url: images[randomInt(0,--images.length)] },
+          image: { url: images[randomInt(0,images.length - 1)] },
           caption: menuc,
           footer: config.FOOTER,
           headerType: 4,
