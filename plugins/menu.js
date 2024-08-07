@@ -82,8 +82,8 @@ const catInfo = {
 
 // gen Menus
 
-for (let i=0; i < categories.length; i++) {
-  let pattern = catInfo[categories[i].toUpperCase()]?.pattern ? catInfo[categories[i].toUpperCase()]?.pattern : categories[i] + "menu" ;
-  let images = catInfo[categories[i].toUpperCase()]?.images ? catInfo[categories[i].toUpperCase()]?.images : [config.LOGO] ;
-  genMenu(categories[i], pattern, images, catInfo[categories[i].toUpperCase()]?.react,catInfo[categories[i].toUpperCase()]?.buttons);
-}
+//for (let i=0; i < categories.length; i++) {
+//  let pattern = catInfo[categories[i].toUpperCase()]?.pattern ? catInfo[categories[i].toUpperCase()]?.pattern : categories[i] + "menu" ;
+//  let images = catInfo[categories[i].toUpperCase()]?.images ? catInfo[categories[i].toUpperCase()]?.images : [config.LOGO] ;
+//  genMenu(categories[i], pattern, images, catInfo[categories[i].toUpperCase()]?.react,catInfo[categories[i].toUpperCase()]?.buttons);
+//}
