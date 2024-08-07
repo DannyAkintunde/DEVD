@@ -75,7 +75,7 @@ cmd(
                 headerType: 4,
                 caption: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱
 
-Discover TKM-BOT's extraordinary features: 🌟b
+Discover TKM-BOT's extraordinary features: 🌟
 
 🎵 Download music and videos directly on WhatsApp 🎥
 
