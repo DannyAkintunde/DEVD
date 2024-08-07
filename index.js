@@ -74,7 +74,7 @@ const store = makeInMemoryStore({
     })
 })
 
-const reatart = () => {
+const restart = () => {
   console.log(chalk.yellow("restarting........"));
   const { exec } = require("child_process");
   exec("pm2 restart all");
