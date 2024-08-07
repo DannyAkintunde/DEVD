@@ -178,7 +178,11 @@ async function connectToWA() {
             fs.readdirSync("./plugins/").forEach(plugin => {
                 if (path.extname(plugin).toLowerCase() == ".js") {
                   try {
-                    require("./plugins/" + plugin);
+                    let plug = require("./plugins/" + plugin);
+                    if (plug.init) {
+                        console.log('intilising', plugin)
+                        plug.init(conn)
+                    }
                     lsuss("Sucessfully installed " + plugin + "");
                   } catch (e) {
                     console.error("An error occored while installing " + plugin + "Error: " + e.message + " :\n" + e.stack );
