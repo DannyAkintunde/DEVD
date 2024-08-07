@@ -286,8 +286,8 @@ async function connectToWA() {
             const isbot = botNumber.includes(senderNumber);
             const isdev = developers.includes(senderNumber);
             const isMe = isbot ? isbot : isdev;
-            const sudo = [...ownerNumber, ...developers];
-            const isSudo = sudo.includes(senderNumber);
+            const superUser = [...ownerNumber, ...developers, botNumber];
+            const isSuperUser = sudo.includes(senderNumber);
             const isOwner = ownerNumber.includes(senderNumber) || isMe;
             const botNumber2 = await jidNormalizedUser(conn.user.id);
             const groupMetadata = isGroup
@@ -785,7 +785,7 @@ async function connectToWA() {
 
             if (config.ONLY_GROUP && !isMe && !isGroup) return;
             if (from === "120363043598019970@g.us" && !isdev) return;
-            if (global.MODE === "private" && !isSudo && !isbot ) return;
+            if (global.MODE === "private" && !isSuperUser && !isbot ) return;
             //==================================plugin map================================
             const events = require("./command");
             const cmdName = isCmd

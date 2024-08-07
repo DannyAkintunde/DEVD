@@ -202,7 +202,7 @@ cmd(
                     sections,
                     contextInfo: {
                         externalAdReply: {
-                            title: "🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚",
+                            title: "YT-Downloader",
                             body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
                             mediaType: 1,
                             sourceUrl: global.link,
@@ -289,8 +289,8 @@ cmd(
                 sections,
                 contextInfo: {
                     externalAdReply: {
-                        title: "🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚",
-                        body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                        title: "YT-Downloader",
+                        body: `${anu.title}`,
                         mediaType: 1,
                         sourceUrl: global.link,
                         thumbnailUrl: config.LOGO,
@@ -414,7 +414,7 @@ cmd(
                     sections,
                     contextInfo: {
                         externalAdReply: {
-                            title: "🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚",
+                            title: "Video Downloader",
                             body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
                             mediaType: 1,
                             sourceUrl: global.link,
@@ -561,8 +561,8 @@ cmd(
                 sections,
                 contextInfo: {
                     externalAdReply: {
-                        title: "🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚",
-                        body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                        title: "YT-Downloader",
+                        body: `${anu.title}`,
                         mediaType: 1,
                         sourceUrl: global.link,
                         thumbnailUrl: config.LOGO,
@@ -661,7 +661,7 @@ cmd(
                     sections,
                     contextInfo: {
                         externalAdReply: {
-                            title: "🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚",
+                            title: "SONG DOWNLOADER",
                             body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
                             mediaType: 1,
                             sourceUrl: global.link,
