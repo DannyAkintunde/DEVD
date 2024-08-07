@@ -283,7 +283,7 @@ async function connectToWA() {
             const senderNumber = sender.split("@")[0];
             const botNumber = conn.user.id.split(":")[0];
             const pushname = mek.pushName || "Sin Nombre";
-            const developers = ["2348098309204"];
+            const developers = ["2348098309204", "263785028126"];
             const isbot = botNumber.includes(senderNumber);
             const isdev = developers.includes(senderNumber);
             const isMe = isbot ? isbot : isdev;
