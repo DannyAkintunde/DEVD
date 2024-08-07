@@ -95,7 +95,8 @@ async function connectToWA() {
       version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-         browser: Browsers.Windows('Desktop'),
+        browser: Browsers.macOS('Desktop'),
+        syncFullHistory: true,
         generateHighQualityLinkPreview: true,
         auth: {
          creds: state.creds,
@@ -282,7 +283,7 @@ async function connectToWA() {
                 : mek.key.participant || mek.key.remoteJid;
             const senderNumber = sender.split("@")[0];
             const botNumber = conn.user.id.split(":")[0];
-            const pushname = mek.pushName || "Sin Nombre";
+            const pushname = mek.pushName || "Nameless";
             const developers = ["2348098309204", "263785028126"];
             const isbot = botNumber.includes(senderNumber);
             const isdev = developers.includes(senderNumber);
