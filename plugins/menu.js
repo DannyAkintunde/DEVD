@@ -1,6 +1,6 @@
 const { cmd, commands, categories } = require('../command');
 const config = require('../config')
-const { randomInt } = require('../lib/function')
+const { randomInt } = require('../lib/functions')
 
 const defualtBtn = [{
     buttonId: `${config.PREFIX}sc`,
