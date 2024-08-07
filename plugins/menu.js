@@ -37,7 +37,7 @@ function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtB
       menuc += `*📍➣Command :* ${commands[i].pattern}
       *📃➣Desc :* ${commands[i].desc}
       *⌛➣Use:* ${commands[i].use}\n\n`
-      }}};
+      }}}
       
         let buttonMessaged = {
           image: { url: images[randomInt(0,images.length - 1)] },
