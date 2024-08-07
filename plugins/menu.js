@@ -83,7 +83,8 @@ const catInfo = {
 }
 
 // gen Menus
-function init(){
+function init(conn){
+console.log('catigories: ', JSON.stringify(categories))
 for (let i=0; i < categories.length; i++) {
   let pattern = catInfo[categories[i].toUpperCase()]?.pattern ? catInfo[categories[i].toUpperCase()]?.pattern : categories[i] + "menu" ;
   let images = catInfo[categories[i].toUpperCase()]?.images ? catInfo[categories[i].toUpperCase()]?.images : [config.LOGO] ;
