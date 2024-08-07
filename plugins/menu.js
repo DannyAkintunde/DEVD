@@ -78,7 +78,7 @@ const catInfo = {
     images: ['https://telegra.ph/file/7f48f7bbbe85de4532d71.jpg']
   },
   OTHER: {
-    images: ['https://telegra.ph/file/01994d1adb2fe606c3dd2.jp']
+    images: ['https://telegra.ph/file/01994d1adb2fe606c3dd2.jpg']
   }
 }
 
