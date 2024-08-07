@@ -92,6 +92,6 @@ for (let i=0; i < categories.length; i++) {
 }
       }
 
-moudule.exports{
+moudule.exports = {
     init
 }
