@@ -309,7 +309,7 @@ cmd(
                 const listMessage = {
                     caption: `👋 ❤ Hey ${pushname} I'm alive now
     
-*👾 TKM-MD commands menu...*
+*👾 ${config.BOT} commands menu...*
   
  *🚀Version:* ${require("../package.json").version}
  *⌛Memory:* ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(

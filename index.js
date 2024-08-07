@@ -29,7 +29,8 @@ const {
     sleep,
     fetchJson,
     fetchBuffer,
-    getFile
+    getFile,
+    translate
 } = require("./lib/functions");
 const { sms, downloadMediaMessage } = require("./lib/msg");
 const axios = require("axios");

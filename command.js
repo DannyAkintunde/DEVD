@@ -1,4 +1,5 @@
 var commands = [];
+var categories = [];
 
 function cmd(info, func) {
     var data = info;
@@ -9,6 +10,7 @@ function cmd(info, func) {
     if (!info.category) data.category = 'misc';
     if(!info.filename) data.filename = "Not Provided";
     commands.push(data);
+    if (category.includes(data.category)) categories.push(data.categories);
     return data;
 }
 module.exports = {
@@ -17,4 +19,5 @@ module.exports = {
     Function:cmd,
     Module:cmd,
     commands,
+    categories
 };
