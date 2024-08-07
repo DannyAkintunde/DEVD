@@ -57,7 +57,7 @@ cmd(
         use: config.PREFIX + "github <user name>"
     },
 
-    async (conn, mek, m, { args, reply }) => {
+    async (conn, mek, m, { args, reply, from }) => {
         if (!args[0]) return await reply(needus);
         try {
             const {
