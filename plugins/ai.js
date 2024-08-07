@@ -16,6 +16,8 @@ const cheerio = require("cheerio");
 const axios = require("axios");
 const vm = require("vm");
 const { translate, gpt4 } = require("../lib/functions.js");
+const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
+
 
 var desct = "BARD AI chat";
 if (config.LANG === "SI") desct = "එය ඔබ ලබා දුන් දේ සඳහා bard AI මත සොයයි.";
@@ -231,7 +233,7 @@ cmd(
     {
         pattern: "tkm",
         alias: ["ai", "bot"],
-        react: "📷",
+        react: "📡",
         desc: "A simple chatbot AI chat",
         category: "ai",
         use: ".tkm <prompt>",
@@ -412,13 +414,13 @@ cmd(
         use: ".text2prompt <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l }) => {
+    async (conn, mek, m, { args, reply, l, prefix }) => {
         if (!args[0])
             return await reply(
-                `text argument is required \n> try ${conf.PREFIXE}text2prompt a sad cat`
+                `text argument is required \n> try ${prefix}text2prompt a sad cat`
             );
 
-        const text = await translate(arg.join(" "), { to: "en" });
+        const text = await translate(args.join(" "), { to: "en" });
 
         await text2prompt(text).then(sus).catch(err);
 

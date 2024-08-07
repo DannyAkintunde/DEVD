@@ -105,7 +105,7 @@ cmd(
 🧩 *Created At :* ${created_at}
 👤 *Profile :* ${html_url}`;
             await conn.sendMessage(
-                dest,
+                from,
                 {
                     image: { url: profile_pic },
                     caption: info
@@ -114,7 +114,7 @@ cmd(
             );
         } catch (e) {
             await reply(cantf);
-            console.log(`can't fond user : ${e}`);
+            console.log(`An error occored can't find user : ${e}`);
         }
     }
 );
