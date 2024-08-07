@@ -274,6 +274,7 @@ cmd(
                 });
         } catch (e) {
             reply("oops an error : " + e);
+            console.error("oops an error :" , e)
         }
     }
 );
@@ -287,7 +288,7 @@ cmd(
         use: ".dalle <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l }) => {
+    async (conn, mek, m, { args, reply, l , from }) => {
         try {
             if (!args || args.length === 0) {
                 return reply(
@@ -306,7 +307,7 @@ cmd(
             if (data.status == 200) {
                 const imageUrl = data.result;
                 conn.sendMessage(
-                    dest,
+                    from,
                     { image: { url: imageUrl }, caption: caption },
                     { quoted: mek }
                 );
