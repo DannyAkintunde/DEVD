@@ -289,7 +289,7 @@ async function connectToWA() {
             const isdev = developers.includes(senderNumber);
             const isMe = isbot ? isbot : isdev;
             const superUser = [...ownerNumber, ...developers, botNumber];
-            const isSuperUser = sudo.includes(senderNumber);
+            const isSuperUser = superUser.includes(senderNumber);
             const isOwner = ownerNumber.includes(senderNumber) || isMe;
             const botNumber2 = await jidNormalizedUser(conn.user.id);
             const groupMetadata = isGroup
