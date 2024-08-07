@@ -179,16 +179,14 @@ async function connectToWA() {
                 if (path.extname(plugin).toLowerCase() == ".js") {
                   try {
                     let plug = require("./plugins/" + plugin);
-                    if (plug.init) {
-                        console.log('intilising', plugin)
-                        plug.init(conn)
-                    }
+                    process.emit("plugin.installed", conn, plugin);
                     lsuss("Sucessfully installed " + plugin + "");
                   } catch (e) {
                     console.error("An error occored while installing " + plugin + "Error: " + e.message + " :\n" + e.stack );
                   }
                 }
             });
+            process.emmit("plugin.initilised", conn);
             lsuss("Plugins installed ✅");
             await connectdb();
             await updb();
