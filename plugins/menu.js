@@ -90,8 +90,7 @@ for (let i=0; i < categories.length; i++) {
   let images = catInfo[categories[i].toUpperCase()]?.images ? catInfo[categories[i].toUpperCase()]?.images : [config.LOGO] ;
   genMenu(categories[i], pattern, images, catInfo[categories[i].toUpperCase()]?.react,catInfo[categories[i].toUpperCase()]?.buttons);
 }
-      }
-
-module.exports = {
-    init
 }
+
+process.on("plugin.initilised", init);
+
