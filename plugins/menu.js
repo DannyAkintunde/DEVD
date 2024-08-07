@@ -29,7 +29,7 @@ function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtB
       try{
       let menuc = `*● ══════════════ ●*
       
-*${category.toLocaleUpperCase()} COMMANDS MENU*\n\n`
+*${category.toUpperCase()} COMMANDS MENU*\n\n`
     console.log(`generating ${pattern} ${category} ${images} ${react} ${buttons} `)
       for (let i=0;i<commands.length;i++) { 
       if(commands[i].category === category){
