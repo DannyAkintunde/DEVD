@@ -7,7 +7,8 @@ const {
     jidNormalizedUser,
     getContentType,
     makeCacheableSignalKeyStore,
-    makeInMemoryStore
+    makeInMemoryStore,
+    Browsers
 } = require("@whiskeysockets/baileys");
 const { Boom } = require('@hapi/boom')
 const fs = require("fs");
@@ -94,7 +95,7 @@ async function connectToWA() {
       version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-         browser: ['Chrome (Linux)', '', ''],
+         browser: Browsers.Windows('Desktop'),
         generateHighQualityLinkPreview: true,
         auth: {
          creds: state.creds,
