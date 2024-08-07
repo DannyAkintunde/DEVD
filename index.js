@@ -186,7 +186,7 @@ async function connectToWA() {
                   }
                 }
             });
-            process.emmit("plugin.initilised", conn);
+            process.emit("plugin.initilised", conn);
             lsuss("Plugins installed ✅");
             await connectdb();
             await updb();
