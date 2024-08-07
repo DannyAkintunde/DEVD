@@ -2,6 +2,7 @@ const { cmd, commands, categories } = require('../command');
 const config = require('../config')
 const { randomInt } = require('../lib/functions')
 
+
 const defualtBtn = [{
     buttonId: `${config.PREFIX}sc`,
     buttonText: {
@@ -29,6 +30,7 @@ function genMenu(category,pettern,images,react="⬇👨‍💻",buttons=defualtB
       let menuc = `*● ══════════════ ●*
       
 *${category.toLocaleUpperCase()} COMMANDS MENU*\n\n`
+    console.log(`generating ${pattern} ${category} ${images} ${react} ${buttons} `)
       for (let i=0;i<commands.length;i++) { 
       if(commands[i].category === category){
         if(!commands[i].dontAddCommandList){
@@ -81,9 +83,14 @@ const catInfo = {
 }
 
 // gen Menus
-
+function init(){
 for (let i=0; i < categories.length; i++) {
   let pattern = catInfo[categories[i].toUpperCase()]?.pattern ? catInfo[categories[i].toUpperCase()]?.pattern : categories[i] + "menu" ;
   let images = catInfo[categories[i].toUpperCase()]?.images ? catInfo[categories[i].toUpperCase()]?.images : [config.LOGO] ;
   genMenu(categories[i], pattern, images, catInfo[categories[i].toUpperCase()]?.react,catInfo[categories[i].toUpperCase()]?.buttons);
+}
+      }
+
+moudule.exports{
+    init
 }
