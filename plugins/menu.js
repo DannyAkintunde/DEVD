@@ -17,10 +17,10 @@ const defualtBtn = [{
     type: 1
   }]
 
-function genMenu(category,pettern,images,react="⬇👨‍💻",buttons=defualtBtn) {
+function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtBtn) {
   cmd(
     {
-    pattern: pettern,
+    pattern: pattern,
     react: react,
     dontAddCommandList: true,
     filename: __filename
