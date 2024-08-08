@@ -34,9 +34,7 @@ console.log(`generating ${pattern} ${category} ${images} ${react} ${buttons} `)
       for (let i=0;i<commands.length;i++) { 
       if(commands[i].category === category){
         if(!commands[i].dontAddCommandList){
-      menuc += `*📍➣Command :* ${commands[i].pattern}
-      *📃➣Desc :* ${commands[i].desc}
-      *⌛➣Use:* ${commands[i].use}\n\n`
+      menuc += `*📍➣Command :* ${commands[i].pattern}\n*📃➣Desc :* ${commands[i].desc}\n*⌛➣Use:* ${commands[i].use}\n\n`
       }}}
       
         let buttonMessaged = {
