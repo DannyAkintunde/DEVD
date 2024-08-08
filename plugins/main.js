@@ -263,49 +263,19 @@ cmd(
             else hostname = os.hostname();
             let monspace = "```";
             let monspacenew = "`";
-            if (config.ALIVE === "default") {
                 const sections = [
                     {
-                        title: "",
+                        title: "Select Menu",
                         rows: [
-                            {
-                                title: "1",
-                                rowId: prefix + "downmenu",
-                                description: "Down Commands"
-                            },
-                            {
-                                title: "2",
-                                rowId: prefix + "searchmenu",
-                                description: "Search Commands"
-                            },
-                            {
-                                title: "3",
-                                rowId: prefix + "convertmenu",
-                                description: "Convert Commands"
-                            },
-                            {
-                                title: "4",
-                                rowId: prefix + "logomenu",
-                                description: "Logo Commands"
-                            },
-                            {
-                                title: "5",
-                                rowId: prefix + "ownermenu",
-                                description: "Owner Commands"
-                            },
-                            {
-                                title: "6",
-                                rowId: prefix + "adminmenu",
-                                description: "Admin Commands"
-                            },
-                            {
-                                title: "7",
-                                rowId: prefix + "othermenu",
-                                description: "Other commands"
-                            }
                         ]
                     }
-                ];
+                ];{
+                for (let i=0; i < categories.length; i++) {
+                    let cat = global.catInfo[categories[i].toUpperCase()];
+                    let command = cat?.pattern || categories[i].toLowerCase() + "menu"
+                    let row = { title: `${i + 1}`, rowId: prefix + command, description: categories[i] + " commands"}
+                    sections[0].rows.push(row)
+                }
                 const listMessage = {
                     caption: `👋 ❤ Hey ${pushname} I'm alive now
     
@@ -335,70 +305,6 @@ cmd(
                 };
 
                 return await conn.replyList(from, listMessage, { quoted: msg });
-            } else {
-                const sections = [
-                    {
-                        title: "",
-                        rows: [
-                            {
-                                title: "1",
-                                rowId: prefix + "downmenu",
-                                description: "Down Commands"
-                            },
-                            {
-                                title: "2",
-                                rowId: prefix + "searchmenu",
-                                description: "Search Commands"
-                            },
-                            {
-                                title: "3",
-                                rowId: prefix + "convertmenu",
-                                description: "Convert Commands"
-                            },
-                            {
-                                title: "4",
-                                rowId: prefix + "logomenu",
-                                description: "Logo Commands"
-                            },
-                            {
-                                title: "5",
-                                rowId: prefix + "ownermenu",
-                                description: "Owner Commands"
-                            },
-                            {
-                                title: "6",
-                                rowId: prefix + "adminmenu",
-                                description: "Admin Commands"
-                            },
-                            {
-                                title: "7",
-                                rowId: prefix + "othermenu",
-                                description: "Other commands"
-                            }
-                        ]
-                    }
-                ];
-                const listMessage = {
-                    caption: config.ALIVE,
-                    image: { url: config.LOGO },
-                    footer: config.FOOTER,
-                    buttonText: "🔢 Reply you select number,",
-                    sections,
-                    contextInfo: {
-                        externalAdReply: {
-                            title: `「 ${config.BOT} 」`,
-                            body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                            mediaType: 1,
-                            sourceUrl: global.link,
-                            thumbnailUrl: config.LOGO,
-                            renderLargerThumbnail: false,
-                            showAdAttribution: true
-                        }
-                    }
-                };
-
-                return await conn.replyList(from, listMessage, { quoted: msg });
-            }
         } catch (e) {
             reply("*Error !!*");
             l(e);
