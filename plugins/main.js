@@ -273,7 +273,7 @@ cmd(
                 for (let i=0; i < categories.length; i++) {
                     let cat = global.catInfo[categories[i].toUpperCase()];
                     let command = cat?.pattern || categories[i].toLowerCase() + "menu"
-                    let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: categories[i].charAt(0).toUpperCase() + categories[i].slice(1) + "commands"}
+                    let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: categories[i].charAt(0).toUpperCase() + categories[i].slice(1) + " Commands"}
                     sections[0].rows.push(row)
                 }
                 const listMessage = {
