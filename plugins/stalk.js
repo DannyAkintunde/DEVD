@@ -89,15 +89,7 @@ cmd(
 📍 *Location :* ${location}
 📧 *Email :* ${email}
 📰 *Blog :* ${blog}
-🔓 *Public Repos :* ${axios
-                .get(public_repo)
-                .then(res =>
-                    res.data.map(repo =>
-                        !repo.private
-                            ? `\n- *${repo.name}* : https://github.com/${repo.full_name}`
-                            : null
-                    )
-                )}
+🔓 *Public Repos :* ${public_repo}
 🔐 *Public Gists :* https://gist.github.com/${username}/
 💕 *Followers :* ${followers}
 👉 *Following :* ${following}
