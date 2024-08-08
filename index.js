@@ -96,7 +96,7 @@ async function connectToWA() {
       version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-        browser: Browsers.windows('Desktop'),
+        browser: Browsers.windows('Firefox'),
         patchMessageBeforeSending: (message) => {
             const requiresPatch = !!(
                 message.buttonsMessage ||
