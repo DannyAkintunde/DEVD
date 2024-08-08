@@ -271,6 +271,7 @@ cmd(
                     }
                 ];
                 for (let i=0; i < categories.length; i++) {
+                    if (categories[i].toLowerCase() === "misc") continue
                     let cat = global.catInfo[categories[i].toUpperCase()];
                     let command = cat?.pattern || categories[i].toLowerCase() + "menu"
                     let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: categories[i].charAt(0).toUpperCase() + categories[i].slice(1) + " Commands"}
