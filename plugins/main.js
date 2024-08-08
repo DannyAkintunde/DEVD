@@ -17,7 +17,7 @@ cmd(
     {
         pattern: "alive",
         react: "👨‍💻",
-        alias: ["online", "test", "bot"],
+        alias: ["online"],
         desc: "Check bot online or no.",
         category: "main",
         use: ".alive",
@@ -218,7 +218,7 @@ cmd(
     {
         pattern: "menu",
         react: "👨‍💻",
-        alias: ["panel", "list", "commands"],
+        alias: ["panel", "commands"],
         desc: "Get bot's command list.",
         category: "main",
         use: ".menu",
@@ -270,11 +270,12 @@ cmd(
                         ]
                     }
                 ];
-                for (let i=0; i < categories.length; i++) {
-                    if (categories[i].toLowerCase() === "misc") continue
+                const menuCategories = categories.filter(category => category.toLowerCase() != "misc")
+                for (let i=0; i < menuCategories.length; i++) {
+                    if (menuCategories[i].toLowerCase() === "misc") continue
                     let cat = global.catInfo[categories[i].toUpperCase()];
-                    let command = cat?.pattern || categories[i].toLowerCase() + "menu"
-                    let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: categories[i].charAt(0).toUpperCase() + categories[i].slice(1) + " Commands"}
+                    let command = cat?.pattern || menuCategories[i].toLowerCase() + "menu"
+                    let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: menuCategories[i].charAt(0).toUpperCase() + menuCategories[i].slice(1) + " Commands"}
                     sections[0].rows.push(row)
                 }
                 const listMessage = {
