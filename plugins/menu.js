@@ -18,6 +18,7 @@ const defualtBtn = [{
   }]
 
 function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtBtn) {
+console.log(`generating ${pattern} ${category} ${images} ${react} ${buttons} `)
   cmd(
     {
     pattern: pattern,
@@ -29,8 +30,7 @@ function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtB
       try{
       let menuc = `*● ══════════════ ●*
       
-*${category.toUpperCase()} COMMANDS MENU*\n\n`
-    console.log(`generating ${pattern} ${category} ${images} ${react} ${buttons} `)
+*${category.toUpperCase()} COMMANDS MENU*\n\n`;
       for (let i=0;i<commands.length;i++) { 
       if(commands[i].category === category){
         if(!commands[i].dontAddCommandList){
@@ -57,7 +57,7 @@ function genMenu(category,pattern,images,react="⬇👨‍💻",buttons=defualtB
 
 // info
 
-const catInfo = {
+global.catInfo = {
   DOWNLOAD: {
     pattern: 'downmenu',
     images: ['https://telegra.ph/file/24b19e11c51c3b8dde0a1.jpg']
@@ -86,9 +86,10 @@ const catInfo = {
 function init(conn){
 console.log('catigories: ', JSON.stringify(categories))
 for (let i=0; i < categories.length; i++) {
-  let pattern = catInfo[categories[i].toUpperCase()]?.pattern ? catInfo[categories[i].toUpperCase()]?.pattern : categories[i] + "menu" ;
-  let images = catInfo[categories[i].toUpperCase()]?.images ? catInfo[categories[i].toUpperCase()]?.images : [config.LOGO] ;
-  genMenu(categories[i], pattern, images, catInfo[categories[i].toUpperCase()]?.react,catInfo[categories[i].toUpperCase()]?.buttons);
+  const cat = global.catInfo[categories[i].toUpperCase()]
+  let pattern = cat?.pattern ? cat?.pattern : categories[i] + "menu" ;
+  let images = cat?.images ? cat?.images : [config.LOGO] ;
+  genMenu(categories[i], pattern, images, cat?.react, cat?.buttons);
 }
 }
 
