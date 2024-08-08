@@ -273,7 +273,7 @@ cmd(
                 const menuCategories = categories.filter(category => category.toLowerCase() != "misc")
                 for (let i=0; i < menuCategories.length; i++) {
                     if (menuCategories[i].toLowerCase() === "misc") continue
-                    let cat = global.catInfo[categories[i].toUpperCase()];
+                    let cat = global.catInfo[menuCategories[i].toUpperCase()];
                     let command = cat?.pattern || menuCategories[i].toLowerCase() + "menu"
                     let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: menuCategories[i].charAt(0).toUpperCase() + menuCategories[i].slice(1) + " Commands"}
                     sections[0].rows.push(row)
