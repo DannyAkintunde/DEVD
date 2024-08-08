@@ -1,6 +1,6 @@
 const config = require("../config");
 const os = require("os");
-const { cmd, commands } = require("../command");
+const { cmd, commands, categories } = require("../command");
 const {
     getBuffer,
     getGroupAdmins,
