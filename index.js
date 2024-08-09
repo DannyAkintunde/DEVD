@@ -118,7 +118,6 @@ async function connectToWA() {
             }
             return message;
         },
-        syncFullHistory: true,
         generateHighQualityLinkPreview: true,
         auth: {
          creds: state.creds,
@@ -155,7 +154,7 @@ async function connectToWA() {
               console.log(
                   "!!!  connection closed reconection in progress ..."
               );
-              connectToWa();
+              connectToWA();
           } else if (
               reason ===
               DisconnectReason.connectionLost
@@ -163,7 +162,7 @@ async function connectToWA() {
               console.log(
                   "connection to server lost 😞 ,,, reconnection in progress ... "
               );
-              connectToWa();
+              connectToWA();
           } else if (
               reason ===
               DisconnectReason?.connectionReplaced
@@ -182,7 +181,7 @@ async function connectToWA() {
               DisconnectReason.restartRequired
           ) {
               console.log("Reboot in progress ▶️");
-              connectToWa();
+              connectToWA();
           } else {
               console.log(
                   "Restarting immediatly after an error  ",
