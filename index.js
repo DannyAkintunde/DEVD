@@ -155,7 +155,7 @@ async function connectToWA() {
               console.log(
                   "!!!  connection closed reconection in progress ..."
               );
-              connectToWA();
+              restart();
           } else if (
               reason ===
               DisconnectReason.connectionLost
@@ -163,7 +163,7 @@ async function connectToWA() {
               console.log(
                   "connection to server lost 😞 ,,, reconnection in progress ... "
               );
-              connectToWA();
+              restart();
           } else if (
               reason ===
               DisconnectReason?.connectionReplaced
@@ -182,7 +182,7 @@ async function connectToWA() {
               DisconnectReason.restartRequired
           ) {
               console.log("Reboot in progress ▶️");
-              connectToWA();
+              restart();
           } else {
               console.log(
                   "Restarting immediatly after an error  ",
