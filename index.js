@@ -96,7 +96,7 @@ async function connectToWA() {
       version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-        browser: Browsers.windows('Firefox'),
+        browser: Browsers.windows('Desktop'),
         patchMessageBeforeSending: (message) => {
             const requiresPatch = !!(
                 message.buttonsMessage ||
@@ -155,7 +155,7 @@ async function connectToWA() {
               console.log(
                   "!!!  connection closed reconection in progress ..."
               );
-              restart();
+              connectToWA();
           } else if (
               reason ===
               DisconnectReason.connectionLost
@@ -163,7 +163,7 @@ async function connectToWA() {
               console.log(
                   "connection to server lost 😞 ,,, reconnection in progress ... "
               );
-              restart();
+              connectToWA();
           } else if (
               reason ===
               DisconnectReason?.connectionReplaced
