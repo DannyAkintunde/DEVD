@@ -118,6 +118,7 @@ async function connectToWA() {
             }
             return message;
         },
+        syncFullHistory: true,
         generateHighQualityLinkPreview: true,
         auth: {
          creds: state.creds,
