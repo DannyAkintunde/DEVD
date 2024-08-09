@@ -28,7 +28,7 @@ module.exports = {
     AUTHOR: process.env.AUTHOR || 'TKM',
     FOOTER: process.env.FOOTER || "𝙿𝚘𝚠𝚎𝚛𝚎𝚍 𝚋𝚢 𝚃𝙺𝙼-𝙱𝙾𝚃",
     LOGO:
-        process.env.LOGO || `https://i.ibb.co/LhJXQYT/IMG-20240809-WA0027.jpg`,
+        process.env.LOGO || `https://telegra.ph/file/18d25675835c1486fc63e.jpg`,
     MENU_MEDIA: process.env.MENU_LINKS || '',
     PORT: parseInt(process.env.PORT) || 8000,
     BUTTON: convertToBool(process.env.BUTTON, fault="false")? false : true,
