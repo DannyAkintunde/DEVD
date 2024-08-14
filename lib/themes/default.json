@@ -1,0 +1,42 @@
+{
+    "name": "DEFUALT",
+    "menus": {
+        "MAIN": {
+            "images": ["https://telegra.ph/file/fe7774426ab8357963ebc.jpg"]
+        },
+        "DOWNLOAD": {
+            "pattern": "downmenu",
+            "images": ["https://telegra.ph/file/24b19e11c51c3b8dde0a1.jpg"]
+        },
+        "SEARCH": {
+            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"]
+        },
+        "CONVERT": {
+            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"]
+        },
+        "LOGO": {
+            "images": ["https://telegra.ph/file/5e61a90b90c6307a0757e.jpg"]
+        },
+        "OWNER": {
+            "images": ["https://telegra.ph/file/787b6b23e75057e08e69b.jpg"]
+        },
+        "ADMIN": {
+            "images": ["https://telegra.ph/file/7f48f7bbbe85de4532d71.jpg"]
+        },
+        "OTHER": {
+            "images": ["https://telegra.ph/file/01994d1adb2fe606c3dd2.jpg"]
+        }
+    },
+    "responses": {
+        "OWNER": "This Command is owner only !",
+        "ADMIN": "This Command is for admins only !",
+        "PREM": "This Command is  for premium users only !",
+        "ERROR": "Opps an error occored !"
+    },
+    "reactions": {
+        "SUSS": "✅",
+        "ERROR": "",
+        "LOAD": "⌛",
+        "RETRY": ""
+    }
+}

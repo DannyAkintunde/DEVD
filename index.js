@@ -37,6 +37,7 @@ const axios = require("axios");
 const { File } = require("megajs");
 const path = require("path");
 const chalk = require("chalk");
+const theme = require("./lib/themes/theme")
 const msgRetryCounterCache = new NodeCache();
 const prefix = config.PREFIX || "";
 const ownerNumber = config.OWNER_NUMBER.split(",");

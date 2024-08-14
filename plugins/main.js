@@ -10,7 +10,9 @@ const {
     Json,
     runtime,
     sleep,
-    fetchJson
+    fetchJson,
+    randomInt,
+    randChoice
 } = require("../lib/functions");
 
 cmd(
@@ -263,23 +265,32 @@ cmd(
             else hostname = os.hostname();
             let monspace = "```";
             let monspacenew = "`";
-                const sections = [
-                    {
-                        title: "Select Menu",
-                        rows: [
-                        ]
-                    }
-                ];
-                const menuCategories = categories.filter(category => category.toLowerCase() != "misc")
-                for (let i=0; i < menuCategories.length; i++) {
-                    if (menuCategories[i].toLowerCase() === "misc") continue
-                    let cat = global.catInfo[menuCategories[i].toUpperCase()];
-                    let command = cat?.pattern || menuCategories[i].toLowerCase() + "menu"
-                    let row = { title: `${i + 1}`, rowId: `${prefix}${command}`, description: menuCategories[i].charAt(0).toUpperCase() + menuCategories[i].slice(1) + " Commands"}
-                    sections[0].rows.push(row)
+            const sections = [
+                {
+                    title: "Select Menu",
+                    rows: []
                 }
-                const listMessage = {
-                    caption: `👋 ❤ Hey ${pushname} I'm alive now
+            ];
+            const menuCategories = categories.filter(
+                category => category.toLowerCase() != "misc"
+            );
+            for (let i = 0; i < menuCategories.length; i++) {
+                if (menuCategories[i].toLowerCase() === "misc") continue;
+                let cat = global.THEME.menus[menuCategories[i].toUpperCase()];
+                let command =
+                    cat?.pattern || menuCategories[i].toLowerCase() + "menu";
+                let row = {
+                    title: `${i + 1}`,
+                    rowId: `${prefix}${command}`,
+                    description:
+                        menuCategories[i].charAt(0).toUpperCase() +
+                        menuCategories[i].slice(1) +
+                        " Commands"
+                };
+                sections[0].rows.push(row);
+            }
+            const listMessage = {
+                caption: `👋 ❤ Hey ${pushname} I'm alive now
     
 *👾 ${config.BOT} commands menu...*
   
@@ -289,24 +300,29 @@ cmd(
  )}MB / ${Math.round(require("os").totalmem / 1024 / 1024)}MB
  *🕒Runtime:* ${runtime(process.uptime())}
  *📍Platform:* ${hostname}`,
-                    image: { url: config.LOGO },
-                    footer: config.FOOTER,
-                    buttonText: "🔢 Reply below number,",
-                    sections,
-                    contextInfo: {
-                        externalAdReply: {
-                            title: `「 ${config.BOT} 」`,
-                            body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                            mediaType: 1,
-                            sourceUrl: global.link,
-                            thumbnailUrl: config.LOGO,
-                            renderLargerThumbnail: false,
-                            showAdAttribution: true
-                        }
+                image: {
+                    url: config.MENU_MEDIA
+                        ? randChoice(config.MENU_MEDIA.split(","))
+                        : undefined ||
+                          randChoice(global.THEME.menus.MAIN.images)
+                },
+                footer: config.FOOTER,
+                buttonText: "🔢 Reply below number,",
+                sections,
+                contextInfo: {
+                    externalAdReply: {
+                        title: `「 ${config.BOT} 」`,
+                        body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                        mediaType: 1,
+                        sourceUrl: global.link,
+                        thumbnailUrl: config.LOGO,
+                        renderLargerThumbnail: false,
+                        showAdAttribution: true
                     }
-                };
+                }
+            };
 
-                return await conn.replyList(from, listMessage, { quoted: msg });
+            return await conn.replyList(from, listMessage, { quoted: msg });
         } catch (e) {
             reply("*Error !!*");
             l(e);
