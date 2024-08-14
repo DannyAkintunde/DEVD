@@ -88,6 +88,7 @@ const app = express();
 const port = config.PORT || 8000;
 //====================================
 // <<==========THEMES===========>>
+process.emit("theme.update");
 if (themeManager.themes.includes(config.THEME)) {
     themeManager.load(config.THEME);
 }
