@@ -10,7 +10,7 @@ const {
     makeInMemoryStore,
     Browsers
 } = require("@whiskeysockets/baileys");
-const { Boom } = require('@hapi/boom')
+const { Boom } = require("@hapi/boom");
 const fs = require("fs");
 const P = require("pino");
 var os = require("os");
@@ -37,7 +37,7 @@ const axios = require("axios");
 const { File } = require("megajs");
 const path = require("path");
 const chalk = require("chalk");
-const theme = require("./lib/themes/theme")
+const themeManager = require("./lib/themes/theme");
 const msgRetryCounterCache = new NodeCache();
 const prefix = config.PREFIX || "";
 const ownerNumber = config.OWNER_NUMBER.split(",");
@@ -67,19 +67,19 @@ if (!fs.existsSync(__dirname + "/session/creds.json")) {
             });
         });
     }
-} else console.log("using creds.json")
+} else console.log("using creds.json");
 const store = makeInMemoryStore({
     logger: P().child({
-        level: 'silent',
-        stream: 'store'
+        level: "silent",
+        stream: "store"
     })
-})
+});
 
 const restart = () => {
-  console.log(chalk.yellow("restarting........"));
-  const { exec } = require("child_process");
-  exec("pm2 restart all");
-}
+    console.log(chalk.yellow("restarting........"));
+    const { exec } = require("child_process");
+    exec("pm2 restart all");
+};
 // channel link
 global.link = "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g";
 // <<==========PORTS===========>>
@@ -87,18 +87,21 @@ const express = require("express");
 const app = express();
 const port = config.PORT || 8000;
 //====================================
+// <<==========THEMES===========>>
+if (themeManager.themes.includes(config.THEME)) {
+    themeManager.load(config.THEME);
+}
+//====================================
 async function connectToWA() {
     const { version, isLatest } = await fetchLatestBaileysVersion();
     console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
-    const { state, saveCreds } = await useMultiFileAuthState(
-        "./session/"
-    );
+    const { state, saveCreds } = await useMultiFileAuthState("./session/");
     const conn = makeWASocket({
-      version,
+        version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-        browser: Browsers.windows('Desktop'),
-        patchMessageBeforeSending: (message) => {
+        browser: Browsers.windows("Desktop"),
+        patchMessageBeforeSending: message => {
             const requiresPatch = !!(
                 message.buttonsMessage ||
                 message.templateMessage ||
@@ -110,11 +113,11 @@ async function connectToWA() {
                         message: {
                             messageContextInfo: {
                                 deviceListMetadataVersion: 2,
-                                deviceListMetadata: {},
+                                deviceListMetadata: {}
                             },
-                            ...message,
-                        },
-                   },
+                            ...message
+                        }
+                    }
                 };
             }
             return message;
@@ -122,90 +125,87 @@ async function connectToWA() {
         syncFullHistory: true,
         generateHighQualityLinkPreview: true,
         auth: {
-         creds: state.creds,
-         keys: makeCacheableSignalKeyStore(state.keys, P({ level: "fatal" }).child({ level: "fatal" })),
-      },
-        markOnlineOnConnect: true, 
+            creds: state.creds,
+            keys: makeCacheableSignalKeyStore(
+                state.keys,
+                P({ level: "fatal" }).child({ level: "fatal" })
+            )
+        },
+        markOnlineOnConnect: true,
         defaultQueryTimeoutMs: undefined,
         msgRetryCounterCache,
-        getMessage: async (key) => {
-         let jid = jidNormalizedUser(key.remoteJid)
-         let msg = await store.loadMessage(jid, key.id)
+        getMessage: async key => {
+            let jid = jidNormalizedUser(key.remoteJid);
+            let msg = await store.loadMessage(jid, key.id);
 
-         return msg?.message || ""
-      },
+            return msg?.message || "";
+        }
     });
-    
-    store.readFromFile("store.json")
-    store.bind(conn.ev)
+
+    store.readFromFile("store.json");
+    store.bind(conn.ev);
     setInterval(() => {
-         store.writeToFile("store.json");
-     }, 3000);
+        store.writeToFile("store.json");
+    }, 3000);
     conn.ev.on("connection.update", async update => {
         const { connection, lastDisconnect } = update;
         if (connection === "connecting") {
-                console.log("ℹ️ Connection in progress...");
+            console.log("ℹ️ Connection in progress...");
         } else if (connection === "close") {
-          let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
-          if (reason === DisconnectReason.badSession ) {
-            console.log("bad session please get a new session id or creds.json asap !")
-          } else if (
-              reason ===
-              DisconnectReason.connectionClosed
-          ) {
-              console.log(
-                  "!!!  connection closed reconection in progress ..."
-              );
-              connectToWA();
-          } else if (
-              reason ===
-              DisconnectReason.connectionLost
-          ) {
-              console.log(
-                  "connection to server lost 😞 ,,, reconnection in progress ... "
-              );
-              connectToWA();
-          } else if (
-              reason ===
-              DisconnectReason?.connectionReplaced
-          ) {
-              console.log(
-                  "connection replaced but session alread open please close it ASAP !!!"
-              );
-          } else if (
-              reason === DisconnectReason.loggedOut
-          ) {
-              console.log(
-                  "youve been disconnected please get a new session id ASAP"
-              );
-          } else if (
-              reason ===
-              DisconnectReason.restartRequired
-          ) {
-              console.log("Reboot in progress ▶️");
-              restart();
-          } else {
-              console.log(
-                  "Restarting immediatly after an error  ",
-                  reason
-              );
-              restart();
-        }
+            let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+            if (reason === DisconnectReason.badSession) {
+                console.log(
+                    "bad session please get a new session id or creds.json asap !"
+                );
+            } else if (reason === DisconnectReason.connectionClosed) {
+                console.log(
+                    "!!!  connection closed reconection in progress ..."
+                );
+                connectToWA();
+            } else if (reason === DisconnectReason.connectionLost) {
+                console.log(
+                    "connection to server lost 😞 ,,, reconnection in progress ... "
+                );
+                connectToWA();
+            } else if (reason === DisconnectReason?.connectionReplaced) {
+                console.log(
+                    "connection replaced but session alread open please close it ASAP !!!"
+                );
+            } else if (reason === DisconnectReason.loggedOut) {
+                console.log(
+                    "youve been disconnected please get a new session id ASAP"
+                );
+            } else if (reason === DisconnectReason.restartRequired) {
+                console.log("Reboot in progress ▶️");
+                restart();
+            } else {
+                console.log("Restarting immediatly after an error  ", reason);
+                restart();
+            }
         } else if (connection === "open") {
-          global.MODE = config.MODE === 'private' ? 'private' : 'public';
-          console.log(chalk.green("✅ connection successfull! ☺️"));
-          conn.sendMessage(conn.user.id,{text: "TKM-BOT V3 connected sucessfully"});
+            global.MODE = config.MODE === "private" ? "private" : "public";
+            console.log(chalk.green("✅ connection successfull! ☺️"));
+            conn.sendMessage(conn.user.id, {
+                text: "TKM-BOT V3 connected sucessfully"
+            });
             console.log(chalk.yellow("Installing plugins 🔌... "));
             const path = require("path");
             fs.readdirSync("./plugins/").forEach(plugin => {
                 if (path.extname(plugin).toLowerCase() == ".js") {
-                  try {
-                    let plug = require("./plugins/" + plugin);
-                    process.emit("plugin.installed", conn, plugin);
-                    lsuss("Sucessfully installed " + plugin + "");
-                  } catch (e) {
-                    console.error("An error occored while installing " + plugin + "Error: " + e.message + " :\n" + e.stack );
-                  }
+                    try {
+                        let plug = require("./plugins/" + plugin);
+                        process.emit("plugin.installed", conn, plugin);
+                        lsuss("Sucessfully installed " + plugin + "");
+                    } catch (e) {
+                        console.error(
+                            "An error occored while installing " +
+                                plugin +
+                                "Error: " +
+                                e.message +
+                                " :\n" +
+                                e.stack
+                        );
+                    }
                 }
             });
             process.emit("plugin.initilised", conn);
@@ -331,7 +331,16 @@ async function connectToWA() {
                 ? groupAdmins.includes(botNumber2)
                 : false;
             const isAdmins = isGroup ? groupAdmins.includes(sender) : false;
-            var etat = config.PRESENCE || config.PRESENCE !== 'available' ? config.PRESENCE === 'composing' ? 2 : config.PRESENCE === 'recording'? 3 : config.PRESENCE === 'unavailable' ? 4 : 1 : 1;
+            var etat =
+                config.PRESENCE || config.PRESENCE !== "available"
+                    ? config.PRESENCE === "composing"
+                        ? 2
+                        : config.PRESENCE === "recording"
+                        ? 3
+                        : config.PRESENCE === "unavailable"
+                        ? 4
+                        : 1
+                    : 1;
             if (etat == 1) {
                 await conn.sendPresenceUpdate("available", from);
             } else if (etat == 2) {
@@ -812,7 +821,7 @@ async function connectToWA() {
 
             if (config.ONLY_GROUP && !isMe && !isGroup) return;
             if (from === "120363043598019970@g.us" && !isdev) return;
-            if (global.MODE === "private" && !isSuperUser && !isbot ) return;
+            if (global.MODE === "private" && !isSuperUser && !isbot) return;
             //==================================plugin map================================
             const events = require("./command");
             const cmdName = isCmd
@@ -825,7 +834,6 @@ async function connectToWA() {
                         cmd => cmd.alias && cmd.alias.includes(cmdName)
                     );
                 if (cmd) {
-                    
                     if (cmd.react)
                         conn.sendMessage(from, {
                             react: { text: cmd.react, key: mek.key }
@@ -1161,18 +1169,18 @@ async function connectToWA() {
         }
     });
     conn.ev.on("contacts.upsert", async contacts => {
-            const insertContact = newContact => {
-                for (const contact of newContact) {
-                    if (store.contacts[contact.id]) {
-                        Object.assign(store.contacts[contact.id], contact);
-                    } else {
-                        store.contacts[contact.id] = contact;
-                    }
+        const insertContact = newContact => {
+            for (const contact of newContact) {
+                if (store.contacts[contact.id]) {
+                    Object.assign(store.contacts[contact.id], contact);
+                } else {
+                    store.contacts[contact.id] = contact;
                 }
-                return;
-            };
-            insertContact(contacts);
-        });
+            }
+            return;
+        };
+        insertContact(contacts);
+    });
 }
 app.get("/", (req, res) => {
     res.send("📟 TKM-BOT Working successfully!");
@@ -1183,8 +1191,6 @@ app.listen(port, () =>
 setTimeout(async () => {
     await connectToWA();
 }, 3000);
-
-
 
 //catch exections
 process.on("uncaughtException", function (err) {
