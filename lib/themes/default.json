@@ -1,5 +1,7 @@
 {
     "name": "DEFAULT",
+    "author": "TKM inc",
+    "lang": "en",
     "menus": {
         "MAIN": {
             "images": ["https://telegra.ph/file/fe7774426ab8357963ebc.jpg"]
@@ -28,15 +30,24 @@
         }
     },
     "responses": {
-        "OWNER": "This Command is owner only !",
-        "ADMIN": "This Command is for admins only !",
-        "PREM": "This Command is  for premium users only !",
-        "ERROR": "Opps an error occored !"
+        "owner": "This command is only for my *Owner* !",
+        "admin": "This command is only for group *Admins* !",
+        "group": "Thia feature is only for *groups* !",
+        "private": "This feature is only gor my *Private chats* !",
+        "bot": "This feature is only for the *bot number* !",
+        "botAdmin": "Please provide me an *Admin Role* !",
+        "wait": "Loading...",
+        "by": "Made by TKM inc.",
+        "error": "Opps an error occored ⚠️"
     },
     "reactions": {
-        "SUSS": "✅",
-        "ERROR": "",
-        "LOAD": "⌛",
-        "RETRY": ""
+        "success": "✅",
+        "error": "⚠️",
+        "loading": "⌛",
+        "retry": "🔁",
+        "download": "📥"
+    },
+    "styles": {
+        "fonts": []
     }
 }
