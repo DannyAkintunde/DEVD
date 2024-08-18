@@ -14,10 +14,8 @@ cmd(
     },
     async (conn, mek, m, { q, l, args, reply }) => {
         if (!q) return reply("i need a query !");
-        let langCode = "en";
-        if (args.length >= 2) {
-            langCode = args[0];
-        }
+        if (!arg[0]) return reply("please specify a language.")
+        let langCode = args[0];
         trans(args.splice(1).join(" "), { to: langCode })
             .then(res => reply(res))
             .catch(e => {

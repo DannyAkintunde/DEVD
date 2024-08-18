@@ -341,12 +341,12 @@ cmd(
             }
             const question = args.join(" ");
             const response = await axios.get(
-                `http://api.maher-zubair.tech/ai/chatgpt4?q=${question}`
+                `https://itzpire.com/ai/gpt?model=gpt-3.5-turbo&q=${question}`
             );
 
             const data = response.data;
             if (data) {
-                reply(data.result);
+                reply(data.response);
             } else {
                 reply("Error during response generation.");
             }
