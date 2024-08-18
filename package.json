@@ -54,7 +54,7 @@
         "mfiredlcore-vihangayt": "^1.0.0",
         "path": "^0.12.7",
         "node-fetch": "^2.6.1",
-        "translate": "^1.2.1",
+        "translate-google": "^1.5.0",
         "got": "^11.8.2",
         "megajs": "^1.1.0",
         "stream": "^0.0.2",
