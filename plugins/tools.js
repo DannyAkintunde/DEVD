@@ -1,6 +1,6 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
-const { translate } = require("../lib/functions");
+const { trans } = require("../lib/functions");
 
 cmd(
     {
@@ -18,7 +18,7 @@ cmd(
         if (args.length >= 2) {
             langCode = args[0];
         }
-        translate(args.splice(1).join(" "), langCode)
+        trans(args.splice(1).join(" "), langCode)
             .then(res => reply(res))
             .error(e => {
                 l(e);

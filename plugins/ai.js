@@ -15,9 +15,9 @@ const {
 const cheerio = require("cheerio");
 const axios = require("axios");
 const vm = require("vm");
-const { translate, gpt4 } = require("../lib/functions.js");
-const fetch = (...args) => import("node-fetch").then(({ default: fetch }) => fetch(...args));
-
+const { trans, gpt4 } = require("../lib/functions.js");
+const fetch = (...args) =>
+    import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 var desct = "BARD AI chat";
 if (config.LANG === "SI") desct = "එය ඔබ ලබා දුන් දේ සඳහා bard AI මත සොයයි.";
@@ -96,7 +96,6 @@ cmd(
         }
     }
 );
-
 
 cmd(
     {
@@ -242,7 +241,7 @@ cmd(
     async (conn, mek, m, { args, reply, l }) => {
         if (!args) return reply("Yes, i'm listening to you.");
         try {
-            const message = await translate(args.join(" "), {
+            const message = await trans(args.join(" "), {
                 to: "en"
             });
             l(message);
@@ -254,7 +253,7 @@ cmd(
                     const botResponse = data.cnt;
                     l(botResponse);
 
-                    translate(botResponse, { to: config.LANG.toLowerCase() })
+                    trans(botResponse, { to: config.LANG.toLowerCase() })
                         .then(translatedResponse => {
                             reply(translatedResponse);
                         })
@@ -274,7 +273,7 @@ cmd(
                 });
         } catch (e) {
             reply("oops an error : " + e);
-            console.error("oops an error :" , e)
+            console.error("oops an error :", e);
         }
     }
 );
@@ -288,7 +287,7 @@ cmd(
         use: ".dalle <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l , from }) => {
+    async (conn, mek, m, { args, reply, l, from }) => {
         try {
             if (!args || args.length === 0) {
                 return reply(
@@ -421,14 +420,14 @@ cmd(
                 `text argument is required \n> try ${prefix}text2prompt a sad cat`
             );
 
-        const text = await translate(args.join(" "), { to: "en" });
+        const text = await trans(args.join(" "), { to: "en" });
 
         await text2prompt(text).then(sus).catch(err);
 
         function sus(res) {
             if (res.status)
                 return reply(
-                    translate(res.prompt),
+                    trans(res.prompt),
                     config.LANG.toLocaleLowerCase()
                 );
             else reply("an error occoured genrating prompt");
@@ -440,35 +439,85 @@ cmd(
     }
 );
 
-var desct =''
-if(config.LANG === 'SI') desct = 'එය ලබා දී ඇති text එකක් ai image එකක් බවට පරිවර්තනය කරයි.'
-else desct = "It convert given text to ai image."
-var imgmsg =''
-if(config.LANG === 'SI') imgmsg = '*උදාහරණයක්: .imagine woman,hair cut collor red,full body,bokeh*'
-else imgmsg = "*Example: .imagine woman,hair cut collor red,full body,bokeh*"
-var cantf =''
-if(config.LANG === 'SI') cantf = '*Server එක කාර්යබහුලයි. පසුව නැවත උත්සාහ කරන්න. !*'
-else cantf = "*Server is busy. Try again later.!*"
+var desct = "";
+if (config.LANG === "SI")
+    desct = "එය ලබා දී ඇති text එකක් ai image එකක් බවට පරිවර්තනය කරයි.";
+else desct = "It convert given text to ai image.";
+var imgmsg = "";
+if (config.LANG === "SI")
+    imgmsg = "*උදාහරණයක්: .imagine woman,hair cut collor red,full body,bokeh*";
+else imgmsg = "*Example: .imagine woman,hair cut collor red,full body,bokeh*";
+var cantf = "";
+if (config.LANG === "SI")
+    cantf = "*Server එක කාර්යබහුලයි. පසුව නැවත උත්සාහ කරන්න. !*";
+else cantf = "*Server is busy. Try again later.!*";
 
-cmd({
-    pattern: "imagine",
-    alias: ["texttoimage","toimage","aiimage"],
-    react: '🤖',
-    desc: desct,
-    category: "ai",
-    use: '.imagine  woman,hair cut collor red,full body,bokeh',
-    filename: __filename
-},
-async(conn, mek, m,{from, l, prefix, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-if(!q) return reply(imgmsg)
-let apilist = await fetchJson('https://gist.githubusercontent.com/vihangayt0/7dbb65f6adfe21538f7febd13982569a/raw/apilis.json')
-let list = apilist.users
-let apikey = list[Math.floor(Math.random() * list.length)]
-const dataget = await fetchJson(apilist.xz +'api/text-to-image?text='+ encodeURIComponent(q) +'&apikey='+ apikey)
-return await conn.sendMessage(from, { image: await getBuffer(dataget.imageUrl), caption: `\n*${dataget.promptEn}*\n`}, { quoted: mek })
-} catch (e) {
-reply(cantf)
-l(e)
-}
-})
+cmd(
+    {
+        pattern: "imagine",
+        alias: ["texttoimage", "toimage", "aiimage"],
+        react: "🤖",
+        desc: desct,
+        category: "ai",
+        use: ".imagine  woman,hair cut collor red,full body,bokeh",
+        filename: __filename
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            prefix,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            if (!q) return reply(imgmsg);
+            let apilist = await fetchJson(
+                "https://gist.githubusercontent.com/vihangayt0/7dbb65f6adfe21538f7febd13982569a/raw/apilis.json"
+            );
+            let list = apilist.users;
+            let apikey = list[Math.floor(Math.random() * list.length)];
+            const dataget = await fetchJson(
+                apilist.xz +
+                    "api/text-to-image?text=" +
+                    encodeURIComponent(q) +
+                    "&apikey=" +
+                    apikey
+            );
+            return await conn.sendMessage(
+                from,
+                {
+                    image: await getBuffer(dataget.imageUrl),
+                    caption: `\n*${dataget.promptEn}*\n`
+                },
+                { quoted: mek }
+            );
+        } catch (e) {
+            reply(cantf);
+            l(e);
+        }
+    }
+);
