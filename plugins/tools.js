@@ -18,7 +18,7 @@ cmd(
         if (args.length >= 2) {
             langCode = args[0];
         }
-        trans(args.splice(1).join(" "), langCode)
+        trans(args.splice(1).join(" "), { to: langCode })
             .then(res => reply(res))
             .error(e => {
                 l(e);
