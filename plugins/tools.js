@@ -20,7 +20,7 @@ cmd(
         }
         trans(args.splice(1).join(" "), { to: langCode })
             .then(res => reply(res))
-            .error(e => {
+            .catch(e => {
                 l(e);
                 reply(global.THEME.responses.error);
             });
