@@ -303,7 +303,7 @@ cmd(
             let caption = `┃powered by ⬡〘TKM MD〙⬡┃`;
             +`\n${config.FOOTER}`;
 
-            if (data.status == 200) {
+            if (data.code == 200) {
                 const imageUrl = data.result;
                 conn.sendMessage(
                     from,
@@ -319,6 +319,7 @@ cmd(
                 error.message ||
                     "An error occorred while processing your request"
             );
+            m.react(global.THEME.reactions.error)
             reply("Oops, an error occurred while processing your request");
         }
     }
