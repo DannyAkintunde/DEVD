@@ -300,8 +300,7 @@ cmd(
             );
 
             const data = response.data;
-            let caption = `┃powered by ⬡〘TKM MD〙⬡┃`;
-            +`\n${config.FOOTER}`;
+            let caption = `┃powered by ⬡〘TKM MD〙⬡┃`+`\n${config.FOOTER}`;
 
             if (data.code == 200) {
                 const imageUrl = data.result;
@@ -319,7 +318,7 @@ cmd(
                 error.message ||
                     "An error occorred while processing your request"
             );
-            m.react(global.THEME.reactions.error)
+            m.react(global.THEME.reactions.error);
             reply("Oops, an error occurred while processing your request");
         }
     }
