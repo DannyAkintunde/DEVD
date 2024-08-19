@@ -344,7 +344,7 @@ cmd(
                 `https://itzpire.com/ai/gpt?model=gpt-3.5-turbo&q=${question}`
             );
 
-            const data = response.data;
+            const data = response.data.data;
             if (data) {
                 reply(data.response);
             } else {
