@@ -295,15 +295,17 @@ cmd(
                 );
             }
             const image = args.join(" ");
+            m.react(global.THEME.reactions.loading)
             const response = await axios.get(
                 `https://itzpire.com/ai/dalle?prompt=${image}`
             );
 
             const data = response.data;
-            let caption = `┃powered by ⬡〘TKM MD〙⬡┃`+`\n${config.FOOTER}`;
+            let caption = `*Prompt:* ${image}\n${config.FOOTER}`;
 
             if (data.code == 200) {
                 const imageUrl = data.result;
+                m.react(global.THEME.reactions.success);
                 conn.sendMessage(
                     from,
                     { image: { url: imageUrl }, caption: caption },
@@ -497,25 +499,32 @@ cmd(
             if (!q) return reply(imgmsg);
             let prompt = q;
             let negative_prompt = "";
-            if (q.split("|").lenght > 1) {
+            if (q.split("|").length > 1) {
                 prompt = q.split("|")[0].trim();
                 negative_prompt = q.split("|")[1].trim();
             }
+            m.react(global.THEME.reactions.loading);
             let result = await fetchJson(
                 `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
             );
             if (result.status === "success") {
+                m.react(global.THEME.reactions.success);
                 return await conn.sendMessage(
                     from,
                     {
                         image: { url: result.result },
-                        caption: `*Prompt:* ${prompt}\n${config.FOOTER}`
+                        caption: `*Prompt:* ${prompt}\n${
+                            nagative_prompt
+                                ? "*Negative prompt:* " + negative_prompt
+                                : null
+                        }\n${config.FOOTER}`
                     },
                     { quoted: mek }
                 );
             } else reply(cantf);
         } catch (e) {
             reply(global.THEME.responses.error);
+            m.react(global.THEME.reactions.error);
             l(e);
         }
     }
