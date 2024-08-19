@@ -73,7 +73,7 @@ cmd(
    *LYRICS SEARCH*
    
 *${result.title}*
-_${result.artist}_
+_${result.album}_
 
 
 ${result.lyrics}
