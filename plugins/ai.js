@@ -295,7 +295,7 @@ cmd(
                 );
             }
             const image = args.join(" ");
-            m.react(global.THEME.reactions.loading)
+            //m.react(global.THEME.reactions.loading)
             const response = await axios.get(
                 `https://itzpire.com/ai/dalle?prompt=${image}`
             );
@@ -303,14 +303,14 @@ cmd(
             const data = response.data;
             let caption = `*Prompt:* ${image}\n${config.FOOTER}`;
 
-            if (data.code == 200) {
+            if (data.result && data.code === 200) {
                 const imageUrl = data.result;
-                m.react(global.THEME.reactions.success);
                 conn.sendMessage(
                     from,
                     { image: { url: imageUrl }, caption: caption },
                     { quoted: mek }
                 );
+                m.react(global.THEME.reactions.success);
             } else {
                 reply("Error during image generation.");
             }
@@ -508,19 +508,19 @@ cmd(
                 `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
             );
             if (result.status === "success") {
-                m.react(global.THEME.reactions.success);
                 return await conn.sendMessage(
                     from,
                     {
                         image: { url: result.result },
                         caption: `*Prompt:* ${prompt}\n${
-                            nagative_prompt
+                            negative_prompt
                                 ? "*Negative prompt:* " + negative_prompt
                                 : null
                         }\n${config.FOOTER}`
                     },
                     { quoted: mek }
                 );
+                m.react(global.THEME.reactions.success);
             } else reply(cantf);
         } catch (e) {
             reply(global.THEME.responses.error);
