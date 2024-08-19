@@ -305,12 +305,12 @@ cmd(
 
             if (data.result && data.code === 200) {
                 const imageUrl = data.result;
-                conn.sendMessage(
+                await conn.sendMessage(
                     from,
                     { image: { url: imageUrl }, caption: caption },
                     { quoted: mek }
                 );
-                m.react(global.THEME.reactions.success);
+                await m.react(global.THEME.reactions.success);
             } else {
                 reply("Error during image generation.");
             }
@@ -458,7 +458,7 @@ cmd(
     {
         pattern: "imagine",
         alias: ["texttoimage", "toimage", "aiimage"],
-        react: "🤖",
+        react: "📷",
         desc: desct,
         category: "ai",
         use: ".imagine  <prompt> or imagine <prompt> | <nagative_prompt>",
@@ -503,12 +503,12 @@ cmd(
                 prompt = q.split("|")[0].trim();
                 negative_prompt = q.split("|")[1].trim();
             }
-            m.react(global.THEME.reactions.loading);
+            //m.react(global.THEME.reactions.loading);
             let result = await fetchJson(
                 `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
             );
             if (result.status === "success") {
-                return await conn.sendMessage(
+                await conn.sendMessage(
                     from,
                     {
                         image: { url: result.result },
@@ -520,7 +520,7 @@ cmd(
                     },
                     { quoted: mek }
                 );
-                m.react(global.THEME.reactions.success);
+                await m.react(global.THEME.reactions.success);
             } else reply(cantf);
         } catch (e) {
             reply(global.THEME.responses.error);
