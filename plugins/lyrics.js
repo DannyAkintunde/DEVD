@@ -63,7 +63,7 @@ cmd(
     ) => {
         try {
             if (!q) return reply(tmsg);
-            const result = await fetchJson(
+            const { data: result } = await fetchJson(
                 "https://itzpire.com/search/lyrics?query=" + q
             );
             if (result.lyrics) {
