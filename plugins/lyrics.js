@@ -65,7 +65,7 @@ cmd(
             if (!q) return reply(tmsg);
             const result = await fetchJson(
                 "https://itzpire.com/search/lyrics?query=" + q
-            ).data;
+            );
             if (result.lyrics) {
                 let response = `
 「 ${config.BOT} 」
@@ -87,12 +87,6 @@ ${result.lyrics}
                         contextInfo: {
                             mentionedJid: [""],
                             groupMentions: [],
-                            forwardingScore: 1,
-                            isForwarded: true,
-                            forwardedNewsletterMessageInfo: {
-                                newsletterJid: "120363220858658436@newsletter",
-                                serverMessageId: 127
-                            },
                             externalAdReply: {
                                 title: `「 LYRICS SEARCH 」`,
                                 body: result.title,
