@@ -68,8 +68,6 @@ cmd(
             );
             if (result.lyrics) {
                 let response = `
-「 ${config.BOT} 」
-
    *LYRICS SEARCH*
    
 *${result.title}*
@@ -78,6 +76,7 @@ _${result.album}_
 
 ${result.lyrics}
 
+${config.FOOTER}
 └───────────◉`;
                 return await conn.sendMessage(
                     from,
