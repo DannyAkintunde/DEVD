@@ -76,7 +76,6 @@ _${result.album}_
 
 ${result.lyrics}
 
-${config.FOOTER}
 └───────────◉`;
                 return await conn.sendMessage(
                     from,

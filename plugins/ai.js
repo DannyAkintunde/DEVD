@@ -212,7 +212,7 @@ cmd(
                         {
                             image: { url: response.result[i] },
                             caption:
-                                `┃powered by ⬡〘TKM MD〙⬡┃` +
+                                `┃powered by ⬡〘${config.BOT}〙⬡┃` +
                                 `\n${config.FOOTER}`
                         },
                         { quoted: mek }
@@ -296,7 +296,7 @@ cmd(
             }
             const image = args.join(" ");
             const response = await axios.get(
-                `http://api.maher-zubair.tech/ai/photoleap?q=${image}`
+                `https://itzpire.com/ai/dalle?prompt=${image}`
             );
 
             const data = response.data;
@@ -459,7 +459,7 @@ cmd(
         react: "🤖",
         desc: desct,
         category: "ai",
-        use: ".imagine  woman,hair cut collor red,full body,bokeh",
+        use: ".imagine  <prompt> or imagine <prompt> | <nagative_prompt>",
         filename: __filename
     },
     async (
@@ -495,28 +495,27 @@ cmd(
     ) => {
         try {
             if (!q) return reply(imgmsg);
-            let apilist = await fetchJson(
-                "https://gist.githubusercontent.com/vihangayt0/7dbb65f6adfe21538f7febd13982569a/raw/apilis.json"
+            let prompt = q;
+            let negative_prompt = "";
+            if (q.split("|").lenght > 1) {
+                prompt = q.split("|")[0].trim();
+                negative_prompt = q.split("|")[1].trim();
+            }
+            let result = await fetchJson(
+                `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
             );
-            let list = apilist.users;
-            let apikey = list[Math.floor(Math.random() * list.length)];
-            const dataget = await fetchJson(
-                apilist.xz +
-                    "api/text-to-image?text=" +
-                    encodeURIComponent(q) +
-                    "&apikey=" +
-                    apikey
-            );
-            return await conn.sendMessage(
-                from,
-                {
-                    image: await getBuffer(dataget.imageUrl),
-                    caption: `\n*${dataget.promptEn}*\n`
-                },
-                { quoted: mek }
-            );
+            if (result.status === "success") {
+                return await conn.sendMessage(
+                    from,
+                    {
+                        image: { url: result.result },
+                        caption: `*Prompt:* ${prompt}\n${config.FOOTER}`
+                    },
+                    { quoted: mek }
+                );
+            } else reply(cantf);
         } catch (e) {
-            reply(cantf);
+            reply(global.THEME.responses.error);
             l(e);
         }
     }
