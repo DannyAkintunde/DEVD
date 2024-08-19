@@ -457,7 +457,7 @@ else cantf = "*Server is busy. Try again later.!*";
 cmd(
     {
         pattern: "imagine",
-        alias: ["texttoimage", "toimage", "aiimage"],
+        alias: ["texttoimage", "toimage", "aiimage", "stablediffusion"],
         react: "📷",
         desc: desct,
         category: "ai",
