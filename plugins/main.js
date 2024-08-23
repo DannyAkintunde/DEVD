@@ -12,8 +12,9 @@ const {
     sleep,
     fetchJson,
     randomInt,
-    randChoice
+    randChoice,
 } = require("../lib/functions");
+const { convertTemplateToES6 } = require("../lib/templateengine")
 
 cmd(
     {
@@ -289,17 +290,25 @@ cmd(
                 };
                 sections[0].rows.push(row);
             }
+            const obj = {
+                pushname,
+                bot: config.BOT,
+                version: require("../package.json").version,
+                memory: `${(
+                    process.memoryUsage().heapUsed /
+                    1024 /
+                    1024
+                ).toFixed(2)}MB / ${Math.round(
+                    require("os").totalmem / 1024 / 1024
+                )}MB`,
+                runtime: `${runtime(process.uptime())}`,
+                hostname
+            };
+            const caption = convertTemplateToES6(
+                global.THEME.menus.MAIN.templates.body, obj
+            );
             const listMessage = {
-                caption: `👋 ❤ Hey ${pushname} I'm alive now
-    
-*👾 ${config.BOT} commands menu...*
-  
- *🚀Version:* ${require("../package.json").version}
- *⌛Memory:* ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(
-     2
- )}MB / ${Math.round(require("os").totalmem / 1024 / 1024)}MB
- *🕒Runtime:* ${runtime(process.uptime())}
- *📍Platform:* ${hostname}`,
+                caption,
                 image: {
                     url: config.MENU_MEDIA
                         ? randChoice(config.MENU_MEDIA.split(","))

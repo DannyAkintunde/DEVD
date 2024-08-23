@@ -4,29 +4,66 @@
     "lang": "en",
     "menus": {
         "MAIN": {
+            "templates": {
+                "body": "👋 ❤ Hey {{pushname}} I'm alive now\n\n*👾 {{bot}} commands menu...*\n\n*🚀Version:* {{version}}\n*⌛Memory:* {{memory}}\n*🕒Runtime:* {{runtime}}\n*📍Platform:* {{hostname}}"
+            },
             "images": ["https://telegra.ph/file/fe7774426ab8357963ebc.jpg"]
         },
         "DOWNLOAD": {
             "pattern": "downmenu",
-            "images": ["https://telegra.ph/file/24b19e11c51c3b8dde0a1.jpg"]
+            "images": ["https://telegra.ph/file/24b19e11c51c3b8dde0a1.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         },
         "SEARCH": {
-            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"]
+            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         },
         "CONVERT": {
-            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"]
+            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         },
         "LOGO": {
-            "images": ["https://telegra.ph/file/5e61a90b90c6307a0757e.jpg"]
+            "images": ["https://telegra.ph/file/5e61a90b90c6307a0757e.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         },
         "OWNER": {
-            "images": ["https://telegra.ph/file/787b6b23e75057e08e69b.jpg"]
+            "images": ["https://telegra.ph/file/787b6b23e75057e08e69b.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         },
         "ADMIN": {
-            "images": ["https://telegra.ph/file/7f48f7bbbe85de4532d71.jpg"]
+            "images": ["https://telegra.ph/file/7f48f7bbbe85de4532d71.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         },
         "OTHER": {
-            "images": ["https://telegra.ph/file/01994d1adb2fe606c3dd2.jpg"]
+            "images": ["https://telegra.ph/file/01994d1adb2fe606c3dd2.jpg"],
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
+        },
+        "DEFAULT": {
+            "templates": {
+                "header": "*● ══════════════ ●*\n\n",
+                "body": "{{category:uppercase}} COMMANDS MENU\n\n{% #for command in commands %}{% #if {{command.category}} == {{category}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n📃➣Desc :*  {{command.disc}}\n*⌛➣Use:* {{command.use}}{% #endif %}{% #endif %}{% #endfor %}"
+            }
         }
     },
     "responses": {

@@ -1,6 +1,7 @@
 const { cmd, commands, categories } = require("../command");
 const config = require("../config");
 const { randomInt, randChoice } = require("../lib/functions");
+const { convertTemplateToES6 } = require("../lib/templateengine");
 
 const defualtBtn = [
     {
@@ -68,17 +69,17 @@ function genMenu(
             }
         ) => {
             try {
-                let menuc = `*● ══════════════ ●*
-      
-*${category.toUpperCase()} COMMANDS MENU*\n\n`;
-                for (let i = 0; i < commands.length; i++) {
-                    if (commands[i].category === category) {
-                        if (!commands[i].dontAddCommandList) {
-                            menuc += `*📍➣Command :* ${commands[i].pattern}\n*📃➣Desc :* ${commands[i].desc}\n*⌛➣Use:* ${commands[i].use}\n\n`;
-                        }
-                    }
-                }
-
+                const obj = {
+                    category,
+                    commands
+                };
+                let menu = global.THEME.menus[category.toUpperCase()]
+                    ? global.THEME.menus[category.toUpperCase()]
+                    : global.THEME.menus["default".toUpperCase()];
+                let menuc =
+                    convertTemplateToES6(menu.templates.header, obj) +
+                    convertTemplateToES6(menu.templates.body, obj) +
+                    convertTemplateToES6(menu.templates.footer, obj);
                 let buttonMessaged = {
                     image: {
                         url: config.MENU_MEDIA
