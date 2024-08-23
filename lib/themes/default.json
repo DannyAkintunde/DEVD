@@ -69,7 +69,7 @@
     "responses": {
         "owner": "This command is only for my *Owner* !",
         "admin": "This command is only for group *Admins* !",
-        "group": "Thia feature is only for *groups* !",
+        "group": "This feature is only for *groups* !",
         "private": "This feature is only gor my *Private chats* !",
         "bot": "This feature is only for the *bot number* !",
         "botAdmin": "Please provide me an *Admin Role* !",
