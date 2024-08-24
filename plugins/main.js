@@ -305,7 +305,7 @@ cmd(
                 hostname
             };
             const caption = convertTemplateToES6(
-                global.THEME.menus.MAIN.templates.body, obj
+                global.THEME.menus.MENU.templates.body, obj
             );
             const listMessage = {
                 caption,
@@ -313,7 +313,7 @@ cmd(
                     url: config.MENU_MEDIA
                         ? randChoice(config.MENU_MEDIA.split(","))
                         : undefined ||
-                          randChoice(global.THEME.menus.MAIN.images)
+                          randChoice(global.THEME.menus.MENU.images)
                 },
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
