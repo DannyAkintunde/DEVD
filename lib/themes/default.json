@@ -3,7 +3,7 @@
     "author": "TKM inc",
     "lang": "en",
     "menus": {
-        "MAIN": {
+        "MENU": {
             "templates": {
                 "body": "👋 ❤ Hey {{pushname}} I'm alive now\n\n*👾 {{bot}} commands menu...*\n\n*🚀Version:* {{version}}\n*⌛Memory:* {{memory}}\n*🕒Runtime:* {{runtime}}\n*📍Platform:* {{hostname}}"
             },
