@@ -15,7 +15,6 @@ const {
     randChoice
 } = require("../lib/functions");
 const { convertTemplateToES6 } = require("../lib/templateengine");
-const config = require("../config.js");
 
 cmd(
     {
@@ -231,7 +230,7 @@ cmd(
         const runtimetext = `🤖 *Bot Have Been Running For ${runtime(
             process.uptime()
         )}* 🤖`;
-        replyad(runtimetext, (title = `${cofig.BOT}`), (body = "RUNTIME"));
+        replyad(runtimetext, (title = `${config.BOT}`), (body = "Runtime stat"));
     }
 );
 
