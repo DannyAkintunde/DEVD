@@ -226,7 +226,7 @@ cmd(
         react: "🤖",
         filename: __filename
     },
-    async (conn, mek, m, { replyaf }) => {
+    async (conn, mek, m, { replyad }) => {
         const runtimetext = `🤖 *Bot Have Been Running For ${runtime(
             process.uptime()
         )}* 🤖`;
