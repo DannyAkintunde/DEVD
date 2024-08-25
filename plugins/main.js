@@ -326,7 +326,7 @@ cmd(
                 hostname
             };
             const caption = convertTemplateToES6(
-                global.THEME.menus.MAIN.templates.body,
+                global.THEME.menus.MENU.templates.body,
                 obj
             );
             const listMessage = {
