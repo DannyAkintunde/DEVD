@@ -12,9 +12,9 @@ const {
     sleep,
     fetchJson,
     randomInt,
-    randChoice,
+    randChoice
 } = require("../lib/functions");
-const { convertTemplateToES6 } = require("../lib/templateengine")
+const { convertTemplateToES6 } = require("../lib/templateengine");
 
 cmd(
     {
@@ -219,6 +219,42 @@ cmd(
 
 cmd(
     {
+        pattern: "runtime",
+        alias: ["uptime"],
+        desc: "to check how long the bot have been running",
+        category: "main",
+        react: "🤖",
+        filename: __filename
+    },
+    async (conn, mek, m, { from }) => {
+        const runtimetext = `🤖 *Bot Have Been Running For ${runtime(
+            process.uptime()
+        )}* 🤖`;
+        conn.sendMessage(
+            from,
+            {
+                text: runtimetext,
+                contextInfo: {
+                    externalAdReply: {
+                        showAdAttribution: true,
+                        title: `${config.BOT}`,
+                        body: `「 RUNTIME 」`,
+                        thumbnailUrl: config.LOGO,
+                        sourceUrl: global.link,
+                        mediaType: 1,
+                        renderLargerAbhinail: true
+                    }
+                }
+            },
+            {
+                quoted: mek
+            }
+        );
+    }
+);
+
+cmd(
+    {
         pattern: "menu",
         react: "👨‍💻",
         alias: ["panel", "commands"],
@@ -305,7 +341,8 @@ cmd(
                 hostname
             };
             const caption = convertTemplateToES6(
-                global.THEME.menus.MAIN.templates.body, obj
+                global.THEME.menus.MAIN.templates.body,
+                obj
             );
             const listMessage = {
                 caption,
