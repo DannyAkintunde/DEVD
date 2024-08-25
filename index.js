@@ -830,9 +830,7 @@ async function connectToWA() {
             if (global.MODE === "private" && !isSuperUser && !isbot) return;
             //==================================plugin map================================
             const events = require("./command");
-            const cmdName = isCmd
-                ? body.slice(1).trim().split(" ")[0].toLowerCase() || command
-                : false;
+            const cmdName = isCmd ? command : false;
             console.log(cmdName, body, command);
             if (isCmd) {
                 const cmd =
