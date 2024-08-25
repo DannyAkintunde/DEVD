@@ -833,6 +833,7 @@ async function connectToWA() {
             const cmdName = isCmd
                 ? body.slice(1).trim().split(" ")[0].toLowerCase() || command
                 : false;
+            console.log(cmdName, body, command);
             if (isCmd) {
                 const cmd =
                     events.commands.find(cmd => cmd.pattern === cmdName) ||
