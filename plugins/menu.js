@@ -1,7 +1,7 @@
 const { cmd, commands, categories } = require("../command");
 const config = require("../config");
 const { randomInt, randChoice } = require("../lib/functions");
-const { convertTemplateToES6 } = require("../lib/templateengine");
+const { convertTemplateToES6 } = require("../lib/templar");
 
 const defualtBtn = [
     {
@@ -79,12 +79,10 @@ function genMenu(
                 let menuc = `${convertTemplateToES6(
                     menu.templates.header,
                     obj
-                )}
-${convertTemplateToES6(
+                )}${convertTemplateToES6(
                     menu.templates.body,
                     obj
-                )}
-${convertTemplateToES6(menu.templates.footer, obj)}`;
+                )}${convertTemplateToES6(menu.templates.footer, obj)}`;
                 let buttonMessaged = {
                     image: {
                         url: config.MENU_MEDIA

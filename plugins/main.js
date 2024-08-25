@@ -14,7 +14,7 @@ const {
     randomInt,
     randChoice
 } = require("../lib/functions");
-const { convertTemplateToES6 } = require("../lib/templateengine");
+const { convertTemplateToES6 } = require("../lib/templar");
 
 cmd(
     {
