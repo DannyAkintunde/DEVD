@@ -79,10 +79,12 @@ function genMenu(
                 let menuc = `${convertTemplateToES6(
                     menu.templates.header,
                     obj
-                )}\n${convertTemplateToES6(
+                )}
+${convertTemplateToES6(
                     menu.templates.body,
                     obj
-                )}\n${convertTemplateToES6(menu.templates.footer, obj)}`;
+                )}
+${convertTemplateToES6(menu.templates.footer, obj)}`;
                 let buttonMessaged = {
                     image: {
                         url: config.MENU_MEDIA

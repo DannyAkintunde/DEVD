@@ -230,7 +230,11 @@ cmd(
         const runtimetext = `🤖 *Bot Have Been Running For ${runtime(
             process.uptime()
         )}* 🤖`;
-        replyad(runtimetext, (title = `${config.BOT}`), (body = "Runtime stat"));
+        replyad(
+            runtimetext,
+            (title = `${config.BOT}`),
+            (body = "Runtime stat")
+        );
     }
 );
 
