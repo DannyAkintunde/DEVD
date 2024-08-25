@@ -230,25 +230,10 @@ cmd(
         const runtimetext = `🤖 *Bot Have Been Running For ${runtime(
             process.uptime()
         )}* 🤖`;
-        conn.sendMessage(
-            from,
-            {
-                text: runtimetext,
-                contextInfo: {
-                    externalAdReply: {
-                        showAdAttribution: true,
-                        title: `${config.BOT}`,
-                        body: `「 RUNTIME 」`,
-                        thumbnailUrl: config.LOGO,
-                        sourceUrl: global.link,
-                        mediaType: 1,
-                        renderLargerAbhinail: true
-                    }
-                }
-            },
-            {
-                quoted: mek
-            }
+        replyad(
+            runtimetext,
+            (title = `${cofig.BOT}`),
+            (body = "「 RUNTIME 」")
         );
     }
 );

@@ -366,7 +366,12 @@ async function connectToWA() {
                     { quoted: mek }
                 );
             };
-            conn.replyad = async teks => {
+            conn.replyad = async (
+                teks,
+                title = config.BOT,
+                body = "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                src = global.link
+            ) => {
                 return await conn.sendMessage(
                     from,
                     {
@@ -381,10 +386,10 @@ async function connectToWA() {
                                 serverMessageId: 127
                             },
                             externalAdReply: {
-                                title: `「 ${config.BOT} 」`,
-                                body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                                title: `「 ${title} 」`,
+                                body: body,
                                 mediaType: 1,
-                                sourceUrl: global.link,
+                                sourceUrl: src,
                                 thumbnailUrl: config.LOGO,
                                 renderLargerThumbnail: false,
                                 showAdAttribution: true
