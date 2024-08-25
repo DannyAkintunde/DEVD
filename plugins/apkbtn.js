@@ -128,8 +128,7 @@ cmd(
 
             return await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND);
         }
     }
 );

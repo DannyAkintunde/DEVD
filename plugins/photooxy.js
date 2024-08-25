@@ -59,7 +59,7 @@ title: "Result from photooxy. 📲",
 rows: srh
 }]
 const listMessage = { 
-text: `[🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚]
+text: `[${config.BOT}]
 
    *PHOTOOXY LOGO 01*
 
@@ -72,8 +72,7 @@ sections
 await conn.replyList(from, listMessage,{quoted: mek})
 
 } catch (e) {
-reply(errt)
-l(e)
+m.sendError(e, errt)
 }
 })
 
@@ -107,7 +106,7 @@ title: "Result from photooxy. 📲",
 rows: srh
 }]
 const listMessage = { 
-text: `[🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚]
+text: `[${config.BOT}]
 
    *PHOTOOXY LOGO 02*
 
@@ -120,8 +119,7 @@ sections
 await conn.replyList(from, listMessage,{quoted: mek})
 
 } catch (e) {
-reply(errt)
-l(e)
+m.sendError(e, errt)
 }
 })
 
@@ -161,7 +159,7 @@ title: "Result from photooxy. 📲",
 rows: srh
 }]
 const listMessage = { 
-text: `[🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚]
+text: `[${config.BOT}]
 
    *PHOTOOXY LOGO 03*
 
@@ -174,8 +172,7 @@ sections
 await conn.replyList(from, listMessage,{quoted: mek})
 } else return await reply(imgmsgeew)
 } catch (e) {
-reply(errt)
-l(e)
+m.sendError(e, errt)
 }
 })
 
@@ -196,8 +193,7 @@ try{
     await conn.sendMessage(from, { image: img1_buf, caption: config.FOOTER }, { quoted: mek })
     await conn.sendMessage(from, { react: { text: '✔', key: mek.key }})
 } catch (e) {
-    reply(errt)
-  l(e)
+    m.sendError(e, errt)
 }
 })
 
@@ -218,8 +214,7 @@ try{
     await conn.sendMessage(from, { image: img2_buf, caption: config.FOOTER }, { quoted: mek })
     await conn.sendMessage(from, { react: { text: '✔', key: mek.key }})
 } catch (e) {
-    reply(errt)
-  l(e)
+    m.sendError(e, errt)
 }
 })
 
@@ -240,7 +235,6 @@ try{
     await conn.sendMessage(from, { image: img2_buf, caption: config.FOOTER }, { quoted: mek })
     await conn.sendMessage(from, { react: { text: '✔', key: mek.key }})
 } catch (e) {
-    reply(errt)
-  l(e)
+    m.sendError(e, errt)
 }
 })

@@ -100,8 +100,7 @@ ${result.lyrics}
                 );
             } else reply(cantscg);
         } catch (e) {
-            reply(global.THEME.responses.error);
-            l(e);
+            m.sendError(e);
         }
     }
 );

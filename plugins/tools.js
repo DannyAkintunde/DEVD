@@ -19,8 +19,7 @@ cmd(
         trans(args.splice(1).join(" "), { to: langCode })
             .then(res => reply(res))
             .catch(e => {
-                l(e);
-                reply(global.THEME.responses.error);
+                m.sendError(e)
             });
     }
 );

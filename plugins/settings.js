@@ -165,8 +165,7 @@ _Select setting what you want to On or Off.._`,
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -258,8 +257,7 @@ _Select setting what you want to On or Off.._`,
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -382,8 +380,7 @@ _Select setting what you want to Update.._`,
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -457,8 +454,7 @@ cmd(
                 await reply("*Anti link updated: " + q + "*");
             }
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -530,8 +526,7 @@ cmd(
                 await reply("*Anti bots updated: " + q + "*");
             }
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -602,8 +597,7 @@ cmd(
                 await reply("*Anti bad words updated: " + q + "*");
             }
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -667,8 +661,7 @@ cmd(
                 await reply("*Only group updated: " + q + "*");
             }
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -717,8 +710,7 @@ cmd(
 
             await reply("*Language updated: " + q + "*");
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -767,8 +759,7 @@ cmd(
 
             await reply("*Max upload size updated: " + q + "*");
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -817,8 +808,7 @@ cmd(
 
             await reply("*Alive massage updated:* " + q);
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -867,8 +857,7 @@ cmd(
 
             await reply("*Footer updated:* " + q);
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -917,8 +906,7 @@ cmd(
 
             await reply("*Logo updated: " + q + "*");
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -969,8 +957,7 @@ cmd(
             await updfb();
             return reply("Database reseted !!");
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e)
         }
     }
 );

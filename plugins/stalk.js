@@ -105,8 +105,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            await reply(cantf);
-            console.log(`An error occored can't find user : ${e}`);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -189,8 +188,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -274,8 +272,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -415,8 +412,7 @@ cmd(
                 "└───────────◉";
             await conn.replyad(wea);
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );

@@ -130,8 +130,7 @@ cmd(
             };
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            reply(cant);
-            l(e);
+            m.sendError(e, cant);
         }
     }
 );
@@ -204,8 +203,7 @@ cmd(
             };
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            reply(cant);
-            l(e);
+            m.sendError(e, cant);
         }
     }
 );
@@ -278,8 +276,7 @@ cmd(
             };
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            reply(cant);
-            l(e);
+            m.sendError(e, cant);
         }
     }
 );
@@ -352,8 +349,7 @@ cmd(
             };
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            reply(cant);
-            l(e);
+            m.sendError(cant);
         }
     }
 );
@@ -407,8 +403,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );
@@ -467,8 +462,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );

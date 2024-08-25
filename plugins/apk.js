@@ -108,8 +108,7 @@ cmd(
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -203,8 +202,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -277,8 +275,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*📃 ʜᴇʀᴇ ʏᴏᴜʀ ᴀᴘᴋ ɪɴꜰᴏ 📃*");
-            l(e);
+            m.sendError(e, "*📃 ʜᴇʀᴇ ʏᴏᴜʀ ᴀᴘᴋ ɪɴꜰᴏ 📃*");
         }
     }
 );

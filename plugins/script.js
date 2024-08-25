@@ -10,7 +10,7 @@ cmd(
     {
         pattern: "sc",
         react: "👨‍💻",
-        alias: ["script", "repo"],
+        alias: ["script", "repo", "source"],
         desc: tmsg,
         category: "main",
         use: ".alive",
@@ -113,8 +113,7 @@ Experience the best with TKM-BOT! ✨`,
 
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );

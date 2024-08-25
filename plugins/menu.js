@@ -96,8 +96,7 @@ function genMenu(
                 };
                 return await conn.buttonMessage(from, buttonMessaged, mek);
             } catch (e) {
-                reply("*ERROR !!*");
-                l(e);
+                m.sendError(e);
             }
         }
     );

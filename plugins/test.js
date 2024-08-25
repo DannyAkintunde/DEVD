@@ -128,8 +128,7 @@ cmd(
                 return await conn.replyList(from, listMessage, { quoted: msg });
             }
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+         m.sendError(e)
         }
     }
 );

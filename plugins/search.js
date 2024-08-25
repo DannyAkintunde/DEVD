@@ -78,8 +78,7 @@ cmd(
             if (rslt === "false") return reply("Can't  find this number");
             await reply(util.format(rslt));
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e)
         }
     }
 );

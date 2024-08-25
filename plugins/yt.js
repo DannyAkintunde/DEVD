@@ -121,8 +121,7 @@ cmd(
             });
             await conn.sendMessage(from, { text: mesaj }, { quoted: mek });
         } catch (e) {
-            l(e);
-            reply("*Error !!*");
+            m.sendError(e)
         }
     }
 );
@@ -302,8 +301,7 @@ cmd(
 
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -574,8 +572,7 @@ cmd(
 
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -771,8 +768,7 @@ cmd(
 
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -863,8 +859,7 @@ cmd(
 
             return await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -979,8 +974,7 @@ cmd(
 
             return await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+                        m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1059,8 +1053,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1139,8 +1132,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+                        m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1219,8 +1211,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+             m.sendError(e ,N_FOUND)
         }
     }
 );
@@ -1299,8 +1290,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1379,8 +1369,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1459,8 +1448,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1539,8 +1527,7 @@ cmd(
                 react: { text: "🎥", key: senda.key }
             });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1627,8 +1614,7 @@ cmd(
             }
             fs.unlinkSync(`./${randomName}`);
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1715,8 +1701,7 @@ cmd(
             }
             fs.unlinkSync(`./${randomName}`);
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1804,8 +1789,7 @@ cmd(
             }
             fs.unlinkSync(`./${randomName}`);
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1892,8 +1876,7 @@ cmd(
             }
             fs.unlinkSync(`./${randomName}`);
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );
@@ -1986,8 +1969,7 @@ cmd(
             };
             await conn.buttonMessage(from, buttonMessage);
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND)
         }
     }
 );

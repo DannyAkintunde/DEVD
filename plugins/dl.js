@@ -121,8 +121,7 @@ cmd(
             };
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -181,8 +180,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -355,8 +353,7 @@ cmd(
             };
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            l(e);
-            await reply(N_FOUND);
+            m.sendError(e, N_FOUND);
         }
     }
 );
@@ -410,8 +407,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -472,8 +468,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -568,8 +563,7 @@ cmd(
                     );
             }
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -644,8 +638,7 @@ cmd(
                 react: { text: "📁", key: mfile.key }
             });
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -762,8 +755,7 @@ cmd(
             };
             await conn.listMessage(from, listMessage, mek);
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e);
         }
     }
 );
@@ -868,8 +860,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -945,8 +936,7 @@ cmd(
                     );
             }
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -1079,8 +1069,7 @@ cmd(
 
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(N_FOUND);
-            l(e);
+            m.sendError(e, N_FOUND);
         }
     }
 );
@@ -1139,8 +1128,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+                        m.sendError(e);
         }
     }
 );
@@ -1241,8 +1229,7 @@ cmd(
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+                        m.sendError(e);
         }
     }
 );
@@ -1319,8 +1306,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply("*ERROR !!*");
-            l(e);
+                        m.sendError(e);
         }
     }
 );
@@ -1402,8 +1388,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            reply("🚫 *Error Accurated !!*\n\n" + e);
-            l(e);
+                        m.sendError(e);
         }
     }
 );
@@ -1473,8 +1458,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            reply("⛔ *Error accurated !!*\n\n" + e);
-            l(e);
+                        m.sendError(e);
         }
     }
 );
@@ -1550,8 +1534,7 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            reply("🚫 *Error occured !!*\n\n" + e);
-            l(e);
+            m.sendError(e);
         }
     }
 );

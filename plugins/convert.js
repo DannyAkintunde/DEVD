@@ -122,8 +122,7 @@ cmd(
                 });
             } else return reply(imgmsg);
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -201,8 +200,7 @@ cmd(
                 });
             } else return reply(imgmsg);
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -271,8 +269,7 @@ cmd(
                 });
             } else return reply(imgmsg);
         } catch (e) {
-            reply(cantf);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -387,8 +384,7 @@ cmd(
                 );
             } else return await reply(imgmsg);
         } catch (e) {
-            reply("*Error !!*");
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );
@@ -514,113 +510,264 @@ cmd(
                 react: { text: "🎼", key: senda.key }
             });
         } catch (e) {
+            m.sendError(e, cantf);
+        }
+    }
+);
+
+var imgmsg = "";
+if (config.LANG === "SI") imgmsg = "*ස්ටිකරයකට mention දෙන්න !*";
+else imgmsg = "*Reply to a sticker !*";
+var descg = "";
+if (config.LANG === "SI")
+    descg = "එය ඔබගේ mention දුන් sticker img බවට පරිවර්තනය කරයි.";
+else descg = "It converts your replied sticker to img.";
+
+cmd(
+    {
+        pattern: "toimg",
+        react: "🔮",
+        alias: ["s", "stic"],
+        desc: descg,
+        category: "convert",
+        use: ".sticker <Reply to image>",
+        filename: __filename
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            const isQuotedViewOnce = m.quoted
+                ? m.quoted.type === "viewOnceMessage"
+                : false;
+            const isQuotedImage = m.quoted
+                ? m.quoted.type === "imageMessage" ||
+                  (isQuotedViewOnce
+                      ? m.quoted.msg.type === "imageMessage"
+                      : false)
+                : false;
+            const isQuotedVideo = m.quoted
+                ? m.quoted.type === "videoMessage" ||
+                  (isQuotedViewOnce
+                      ? m.quoted.msg.type === "videoMessage"
+                      : false)
+                : false;
+            const isQuotedSticker = m.quoted
+                ? m.quoted.type === "stickerMessage"
+                : false;
+            if (isQuotedSticker) {
+                var nameJpg = getRandom("");
+                let buff = isQuotedSticker
+                    ? await m.quoted.download(nameJpg)
+                    : await m.download(nameJpg);
+                let type = await fileType.fromBuffer(buff);
+                await fs.promises.writeFile("./" + type.ext, buff);
+                await conn.sendMessage(
+                    from,
+                    {
+                        image: fs.readFileSync("./" + type.ext),
+                        caption: config.FOOTER
+                    },
+                    { quoted: mek }
+                );
+            } else return await reply(imgmsg);
+        } catch (e) {
             reply("*Error !!*");
             l(e);
         }
     }
 );
 
-var imgmsg =''
-if(config.LANG === 'SI') imgmsg = '*ස්ටිකරයකට mention දෙන්න !*'
-else imgmsg = "*Reply to a sticker !*"
-var descg = ''
-if(config.LANG === 'SI') descg = "එය ඔබගේ mention දුන් sticker img බවට පරිවර්තනය කරයි."
-else descg = "It converts your replied sticker to img."
+var desct = "";
+if (config.LANG === "SI")
+    desct = "එය ලබා දී ඇති රූපය anime image එකක් බවට පරිවර්තනය කරයි.";
+else desct = "It convert given image to anime image.";
+var imgmsg = "";
+if (config.LANG === "SI") imgmsg = "*ඡායාරූපයකට mention දෙන්න !*";
+else imgmsg = "*Reply to a photo !*";
+var cantf = "";
+if (config.LANG === "SI")
+    cantf = "*Server එක කාර්යබහුලයි. පසුව නැවත උත්සාහ කරන්න. !*";
+else cantf = "*Server is busy. Try again later.!*";
 
-cmd({
-    pattern: "toimg",
-    react: "🔮",
-    alias: ["s","stic"],
-    desc: descg,
-    category: "convert",
-    use: '.sticker <Reply to image>',
-    filename: __filename
-},
-async(conn, mek, m,{from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-    const isQuotedViewOnce = m.quoted ? (m.quoted.type === 'viewOnceMessage') : false
-    const isQuotedImage = m.quoted ? ((m.quoted.type === 'imageMessage') || (isQuotedViewOnce ? (m.quoted.msg.type === 'imageMessage') : false)) : false
-    const isQuotedVideo = m.quoted ? ((m.quoted.type === 'videoMessage') || (isQuotedViewOnce ? (m.quoted.msg.type === 'videoMessage') : false)) : false
-    const isQuotedSticker = m.quoted ? (m.quoted.type === 'stickerMessage') : false
-if ( isQuotedSticker ) { 
+cmd(
+    {
+        pattern: "toanime",
+        react: "🏮",
+        alias: ["imgtoanime", "animeimg"],
+        desc: desct,
+        category: "convert",
+        use: ".toanime <reply image>",
+        filename: __filename
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            prefix,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            const isQuotedViewOnce = m.quoted
+                ? m.quoted.type === "viewOnceMessage"
+                : false;
+            const isQuotedImage = m.quoted
+                ? m.quoted.type === "imageMessage" ||
+                  (isQuotedViewOnce
+                      ? m.quoted.msg.type === "imageMessage"
+                      : false)
+                : false;
+            if (m.type === "imageMessage" || isQuotedImage) {
+                const fileType = require("file-type");
+                var nameJpg = getRandom("");
+                let buff = isQuotedImage
+                    ? await m.quoted.download(nameJpg)
+                    : await m.download(nameJpg);
+                let type = await fileType.fromBuffer(buff);
+                await fs.promises.writeFile("./" + type.ext, buff);
+                img2url("./" + type.ext).then(async url => {
+                    try {
+                        await conn.sendMessage(
+                            from,
+                            {
+                                image: await getBuffer(
+                                    "https://vihangayt.me/tools/toanime?url=" +
+                                        url
+                                ),
+                                caption: config.FOOTER
+                            },
+                            { quoted: mek }
+                        );
+                    } catch (e) {
+                        let apilist = await fetchJson(
+                            "https://gist.githubusercontent.com/vihangayt0/7dbb65f6adfe21538f7febd13982569a/raw/apilis.json"
+                        );
+                        let list = apilist.users;
+                        let apikey =
+                            list[Math.floor(Math.random() * list.length)];
+                        await conn.sendMessage(
+                            from,
+                            {
+                                image: {
+                                    url:
+                                        apilist.xz +
+                                        "api/toanime?url=" +
+                                        url +
+                                        "&apikey=" +
+                                        apikey
+                                },
+                                caption: config.FOOTER
+                            },
+                            { quoted: mek }
+                        );
+                    }
+                });
+            } else return reply(imgmsg);
+        } catch (e) {
+            m.sendError(e, cantf);
+        }
+    }
+);
 
-var nameJpg = getRandom('');
-let buff = isQuotedSticker ? await m.quoted.download(nameJpg) : await m.download(nameJpg)
-let type = await fileType.fromBuffer(buff);
-await fs.promises.writeFile("./" + type.ext, buff);  
-await conn.sendMessage(from, { image: fs.readFileSync("./" + type.ext), caption: config.FOOTER }, { quoted: mek })
+var tmsg = "";
+if (config.LANG === "SI") tmsg = "එය whatsapp beta news ලබා දෙයි.";
+else tmsg = "It gives whatsapp beta news.";
 
-}else return await  reply(imgmsg)
-} catch (e) {
-reply('*Error !!*')
-l(e)
-}
-})
-
-var desct =''
-if(config.LANG === 'SI') desct = 'එය ලබා දී ඇති රූපය anime image එකක් බවට පරිවර්තනය කරයි.'
-else desct = "It convert given image to anime image."
-var imgmsg =''
-if(config.LANG === 'SI') imgmsg = '*ඡායාරූපයකට mention දෙන්න !*'
-else imgmsg = "*Reply to a photo !*"
-var cantf =''
-if(config.LANG === 'SI') cantf = '*Server එක කාර්යබහුලයි. පසුව නැවත උත්සාහ කරන්න. !*'
-else cantf = "*Server is busy. Try again later.!*"
-
-
-cmd({
-    pattern: "toanime",
-    react: "🏮",
-    alias: ["imgtoanime","animeimg"],
-    desc: desct,
-    category: "convert",
-    use: '.toanime <reply image>',
-    filename: __filename
-},
-async(conn, mek, m,{from, l, prefix, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-    try{
-    const isQuotedViewOnce = m.quoted ? (m.quoted.type === 'viewOnceMessage') : false
-    const isQuotedImage = m.quoted ? ((m.quoted.type === 'imageMessage') || (isQuotedViewOnce ? (m.quoted.msg.type === 'imageMessage') : false)) : false
-    if ((m.type === 'imageMessage') || isQuotedImage) {
-const fileType = require("file-type");
-  var nameJpg = getRandom('');
-  let buff = isQuotedImage ? await m.quoted.download(nameJpg) : await m.download(nameJpg)
-  let type = await fileType.fromBuffer(buff);
-  await fs.promises.writeFile("./" + type.ext, buff);
-  img2url("./" + type.ext).then(async url => {
-    try{
-    await conn.sendMessage(from, { image: await getBuffer('https://vihangayt.me/tools/toanime?url='+url), caption: config.FOOTER }, { quoted: mek })
-  } catch (e) {
-    let apilist = await fetchJson('https://gist.githubusercontent.com/vihangayt0/7dbb65f6adfe21538f7febd13982569a/raw/apilis.json')
-    let list = apilist.users
-    let apikey = list[Math.floor(Math.random() * list.length)]
-    await conn.sendMessage(from, { image: { url: apilist.xz +'api/toanime?url='+url+'&apikey=' + apikey }, caption: config.FOOTER }, { quoted: mek })
-  }
-});
-    } else return reply(imgmsg)
-} catch (e) {
-  reply(cantf);
-  l(e);
-}
-})
-
-var tmsg =''
-if(config.LANG === 'SI') tmsg = 'එය whatsapp beta news ලබා දෙයි.'
-else tmsg = "It gives whatsapp beta news."
-
-
-cmd({
-    pattern: "wabeta",
-    alias: ["wabetainfo","betawa"],
-    react: "✔️",
-    desc: tmsg,
-    category: "search",
-    use: '.wabeta',
-},
-async(conn, mek, m,{from, l, quoted, body, isCmd, command, args, q, isGroup, sender, senderNumber, botNumber2, botNumber, pushname, isMe, isOwner, groupMetadata, groupName, participants, groupAdmins, isBotAdmins, isAdmins, reply}) => {
-try{
-const data = (await fetchJson('https://vihangayt.me/details/wabetainfo')).data
-let info = `*🥏 Title :* ${data.title}
+cmd(
+    {
+        pattern: "wabeta",
+        alias: ["wabetainfo", "betawa"],
+        react: "✔️",
+        desc: tmsg,
+        category: "search",
+        use: ".wabeta"
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            const data = (
+                await fetchJson("https://vihangayt.me/details/wabetainfo")
+            ).data;
+            let info = `*🥏 Title :* ${data.title}
 *📅 Date :* ${data.date}
 *🖥️ Platform :* ${data.platform}
 *🔗 URL :* ${data.url}
@@ -642,9 +789,14 @@ ${data.shortdesc}
 *👨🏻‍💻 Answer :* ${data.faq[3].answer}
 
 *📰 Full Desc :*
-${data.fulldesc}`
-return await conn.sendMessage(from, { image: { url: data.image} , caption: info } , { quoted: mek })
-} catch (e) {
-l(e)
-}
-})
+${data.fulldesc}`;
+            return await conn.sendMessage(
+                from,
+                { image: { url: data.image }, caption: info },
+                { quoted: mek }
+            );
+        } catch (e) {
+            m.sendError(e, cantf);
+        }
+    }
+);

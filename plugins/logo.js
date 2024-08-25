@@ -520,8 +520,7 @@ cmd(
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -590,8 +589,7 @@ cmd(
                     });
                 });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -660,8 +658,7 @@ cmd(
                     });
                 });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -730,8 +727,7 @@ cmd(
                     });
                 });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -800,8 +796,7 @@ cmd(
                     });
                 });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -870,8 +865,7 @@ cmd(
                     });
                 });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -931,8 +925,7 @@ cmd(
                 });
             });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -1037,8 +1030,7 @@ cmd(
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -1123,8 +1115,7 @@ cmd(
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -1181,8 +1172,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );
@@ -1239,8 +1229,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            reply(errt);
-            l(e);
+            m.sendError(e, errt);
         }
     }
 );

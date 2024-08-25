@@ -90,8 +90,7 @@ cmd(
                 );
                 return await reply(dataget.respon);
             } catch (e) {
-                reply(cantf);
-                l(e);
+                m.sendError(e, (msg = cantf));
             }
         }
     }
@@ -148,8 +147,7 @@ cmd(
 
             return await reply(res);
         } catch (e) {
-            reply("Unable to generate");
-            l(e);
+            m.sendError(e, "*Unable to generate*");
         }
     }
 );
@@ -222,8 +220,7 @@ cmd(
                 reply("No images found for the given prompt");
             }
         } catch (e) {
-            reply("Unable to generate images to the given prompt");
-            l(e);
+            m.sendError(e, "Unable to generate images to the given prompt");
         }
     }
 );
@@ -272,8 +269,7 @@ cmd(
                     reply("Error requesting BrainShop");
                 });
         } catch (e) {
-            reply("oops an error : " + e);
-            console.error("oops an error :", e);
+            m.sendError(e);
         }
     }
 );
@@ -315,13 +311,10 @@ cmd(
                 reply("Error during image generation.");
             }
         } catch (error) {
-            console.error(
-                "Error:",
-                error.message ||
-                    "An error occorred while processing your request"
+            m.sendError(
+                error,
+                "Oops, an error occurred while processing your request"
             );
-            m.react(global.THEME.reactions.error);
-            reply("Oops, an error occurred while processing your request");
         }
     }
 );
@@ -353,12 +346,10 @@ cmd(
                 reply("Error during response generation.");
             }
         } catch (error) {
-            console.error(
-                "Error:",
-                error.message ||
-                    "An error occorred while processing your request"
+            m.sendError(
+                error,
+                "Oops, an error occurred while processing your request."
             );
-            reply("Oops, an error occurred while processing your request.");
         }
     }
 );
@@ -401,7 +392,10 @@ cmd(
                 await mek.react("⚠️");
             }
         } catch (e) {
-            reply(`An error occored when generating responce: ${e}`);
+            m.sendError(
+                e,
+                `An error occored when generating responce: ${e.message}`
+            );
         }
     }
 );
@@ -435,8 +429,7 @@ cmd(
             else reply("an error occoured genrating prompt");
         }
         function err(e) {
-            l(`an error occoured at :${e}`);
-            return reply("an error occoured genrating prompt");
+            m.sendError(e, "an error occoured genrating prompt");
         }
     }
 );
@@ -523,9 +516,7 @@ cmd(
                 await m.react(global.THEME.reactions.success);
             } else reply(cantf);
         } catch (e) {
-            reply(global.THEME.responses.error);
-            m.react(global.THEME.reactions.error);
-            l(e);
+            m.sendError(e, cantf);
         }
     }
 );

@@ -52,7 +52,7 @@ try{
       },
     });
 await pipeline(rbg, fs.createWriteStream(namePng + ".png"));
-let dat = `┌───[🧚 ＱＵＥＥＮ -ＩＺＵＭＩ - ＭＤ 🧚]
+let dat = `┌───[${config.BOT}]
 
    *🌆 BACKGROUND REMOVER*
 
@@ -76,8 +76,7 @@ const sections = [
     await conn.replyList(from, listMessage,{quoted: mek})
 }else return await  reply(imgmsg)
 } catch (e) {
-reply(cant)
-l(e)
+m.sendError(e, cant)
 }
 })
 
@@ -92,8 +91,7 @@ await conn.sendMessage(from, { react: { text: '📥', key: mek.key }})
 await conn.sendMessage(from, { image: fs.readFileSync(q), caption: config.FOOTER }, { quoted: mek })
 await conn.sendMessage(from, { react: { text: '✔', key: mek.key }})
 } catch (e) {
-  reply('*ERROR !!*')
-l(e)
+  m.sendError(e)
 }
 })
 
@@ -119,8 +117,7 @@ const buffer = await sticker.toBuffer();
 await conn.sendMessage(from, {sticker: buffer}, {quoted: mek })
 await conn.sendMessage(from, { react: { text: '✔', key: mek.key }})
 } catch (e) {
-  reply('*ERROR !!*')
-l(e)
+  m.sendError(e)
 }
 })
 
@@ -135,7 +132,6 @@ await conn.sendMessage(from, { react: { text: '📥', key: mek.key }})
 await conn.sendMessage(from, { document: fs.readFileSync(q), mimetype: 'image/x-png', fileName: 'Removebg' + '.png',caption: config.FOOTER  }, { quoted: mek })
 await conn.sendMessage(from, { react: { text: '✔', key: mek.key }})
 } catch (e) {
-  reply('*ERROR !!*')
-l(e)
+  m.sendError(e)
 }
 })
