@@ -15,6 +15,7 @@ const {
     randChoice
 } = require("../lib/functions");
 const { convertTemplateToES6 } = require("../lib/templateengine");
+const config = require("../config.js");
 
 cmd(
     {
