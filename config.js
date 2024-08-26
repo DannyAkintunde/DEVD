@@ -35,6 +35,7 @@ module.exports = {
     BUTTON: convertToBool(process.env.BUTTON, (fault = "false")) ? false : true,
     PRESENCE: process.env.PRESENCE || "avaliable",
     THEME: process.env.THEME?.toUpperCase() || "DEFAULT",
-    TZ: process.env.TZ || process.env.TIME_ZONE || "Etc/GMT"
+    TZ: process.env.TZ || process.env.TIME_ZONE || "Etc/GMT",
+    LOG: convertToBool(process.env.LOG) ? true : false
     // PM_PERMIT: convertToBool(process.env.PM_PERMIT || process.env.PERMIT || true);
 };

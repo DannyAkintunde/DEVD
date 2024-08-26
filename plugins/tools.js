@@ -14,12 +14,15 @@ cmd(
     },
     async (conn, mek, m, { q, l, args, reply }) => {
         if (!q) return reply("i need a query !");
-        if (!arg[0]) return reply("please specify a language.");
-        let langCode = args[0];
-        trans(args.splice(1).join(" "), { to: langCode })
+        let langCode = "en";
+        if (args.lentgh > 1) {
+            langCode = arg[0];
+            q = q.slice(1).join(" ");
+        }
+        trans(q, { to: langCode })
             .then(res => reply(res))
             .catch(e => {
-                m.sendError(e)
+                m.sendError(e);
             });
     }
 );
