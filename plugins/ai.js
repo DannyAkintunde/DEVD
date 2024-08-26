@@ -10,7 +10,8 @@ const {
     Json,
     runtime,
     sleep,
-    fetchJson
+    fetchJson,
+    randChoice,
 } = require("../lib/functions");
 const cheerio = require("cheerio");
 const axios = require("axios");
@@ -65,7 +66,9 @@ cmd(
             if (!q)
                 return reply("*Please give me words to search on bard ai !*");
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/bard?query=${q}&apiKey=${global.APIKEYS.yanz}`
+                `https://api.yanzbotz.my.id/api/ai/bard?query=${q}&apiKey=${randChoice(
+                    global.APIKEYS.yanz
+                )}`
             );
             if (response?.status == 200) {
                 return await reply(response.result);
@@ -133,7 +136,9 @@ cmd(
             if (!q)
                 return reply("*Please give me words to search on bard ai !*");
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/use-blackbox?query=${q}&apiKey=${global.APIKEYS.yanz}`
+                `https://api.yanzbotz.my.id/api/ai/use-blackbox?query=${q}&apiKey=${randChoice(
+                    global.APIKEYS.yanz
+                )}`
             );
             if (response?.status == 200) {
                 return await reply(response.result);
@@ -311,13 +316,98 @@ cmd(
                 );
                 await m.react(global.THEME.reactions.success);
             } else {
-                reply("Error during image generation.");
+                m.sendError(
+                    new Error("Status 404 when making request"),
+                    "Error during image generation."
+                );
             }
         } catch (error) {
             m.sendError(
                 error,
                 "Oops, an error occurred while processing your request"
             );
+        }
+    }
+);
+
+cmd(
+    {
+        pattern: "dalle3",
+        alias: ["dalle-3"],
+        react: "📷",
+        desc: "Generate images using DALLE-3",
+        category: "ai",
+        use: ".dalle3 <prompt>",
+        filename: __filename
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            prefix,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isdev,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            if (!q)
+                return reply(
+                    `Please enter the necessary information to generate the image.`
+                );
+            let image = await getBuffer(
+                `https://api.yanzbotz.my.id/api/text2img/dalle-3`,
+                {
+                    params: {
+                        prompt: q,
+                        apiKey: randChoice(global.APIKEYS.yanz)
+                    }
+                }
+            );
+            let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
+            if (image && image?.status != 404) {
+                await conn.sendMessage(
+                    from,
+                    { image: image, caption: caption },
+                    { quoted: mek }
+                );
+                await m.react(global.THEME.reactions.success);
+            } else {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
+            }
+        } catch (e) {
+            m.sendError(e, "Error during image generation.");
         }
     }
 );
@@ -399,6 +489,75 @@ cmd(
                 e,
                 `An error occored when generating responce: ${e.message}`
             );
+        }
+    }
+);
+
+cmd(
+    {
+        pattern: "gpt-4o",
+        alias: ["gpt4o"],
+        react: "👾",
+        desc: "chatgpt-4o ai chat",
+        category: "ai",
+        use: ".gpt-4o hi",
+        filename: __filename
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            prefix,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isdev,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            if (!q) return reply("*Please give me words !*");
+            let response = await fetchJson(
+                `https://api.yanzbotz.my.id/api/ai/gpt-4o?query=${q}&system=TKM-BOT&apiKey=${randChoice(
+                    global.APIKEYS.yanz
+                )}&id=${m.key.id}`
+            );
+            if (response?.status == 200) {
+                return await reply(response.result);
+            } else {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
+            }
+        } catch (e) {
+            m.sendError(e, "*Server is busy. Try again later.!*");
         }
     }
 );
