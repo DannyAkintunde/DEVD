@@ -771,6 +771,13 @@ cmd(
                 prompt = q.split("|")[0].trim();
                 negative_prompt = q.split("|")[1].trim();
             }
+            const msg = await conn.sendMessage(
+                from,
+                {
+                    text: global.THEME.responses.wait
+                },
+                { quoted: mek }
+            );
             //m.react(global.THEME.reactions.loading);
             let result = await fetchJson(
                 `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
@@ -784,12 +791,13 @@ cmd(
                             negative_prompt
                                 ? "*Negative prompt:* " + negative_prompt
                                 : ""
-                        }\n${config.FOOTER}`
+                        }\n${config.FOOTER}`,
+                        edit: msg.key
                     },
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
-            } else reply(cantf);
+            } else reply("*Server is busy. Try again later.!*");
         } catch (e) {
             m.sendError(e, "*Server is busy. Try again later.!*");
         }
