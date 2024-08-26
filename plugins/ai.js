@@ -50,6 +50,7 @@ cmd(
             botNumber,
             pushname,
             isMe,
+            isdev,
             isOwner,
             groupMetadata,
             groupName,
@@ -64,15 +65,21 @@ cmd(
             if (!q)
                 return reply("*Please give me words to search on bard ai !*");
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/bard?query=${q}&apiKey=${config.APIKEYS.yanz}`
+                `https://api.yanzbotz.my.id/api/ai/bard?query=${q}&apiKey=${global.APIKEYS.yanz}`
             );
             if (response?.status == 200) {
                 return await reply(response.result);
             } else {
-                m.sendError(
-                    new Error("Invalid ApiKey"),
-                    "can't get response check *Apikey*.\n> apikey limit could have been reached"
-                );
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
             }
         } catch (e) {
             m.sendError(e, "*Server is busy. Try again later.!*");
@@ -111,6 +118,7 @@ cmd(
             botNumber,
             pushname,
             isMe,
+            isdev,
             isOwner,
             groupMetadata,
             groupName,
@@ -122,16 +130,27 @@ cmd(
         }
     ) => {
         try {
-            if (!q) return reply("Need a keyword");
-            var res = (
-                await fetchJson(
-                    "https://api.yanzbotz.my.id/api/ai/blackbox?query=" + q
-                )
-            ).result;
-
-            return await reply(res);
+            if (!q)
+                return reply("*Please give me words to search on bard ai !*");
+            let response = await fetchJson(
+                `https://api.yanzbotz.my.id/api/ai/use-blackbox?query=${q}&apiKey=${global.APIKEYS.yanz}`
+            );
+            if (response?.status == 200) {
+                return await reply(response.result);
+            } else {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
+            }
         } catch (e) {
-            m.sendError(e, "*Unable to generate*");
+            m.sendError(e, "*Server is busy. Try again later.!*");
         }
     }
 );

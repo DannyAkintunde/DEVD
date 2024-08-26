@@ -4,6 +4,9 @@ function convertToBool(text, fault = "true") {
     return text === fault ? true : false;
 }
 
+global.APIKEYS = {
+    yanz: "Danny"
+};
 module.exports = {
     SESSION_ID: process.env.SESSION_ID || "youre session id",
     POSTGRESQL_URL:
@@ -27,8 +30,7 @@ module.exports = {
     FOOTER: process.env.FOOTER || "𝙿𝚘𝚠𝚎𝚛𝚎𝚍 𝚋𝚢 𝚃𝙺𝙼-𝙱𝙾𝚃",
     LOGO:
         process.env.LOGO || `https://telegra.ph/file/18d25675835c1486fc63e.jpg`,
-    MENU_MEDIA:
-        process.env.MENU_LINKS,
+    MENU_MEDIA: process.env.MENU_LINKS,
     PORT: parseInt(process.env.PORT) || 8000,
     BUTTON: convertToBool(process.env.BUTTON, (fault = "false")) ? false : true,
     PRESENCE: process.env.PRESENCE || "avaliable",
