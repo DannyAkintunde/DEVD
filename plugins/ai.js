@@ -11,8 +11,7 @@ const {
     runtime,
     sleep,
     fetchJson,
-    randChoice,
-    text2prompt
+    randChoice
 } = require("../lib/functions");
 const cheerio = require("cheerio");
 const axios = require("axios");
@@ -378,13 +377,7 @@ cmd(
                 return reply(
                     `Please enter the necessary information to generate the image.`
                 );
-            const msg = await conn.sendMessage(
-                from,
-                {
-                    text: global.THEME.responses.wait
-                },
-                { quoted: mek }
-            );
+
             let image = await getBuffer(
                 `https://api.yanzbotz.my.id/api/text2img/dalle-3`,
                 {
@@ -398,7 +391,7 @@ cmd(
             if (image && image?.status != 404) {
                 await conn.sendMessage(
                     from,
-                    { image: image, caption: caption, edit: msg.key },
+                    { image: image, caption: caption },
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
@@ -406,14 +399,12 @@ cmd(
                 if (isMe || isdev)
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "can't get response check *Apikey*.\n> apikey limit could have been reached",
-                        msg.key
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
                     );
                 else
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "*Server is busy. Try again later.!*",
-                        msg.key
+                        "*Server is busy. Try again later.!*"
                     );
             }
         } catch (e) {
@@ -469,11 +460,6 @@ cmd(
                 return reply(
                     `Please enter the necessary information to generate the image.`
                 );
-            const msg = await conn.sendMessage(
-                from,
-                { text: global.THEME.responses.wait },
-                { quoted: mek }
-            );
             let image = await getBuffer(
                 `https://api.yanzbotz.my.id/api/text2img/midjourney`,
                 {
@@ -487,7 +473,7 @@ cmd(
             if (image && image?.status != 404) {
                 await conn.sendMessage(
                     from,
-                    { image: image, caption: caption, edit: msg.key },
+                    { image: image, caption: caption },
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
@@ -495,14 +481,12 @@ cmd(
                 if (isMe || isdev)
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "can't get response check *Apikey*.\n> apikey limit could have been reached",
-                        msg.key
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
                     );
                 else
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "*Server is busy. Try again later.!*",
-                        msg.key
+                        "*Server is busy. Try again later.!*"
                     );
             }
         } catch (e) {
@@ -662,21 +646,17 @@ cmd(
                         );
                         mek.react("🤖");
                     })
-                    .catch(e =>
-                        m.sendError(e, "*Error translating response*", msg.key)
-                    );
+                    .catch(e => m.sendError(e, "*Error translating response*"));
             } else {
                 if (isMe || isdev)
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "can't get response check *Apikey*.\n> apikey limit could have been reached",
-                        msg.key
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
                     );
                 else
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "*Server is busy. Try again later.!*",
-                        msg.key
+                        "*Server is busy. Try again later.!*"
                     );
             }
         } catch (e) {
@@ -771,13 +751,6 @@ cmd(
                 prompt = q.split("|")[0].trim();
                 negative_prompt = q.split("|")[1].trim();
             }
-            const msg = await conn.sendMessage(
-                from,
-                {
-                    text: global.THEME.responses.wait
-                },
-                { quoted: mek }
-            );
             //m.react(global.THEME.reactions.loading);
             let result = await fetchJson(
                 `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
@@ -791,8 +764,7 @@ cmd(
                             negative_prompt
                                 ? "*Negative prompt:* " + negative_prompt
                                 : ""
-                        }\n${config.FOOTER}`,
-                        edit: msg.key
+                        }\n${config.FOOTER}`
                     },
                     { quoted: mek }
                 );
