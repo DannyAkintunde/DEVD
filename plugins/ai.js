@@ -11,7 +11,7 @@ const {
     runtime,
     sleep,
     fetchJson,
-    randChoice,
+    randChoice
 } = require("../lib/functions");
 const cheerio = require("cheerio");
 const axios = require("axios");
@@ -496,7 +496,7 @@ cmd(
 cmd(
     {
         pattern: "gpt-4o",
-        alias: ["gpt4o"],
+        alias: ["gpt4o", "chatgpt-4o"],
         react: "👾",
         desc: "chatgpt-4o ai chat",
         category: "ai",
@@ -543,7 +543,7 @@ cmd(
                 )}&id=${m.key.id}`
             );
             if (response?.status == 200) {
-                return await reply(response.result);
+                return await reply(trans(response.result, { to: config.LANG.toLowerCase()}));
             } else {
                 if (isMe || isdev)
                     m.sendError(
