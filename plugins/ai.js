@@ -19,24 +19,12 @@ const { trans, gpt4 } = require("../lib/functions.js");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
-var desct = "BARD AI chat";
-if (config.LANG === "SI") desct = "එය ඔබ ලබා දුන් දේ සඳහා bard AI මත සොයයි.";
-else desct = "It search on bard ai for what you provided.";
-var needus = "";
-if (config.LANG === "SI")
-    needus = "*කරුණාකර මට bard AI හි සෙවීමට වචන ලබා දෙන්න !*";
-else needus = "*Please give me words to search on bard ai !*";
-var cantf = "";
-if (config.LANG === "SI")
-    cantf = "*Server එක කාර්යබහුලයි. පසුව නැවත උත්සාහ කරන්න. !*";
-else cantf = "*Server is busy. Try again later.!*";
-
 cmd(
     {
         pattern: "bard",
         alias: ["bardai", "gbard", "googlebard", "googleai", "ai2"],
         react: "👾",
-        desc: desct,
+        desc: "It search on bard ai for what you provided.",
         category: "ai",
         use: ".bard ha",
         filename: __filename
@@ -73,25 +61,21 @@ cmd(
         }
     ) => {
         try {
-            if (!q) return reply(needus);
-            let apilist = await fetchJson(
-                "https://gist.githubusercontent.com/vihangayt0/7dbb65f6adfe21538f7febd13982569a/raw/apilis.json"
+            if (!q)
+                return reply("*Please give me words to search on bard ai !*");
+            let response = await fetchJson(
+                `https://api.yanzbotz.my.id/api/ai/bard?query=${q}&apiKey=${config.APIKEYS.yanz}`
             );
-            let list = apilist.users;
-            let apikey = list[Math.floor(Math.random() * list.length)];
-            const dataget = await fetchJson(
-                apilist.xz + "api/bard?text=" + q + "&apikey=" + apikey
-            );
-            return await reply(dataget.content);
-        } catch (e) {
-            try {
-                const dataget = await fetchJson(
-                    "https://api.akuari.my.id/ai/gbard?chat=" + q
+            if (response?.status == 200) {
+                return await reply(response.result);
+            } else {
+                m.sendError(
+                    new Error("Invalid ApiKey"),
+                    "can't get response check *Apikey*.\n> apikey limit could have been reached"
                 );
-                return await reply(dataget.respon);
-            } catch (e) {
-                m.sendError(e, (msg = cantf));
             }
+        } catch (e) {
+            m.sendError(e, "*Server is busy. Try again later.!*");
         }
     }
 );
@@ -434,25 +418,12 @@ cmd(
     }
 );
 
-var desct = "";
-if (config.LANG === "SI")
-    desct = "එය ලබා දී ඇති text එකක් ai image එකක් බවට පරිවර්තනය කරයි.";
-else desct = "It convert given text to ai image.";
-var imgmsg = "";
-if (config.LANG === "SI")
-    imgmsg = "*උදාහරණයක්: .imagine woman,hair cut collor red,full body,bokeh*";
-else imgmsg = "*Example: .imagine woman,hair cut collor red,full body,bokeh*";
-var cantf = "";
-if (config.LANG === "SI")
-    cantf = "*Server එක කාර්යබහුලයි. පසුව නැවත උත්සාහ කරන්න. !*";
-else cantf = "*Server is busy. Try again later.!*";
-
 cmd(
     {
         pattern: "imagine",
         alias: ["texttoimage", "toimage", "aiimage", "stablediffusion"],
         react: "📷",
-        desc: desct,
+        desc: "It convert given text to ai image.",
         category: "ai",
         use: ".imagine  <prompt> or imagine <prompt> | <nagative_prompt>",
         filename: __filename
@@ -489,7 +460,10 @@ cmd(
         }
     ) => {
         try {
-            if (!q) return reply(imgmsg);
+            if (!q)
+                return reply(
+                    "*Example: .imagine woman,hair cut collor red,full body,bokeh*"
+                );
             let prompt = q;
             let negative_prompt = "";
             if (q.split("|").length > 1) {
@@ -508,7 +482,7 @@ cmd(
                         caption: `*Prompt:* ${prompt}\n${
                             negative_prompt
                                 ? "*Negative prompt:* " + negative_prompt
-                                : null
+                                : ""
                         }\n${config.FOOTER}`
                     },
                     { quoted: mek }
@@ -516,7 +490,7 @@ cmd(
                 await m.react(global.THEME.reactions.success);
             } else reply(cantf);
         } catch (e) {
-            m.sendError(e, cantf);
+            m.sendError(e, "*Server is busy. Try again later.!*");
         }
     }
 );

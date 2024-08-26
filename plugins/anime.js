@@ -29,7 +29,7 @@ cmd(
         pattern: "anime",
         alias: ["animesearch", "sanime"],
         react: "⛩️",
-        desc: descgs,
+        desc: "It gives details of given anime name.",
         category: "search",
         use: ".anime astro",
         filename: __filename
@@ -66,7 +66,7 @@ cmd(
         }
     ) => {
         try {
-            if (!q) return reply(imgmsg);
+            if (!q) return reply("*Give me a anime name !*");
             let anu = await fetchJson(`https://api.jikan.moe/v4/anime?q=${q}`);
             let sections = [];
             for (let i of anu.data) {
@@ -94,7 +94,7 @@ cmd(
             };
             await conn.listMessage(from, listset, mek);
         } catch (e) {
-            m.sendError(e, cants);
+            m.sendError(e, "I cant find this anime.");
         }
     }
 );
@@ -164,7 +164,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            m.sendError(e, cants);
+            m.sendError(e, "I cant find this anime.");
         }
     }
 );
