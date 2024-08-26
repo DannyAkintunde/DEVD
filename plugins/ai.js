@@ -11,7 +11,8 @@ const {
     runtime,
     sleep,
     fetchJson,
-    randChoice
+    randChoice,
+    text2prompt
 } = require("../lib/functions");
 const cheerio = require("cheerio");
 const axios = require("axios");
