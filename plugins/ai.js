@@ -414,6 +414,88 @@ cmd(
 
 cmd(
     {
+        pattern: "midjourney",
+        alias: ["mj"],
+        react: "📷",
+        desc: "Generate images using Midjourney",
+        category: "ai",
+        use: ".midjourney <prompt>",
+        filename: __filename
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from,
+            l,
+            prefix,
+            quoted,
+            body,
+            isCmd,
+            command,
+            args,
+            q,
+            isGroup,
+            sender,
+            senderNumber,
+            botNumber2,
+            botNumber,
+            pushname,
+            isMe,
+            isdev,
+            isOwner,
+            groupMetadata,
+            groupName,
+            participants,
+            groupAdmins,
+            isBotAdmins,
+            isAdmins,
+            reply
+        }
+    ) => {
+        try {
+            if (!q)
+                return reply(
+                    `Please enter the necessary information to generate the image.`
+                );
+            let image = await getBuffer(
+                `https://api.yanzbotz.my.id/api/text2img/midjourney`,
+                {
+                    params: {
+                        prompt: q,
+                        apiKey: randChoice(global.APIKEYS.yanz)
+                    }
+                }
+            );
+            let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
+            if (image && image?.status != 404) {
+                await conn.sendMessage(
+                    from,
+                    { image: image, caption: caption },
+                    { quoted: mek }
+                );
+                await m.react(global.THEME.reactions.success);
+            } else {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
+            }
+        } catch (e) {
+            m.sendError(e, "Error during image generation.");
+        }
+    }
+);
+
+cmd(
+    {
         pattern: "gpt",
         alias: ["chatgpt"],
         react: "📡",
@@ -543,7 +625,9 @@ cmd(
                 )}&id=${m.key.id}`
             );
             if (response?.status == 200) {
-                return await reply(trans(response.result, { to: config.LANG.toLowerCase()}));
+                return await reply(
+                    trans(response.result, { to: config.LANG.toLowerCase() })
+                );
             } else {
                 if (isMe || isdev)
                     m.sendError(
