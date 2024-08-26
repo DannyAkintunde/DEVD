@@ -76,13 +76,9 @@ function genMenu(
                 let menu = global.THEME.menus[category.toUpperCase()]
                     ? global.THEME.menus[category.toUpperCase()]
                     : global.THEME.menus["default".toUpperCase()];
-                let menuc = `${convertTemplateToES6(
-                    menu.templates.header,
-                    obj
-                )}${convertTemplateToES6(
-                    menu.templates.body,
-                    obj
-                )}${convertTemplateToES6(menu.templates.footer, obj)}`;
+                let menuc = `${convertTemplateToES6(menu.templates.header, obj)}
+                ${convertTemplateToES6(menu.templates.body, obj)}
+                ${convertTemplateToES6(menu.templates.footer, obj)}`;
                 let buttonMessaged = {
                     image: {
                         url: config.MENU_MEDIA
