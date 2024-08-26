@@ -579,7 +579,7 @@ cmd(
     {
         pattern: "gpt-4o",
         alias: ["gpt4o", "chatgpt-4o"],
-        react: "👾",
+        react: "📡",
         desc: "chatgpt-4o ai chat",
         category: "ai",
         use: ".gpt-4o hi",
@@ -619,15 +619,27 @@ cmd(
     ) => {
         try {
             if (!q) return reply("*Please give me words !*");
+            const msg = await conn.sendMessage(
+                from,
+                { text: "thinking......" },
+                { quoted: mek }
+            );
             let response = await fetchJson(
                 `https://api.yanzbotz.my.id/api/ai/gpt-4o?query=${q}&system=TKM-BOT&apiKey=${randChoice(
                     global.APIKEYS.yanz
                 )}&id=${m.key.id}`
             );
             if (response?.status == 200) {
-                return await reply(
-                    trans(response.result, { to: config.LANG.toLowerCase() })
+                return await conn.sendMessage(
+                    {
+                        text: trans(response.result, {
+                            to: config.LANG.toLowerCase()
+                        }),
+                        edit: msg.key
+                    },
+                    { quoted: mek }
                 );
+                await mek.react("🤖");
             } else {
                 if (isMe || isdev)
                     m.sendError(
