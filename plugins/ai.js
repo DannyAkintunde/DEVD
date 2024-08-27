@@ -647,17 +647,22 @@ cmd(
                         );
                         mek.react("🤖");
                     })
-                    .catch(e => m.sendError(e, "*Error translating response*"));
+                    .catch(
+                        e => m.sendError(e, "*Error translating response*"),
+                        msg.key
+                    );
             } else {
                 if (isMe || isdev)
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached",
+                        msg.key
                     );
                 else
                     m.sendError(
                         new Error("Invalid ApiKey"),
-                        "*Server is busy. Try again later.!*"
+                        "*Server is busy. Try again later.!*",
+                        msg.key
                     );
             }
         } catch (e) {
