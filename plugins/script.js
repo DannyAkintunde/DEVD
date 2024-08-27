@@ -59,19 +59,18 @@ cmd(
                 {
                     name: "quick_reply",
                     buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
-                        prefix + 'menu'
-                    }"}`,
+                        prefix + "menu"
+                    }"}`
                 },
                 {
-                     name: "quick_reply",
+                    name: "quick_reply",
                     buttonParamsJson: `{"display_text":"CHECK PING","id":"${
-                        prefix + 'ping'
-                    }"}`,
-                },
-                
+                        prefix + "ping"
+                    }"}`
+                }
             ];
             const buttonMessage = {
-                headerType: 1,
+                headerType: 4,
                 caption: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱
 
 Discover TKM-BOT's extraordinary features: 🌟
@@ -96,7 +95,7 @@ Experience the best with TKM-BOT! ✨`,
                 image: { url: config.LOGO },
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
-                buttons,
+                nativeFlowMessage: { buttons, messageParamsJson: "" },
                 contextInfo: {
                     externalAdReply: {
                         title: `「 ${config.BOT} 」`,
