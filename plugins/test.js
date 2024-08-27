@@ -252,13 +252,13 @@ Experience the best with TKM-BOT! ✨`
                                 {
                                     name: "quick_reply",
                                     buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
-                                        prefix + "menu"
+                                        opt.prefix + "menu"
                                     }"}`
                                 },
                                 {
                                     name: "quick_reply",
                                     buttonParamsJson: `{"display_text":"CHECK PING","id":"${
-                                        prefix + "ping"
+                                        opt.prefix + "ping"
                                     }"}`
                                 },
                                 {
