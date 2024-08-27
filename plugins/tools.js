@@ -13,7 +13,7 @@ cmd(
         filename: __filename
     },
     async (conn, mek, m, { q, args, reply }) => {
-        if (!q) return reply("i need a query !");
+        if (!q && !m.quoted) return reply("i need a query !");
         let langCode = (await isValidLangCode(config.LANG.toLowerCase()))
             ? config.LANG.toLowerCase()
             : "en";
@@ -41,7 +41,7 @@ cmd(
     },
     async (conn, mek, m, { q, args, reply }) => {
         if (!q) return reply("i need a query !");
-        if (args.length < 2)
+        if (args.length < 2 && !m.quoted)
             return reply("invalid format try\n> .trt en Bonjour");
         if (!(await isValidLangCode(args[0].toLowerCase())))
             return reply(`no such language as ${args[0]}`);
