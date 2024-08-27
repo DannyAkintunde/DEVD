@@ -159,7 +159,7 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
                     nativeFlowMessage: {
                         buttons: [
                             {
-                                buttonId: prefix + "menu",
+                                buttonId: opt.prefix + "menu",
                                 buttonText: { displayText: "COMMAND MENU" },
                                 type: 1
                             },
@@ -206,7 +206,7 @@ cmd({ pattern: "ttm" }, async (conn, mek, m, opt) => {
             nativeFlowMessage: {
                 buttons: [
                     {
-                        buttonId: prefix + "menu",
+                        buttonId: opt.prefix + "menu",
                         buttonText: { displayText: "COMMAND MENU" },
                         type: 1
                     },
