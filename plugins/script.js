@@ -57,19 +57,18 @@ cmd(
             let monspacenew = "`";
             var buttons = [
                 {
-                    buttonId:
-                        prefix +
-                        "menu",
-                    buttonText: { displayText: "COMMAND MENU" },
-                    type: 1
+                    name: "quick_reply",
+                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
+                        prefix + 'menu'
+                    }"}`,
                 },
                 {
-                    buttonId:
-                        prefix +
-                        "ping",
-                    buttonText: { displayText: "CHECK SPEED" },
-                    type: 1
-                }
+                     name: "quick_reply",
+                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
+                        prefix + 'ping'
+                    }"}`,
+                },
+                
             ];
             const buttonMessage = {
                 headerType: 1,
@@ -113,7 +112,7 @@ Experience the best with TKM-BOT! ✨`,
 
             return await conn.buttonMessage(from, buttonMessage, mek);
         } catch (e) {
-            m.sendError(e)
+            m.sendError(e);
         }
     }
 );

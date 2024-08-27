@@ -131,11 +131,13 @@ async function connectToWA() {
                 message = {
                     viewOnceMessage: {
                         message: {
+                          interactiveMessage:{
                             messageContextInfo: {
                                 deviceListMetadataVersion: 2,
                                 deviceListMetadata: {}
                             },
                             ...message
+                          }
                         }
                     }
                 };
