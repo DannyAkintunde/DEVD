@@ -101,7 +101,7 @@ async function connectToWA() {
         version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-        browser: Browsers.macOS("Desktop"),
+        browser: Browsers.windows("Desktop"),
         syncFullHistory: true,
         generateHighQualityLinkPreview: true,
         auth: {
