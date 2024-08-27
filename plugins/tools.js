@@ -15,7 +15,7 @@ cmd(
     async (conn, mek, m, { q, l, args, reply }) => {
         if (!q) return reply("i need a query !");
         let langCode = "en";
-        if (args.lentgh > 1) {
+        if (args.length > 1) {
             langCode = arg[0];
             q = q.slice(1).join(" ");
         }
