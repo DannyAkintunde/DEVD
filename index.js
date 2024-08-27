@@ -119,6 +119,28 @@ async function connectToWA() {
             let msg = await store.loadMessage(jid, key.id);
 
             return msg?.message || "";
+        },
+        patchMessageBeforeSending: message => {
+            const requiresPatch = !!(
+                message.buttonsMessage ||
+                message.templateMessage ||
+                message.listMessage
+            );
+
+            if (requiresPatch) {
+                message = {
+                    viewOnceMessage: {
+                        message: {
+                            messageContextInfo: {
+                                deviceListMetadataVersion: 2,
+                                deviceListMetadata: {}
+                            },
+                            ...message
+                        }
+                    }
+                };
+            }
+            return message;
         }
     });
 

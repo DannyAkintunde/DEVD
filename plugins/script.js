@@ -72,7 +72,7 @@ cmd(
                 }
             ];
             const buttonMessage = {
-                headerType: 4,
+                headerType: 1,
                 caption: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱
 
 Discover TKM-BOT's extraordinary features: 🌟
