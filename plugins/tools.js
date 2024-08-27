@@ -32,7 +32,7 @@ cmd(
 cmd(
     {
         pattern: "trt",
-        alias: ["translate"],
+        alias: ["translateto"],
         react: "📱",
         desc: "it helps translate text",
         category: "tools",
