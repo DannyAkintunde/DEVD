@@ -102,27 +102,6 @@ async function connectToWA() {
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
         browser: Browsers.windows("Desktop"),
-        patchMessageBeforeSending: message => {
-            const requiresPatch = !!(
-                message.buttonsMessage ||
-                message.templateMessage ||
-                message.listMessage
-            );
-            if (requiresPatch) {
-                message = {
-                    viewOnceMessage: {
-                        message: {
-                            messageContextInfo: {
-                                deviceListMetadataVersion: 2,
-                                deviceListMetadata: {}
-                            },
-                            ...message
-                        }
-                    }
-                };
-            }
-            return message;
-        },
         syncFullHistory: true,
         generateHighQualityLinkPreview: true,
         auth: {
