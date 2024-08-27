@@ -131,13 +131,13 @@ async function connectToWA() {
                 message = {
                     viewOnceMessage: {
                         message: {
-                          interactiveMessage:{
-                            messageContextInfo: {
-                                deviceListMetadataVersion: 2,
-                                deviceListMetadata: {}
-                            },
-                            ...message
-                          }
+                            interactiveMessage: {
+                                messageContextInfo: {
+                                    deviceListMetadataVersion: 2,
+                                    deviceListMetadata: {}
+                                },
+                                ...message
+                            }
                         }
                     }
                 };
@@ -1153,6 +1153,11 @@ async function connectToWA() {
                                 }
                             }
                         }
+                    }
+                    break;
+                case "restart":
+                    {
+                        if (isMe) restart();
                     }
                     break;
                 case "rm212":

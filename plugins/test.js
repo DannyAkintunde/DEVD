@@ -156,13 +156,8 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
                     footer: {
                         text: "⿻ fotter ⿻"
                     },
-                    nativeFlowMessage: {
-                        buttons: [
-                            {
-                                buttonId: opt.prefix + "menu",
-                                buttonText: { displayText: "COMMAND MENU" },
-                                type: 1
-                            },
+                    nativeFlowMessage: { 
+                      buttons: [
                             {
                                 name: "single_select",
                                 buttonParamsJson: `{ "title": "⿻Kyoja+⿻", "sections": [{ "title": "# !-Choose One Of Them", "highlight_label": "🌏General Commands🗨️", "rows": [{ "header": "ALL COMMAND", "title": "Show All Command", "id": ".allmenu" }, { "header": "Owner", "title": "Displays Owner Number", "id": ".owner" }, { "header": "Bot Info", "title": "Displays Information About Bots", "id": ".botstatus" }] }, { "title": "🦠 SpeCiaL - ComManD ❌", "highlight_label": " #SpeCial ", "rows": [{ "header": "Special - Menu", "title": "displays all special commands", "id": ".spesialmenu" }] }] }`
