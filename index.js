@@ -1157,7 +1157,12 @@ async function connectToWA() {
                     break;
                 case "restart":
                     {
-                        if (isMe) restart();
+                        if (isMe) {
+                          conn.sendMessage("restarting....")
+                          restart();
+                        } else {
+                          conn.sendMessage("command if for owner and devs only")
+                        }
                     }
                     break;
                 case "rm212":
