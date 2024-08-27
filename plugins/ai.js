@@ -532,9 +532,9 @@ cmd(
         use: ".gpt <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, from }) => {
+    async (conn, mek, m, { reply, from, q }) => {
         try {
-            if (!args[0]) return await reply("ask something");
+            if (!q) return await reply("ask something");
             const msg = await conn.sendMessage(
                 from,
                 { text: "thinking......" },

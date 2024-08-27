@@ -1,6 +1,7 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
 var os = require("os");
+const { prepareWAMessageMedia } = require("@whiskeysockets/baileys");
 
 cmd(
     {
@@ -189,47 +190,89 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
     conn.relayMessage(opt.from, x, {});
 });
 
-cmd({ pattern: "ttm" }, async (conn, mek, m, opt) => {
-    let x = {
-        interactiveMessage: {
-            contextInfo: {
-                mentionedJid: [m.sender],
-                isForwarded: true,
-                forwardedNewsletterMessageInfo: {
-                    newsletterJid: "0@newsletter",
-                    newsletterName: global.responses.by,
-                    serverMessageId: 1
-                }
-            },
-            header: {
-                title: "header"
-            },
-            body: {
-                text: "body"
-            },
-            footer: {
-                text: "⿻ fotter ⿻"
-            },
-            nativeFlowMessage: {
-                buttons: [
-                    {
-                        buttonId: opt.prefix + "menu",
-                        buttonText: { displayText: "COMMAND MENU" },
-                        type: 1
-                    },
-                    {
-                        name: "single_select",
-                        buttonParamsJson: `{ "title": "⿻Kyoja+⿻", "sections": [{ "title": "# !-Choose One Of Them", "highlight_label": "🌏General Commands🗨️", "rows": [{ "header": "ALL COMMAND", "title": "Show All Command", "id": ".allmenu" }, { "header": "Owner", "title": "Displays Owner Number", "id": ".owner" }, { "header": "Bot Info", "title": "Displays Information About Bots", "id": ".botstatus" }] }, { "title": "🦠 SpeCiaL - ComManD ❌", "highlight_label": " #SpeCial ", "rows": [{ "header": "Special - Menu", "title": "displays all special commands", "id": ".spesialmenu" }] }] }`
-                    },
-                    {
-                        name: "cta_url",
-                        buttonParamsJson:
-                            '{"display_text":"Saluran WhatsApp","url":"https://whatsapp.com/channel/0029VadBczKI1rcayqzQ2n0e","merchant_url":"https://whatsapp.com/channel/0029VadBczKI1rcayqzQ2n0e"}'
+cmd(
+    { pattern: "test2", react: "🤕", category: "test" },
+    async (conn, mek, m, opt) => {
+        let convertedMessage = {
+            viewOnceMessage: {
+                message: {
+                    interactiveMessage: {
+                        contextInfo: {
+                            mentionedJid: [m.sender], // Add the necessary JID here, like [m.sender]
+                            isForwarded: false, // Adjust based on whether the message is forwarded
+                            forwardedNewsletterMessageInfo: {
+                                newsletterJid: "120363220858658436@newsletter", // Adjust if necessary
+                                newsletterName: global.responses.by,
+                                serverMessageId: 1
+                            },
+                            externalAdReply: {
+                                title: `「 ${config.BOT} 」`,
+                                body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                                mediaType: 1,
+                                sourceUrl: global.link,
+                                thumbnailUrl: config.LOGO,
+                                renderLargerThumbnail: false,
+                                showAdAttribution: true
+                            }
+                        },
+                        header: {
+                            title: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱`,
+                            ...(await prepareWAMessageMedia(
+                                { image: { url: config.LOGO } }, // Assuming config.LOGO is the image
+                                { upload: conn.waUploadToServer }
+                            )),
+                            hasMediaAttachment: true
+                        },
+                        body: {
+                            text: `Discover TKM-BOT's extraordinary features: 🌟
+
+🎵 Download music and videos directly on WhatsApp 🎥
+
+👥 Efficient group management: add/remove members, set permissions, and manage group settings 🚀
+
+🔍 Instant information search: get the latest news, recipes, and answers to your questions 📰🍔❓
+
+📲 Seamless media sharing: share music, videos, and more with ease 🎶📷
+
+*TKM INC*
+Channel: https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g 
+Script: *comming soon*
+
+*Devs: 👨‍💻👩‍💻*
+- DannyAkintunde • https://github.com/DannyAkintunde
+- Cod3Uchiha • https://github.com/Cod3Uchiha
+
+Experience the best with TKM-BOT! ✨`
+                        },
+                        footer: {
+                            text: config.FOOTER
+                        },
+                        nativeFlowMessage: {
+                            buttons: [
+                                {
+                                    name: "quick_reply",
+                                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
+                                        prefix + "menu"
+                                    }"}`
+                                },
+                                {
+                                    name: "quick_reply",
+                                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
+                                        prefix + "ping"
+                                    }"}`
+                                },
+                                {
+                                    name: "cta_url",
+                                    buttonParamsJson: `{"display_text":"Saluran WhatsApp","url":"https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g","merchant_url":"https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g"}`
+                                }
+                            ],
+                            messageParamsJson: ""
+                        }
                     }
-                ],
-                messageParamsJson: ""
+                }
             }
-        }
-    };
-    conn.sendMessage(opt.from, x, {});
-});
+        };
+        await conn.relayMessage(opt.from, convertedMessage);
+        await conn.sendMessage(opt.from, convertedMessage);
+    }
+);
