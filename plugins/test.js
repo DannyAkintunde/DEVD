@@ -170,13 +170,13 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
                             {
                                 name: "quick_reply",
                                 buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
-                                    obj.prefix + "menu"
+                                    opt.prefix + "menu"
                                 }"}`
                             },
                             {
                                 name: "quick_reply",
                                 buttonParamsJson: `{"display_text":"CHECK PING","id":"${
-                                    obj.prefix + "ping"
+                                    opt.prefix + "ping"
                                 }"}`
                             }
                         ],
