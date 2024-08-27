@@ -156,8 +156,8 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
                     footer: {
                         text: "⿻ fotter ⿻"
                     },
-                    nativeFlowMessage: { 
-                      buttons: [
+                    nativeFlowMessage: {
+                        buttons: [
                             {
                                 name: "single_select",
                                 buttonParamsJson: `{ "title": "⿻Kyoja+⿻", "sections": [{ "title": "# !-Choose One Of Them", "highlight_label": "🌏General Commands🗨️", "rows": [{ "header": "ALL COMMAND", "title": "Show All Command", "id": ".allmenu" }, { "header": "Owner", "title": "Displays Owner Number", "id": ".owner" }, { "header": "Bot Info", "title": "Displays Information About Bots", "id": ".botstatus" }] }, { "title": "🦠 SpeCiaL - ComManD ❌", "highlight_label": " #SpeCial ", "rows": [{ "header": "Special - Menu", "title": "displays all special commands", "id": ".spesialmenu" }] }] }`
@@ -166,7 +166,18 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
                                 name: "cta_url",
                                 buttonParamsJson:
                                     '{"display_text":"Saluran WhatsApp","url":"https://whatsapp.com/channel/0029VadBczKI1rcayqzQ2n0e","merchant_url":"https://whatsapp.com/channel/0029VadBczKI1rcayqzQ2n0e"}'
-                            }
+                            },{
+                    name: "quick_reply",
+                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
+                        prefix + "menu"
+                    }"}`
+                },
+                {
+                    name: "quick_reply",
+                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
+                        prefix + "ping"
+                    }"}`
+                }
                         ],
                         messageParamsJson: ""
                     }
