@@ -166,18 +166,19 @@ cmd({ pattern: "ttf" }, async (conn, mek, m, opt) => {
                                 name: "cta_url",
                                 buttonParamsJson:
                                     '{"display_text":"Saluran WhatsApp","url":"https://whatsapp.com/channel/0029VadBczKI1rcayqzQ2n0e","merchant_url":"https://whatsapp.com/channel/0029VadBczKI1rcayqzQ2n0e"}'
-                            },{
-                    name: "quick_reply",
-                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
-                        prefix + "menu"
-                    }"}`
-                },
-                {
-                    name: "quick_reply",
-                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
-                        prefix + "ping"
-                    }"}`
-                }
+                            },
+                            {
+                                name: "quick_reply",
+                                buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
+                                    obj.prefix + "menu"
+                                }"}`
+                            },
+                            {
+                                name: "quick_reply",
+                                buttonParamsJson: `{"display_text":"CHECK PING","id":"${
+                                    obj.prefix + "ping"
+                                }"}`
+                            }
                         ],
                         messageParamsJson: ""
                     }
