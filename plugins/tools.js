@@ -20,7 +20,6 @@ cmd(
         let text = q;
         if (m.quoted) {
             text = m.quoted.body;
-            console.log(text, m.quoted);
         }
         trans(text, { to: langCode })
             .then(res => reply(res))
@@ -49,7 +48,6 @@ cmd(
         let text = args.slice(1).join(" ");
         if (m.quoted) {
             text = m.quoted.body;
-            cosole.log(text, m.quoted);
         }
         trans(text, { to: args[0].toLowerCase() })
             .then(res => reply(res))

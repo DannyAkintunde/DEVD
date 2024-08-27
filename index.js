@@ -874,127 +874,144 @@ async function connectToWA() {
                             reply
                         });
                     } catch (e) {
+                        m.sendError(e);
                         console.error("[PLUGIN ERROR] ", e);
                     }
                 }
             }
             events.commands.map(async command => {
                 if (body && command.on === "body") {
-                    command.function(conn, mek, m, {
-                        from,
-                        prefix,
-                        l,
-                        quoted,
-                        body,
-                        isCmd,
-                        command,
-                        args,
-                        q,
-                        isGroup,
-                        sender,
-                        senderNumber,
-                        botNumber2,
-                        botNumber,
-                        pushname,
-                        isMe,
-                        isOwner,
-                        groupMetadata,
-                        groupName,
-                        participants,
-                        groupAdmins,
-                        isBotAdmins,
-                        isAdmins,
-                        reply
-                    });
+                    try {
+                        command.function(conn, mek, m, {
+                            from,
+                            prefix,
+                            l,
+                            quoted,
+                            body,
+                            isCmd,
+                            command,
+                            args,
+                            q,
+                            isGroup,
+                            sender,
+                            senderNumber,
+                            botNumber2,
+                            botNumber,
+                            pushname,
+                            isMe,
+                            isOwner,
+                            groupMetadata,
+                            groupName,
+                            participants,
+                            groupAdmins,
+                            isBotAdmins,
+                            isAdmins,
+                            reply
+                        });
+                    } catch (e) {
+                        m.sendError(e);
+                    }
                 } else if (mek.q && command.on === "text") {
-                    command.function(conn, mek, m, {
-                        from,
-                        l,
-                        quoted,
-                        body,
-                        isCmd,
-                        command,
-                        args,
-                        q,
-                        isGroup,
-                        sender,
-                        senderNumber,
-                        botNumber2,
-                        botNumber,
-                        pushname,
-                        isMe,
-                        isdev,
-                        isOwner,
-                        groupMetadata,
-                        groupName,
-                        participants,
-                        groupAdmins,
-                        isBotAdmins,
-                        isAdmins,
-                        reply
-                    });
+                    try {
+                        command.function(conn, mek, m, {
+                            from,
+                            l,
+                            quoted,
+                            body,
+                            isCmd,
+                            command,
+                            args,
+                            q,
+                            isGroup,
+                            sender,
+                            senderNumber,
+                            botNumber2,
+                            botNumber,
+                            pushname,
+                            isMe,
+                            isdev,
+                            isOwner,
+                            groupMetadata,
+                            groupName,
+                            participants,
+                            groupAdmins,
+                            isBotAdmins,
+                            isAdmins,
+                            reply
+                        });
+                    } catch (e) {
+                        m.sendError(e);
+                    }
                 } else if (
                     (command.on === "image" || command.on === "photo") &&
                     mek.type === "imageMessage"
                 ) {
-                    command.function(conn, mek, m, {
-                        from,
-                        prefix,
-                        l,
-                        quoted,
-                        body,
-                        isCmd,
-                        command,
-                        args,
-                        q,
-                        isGroup,
-                        sender,
-                        senderNumber,
-                        botNumber2,
-                        botNumber,
-                        pushname,
-                        isMe,
-                        isdev,
-                        isOwner,
-                        groupMetadata,
-                        groupName,
-                        participants,
-                        groupAdmins,
-                        isBotAdmins,
-                        isAdmins,
-                        reply
-                    });
+                    try {
+                        command.function(conn, mek, m, {
+                            from,
+                            prefix,
+                            l,
+                            quoted,
+                            body,
+                            isCmd,
+                            command,
+                            args,
+                            q,
+                            isGroup,
+                            sender,
+                            senderNumber,
+                            botNumber2,
+                            botNumber,
+                            pushname,
+                            isMe,
+                            isdev,
+                            isOwner,
+                            groupMetadata,
+                            groupName,
+                            participants,
+                            groupAdmins,
+                            isBotAdmins,
+                            isAdmins,
+                            reply
+                        });
+                    } catch (e) {
+                        m.sendError(e);
+                    }
                 } else if (
                     command.on === "sticker" &&
                     mek.type === "stickerMessage"
                 ) {
-                    command.function(conn, mek, m, {
-                        from,
-                        prefix,
-                        l,
-                        quoted,
-                        body,
-                        isCmd,
-                        command,
-                        args,
-                        q,
-                        isGroup,
-                        sender,
-                        senderNumber,
-                        botNumber2,
-                        botNumber,
-                        pushname,
-                        isMe,
-                        isdev,
-                        isOwner,
-                        groupMetadata,
-                        groupName,
-                        participants,
-                        groupAdmins,
-                        isBotAdmins,
-                        isAdmins,
-                        reply
-                    });
+                    try {
+                        command.function(conn, mek, m, {
+                            from,
+                            prefix,
+                            l,
+                            quoted,
+                            body,
+                            isCmd,
+                            command,
+                            args,
+                            q,
+                            isGroup,
+                            sender,
+                            senderNumber,
+                            botNumber2,
+                            botNumber,
+                            pushname,
+                            isMe,
+                            isdev,
+                            isOwner,
+                            groupMetadata,
+                            groupName,
+                            participants,
+                            groupAdmins,
+                            isBotAdmins,
+                            isAdmins,
+                            reply
+                        });
+                    } catch (e) {
+                        m.sendError(e);
+                    }
                 }
             });
 
