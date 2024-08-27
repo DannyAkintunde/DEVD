@@ -17,7 +17,7 @@ const {
 const cheerio = require("cheerio");
 const axios = require("axios");
 const vm = require("vm");
-const { trans, gpt4 } = require("../lib/functions.js");
+const { trans } = require("../lib/functions.js");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -134,26 +134,17 @@ cmd(
         }
     ) => {
         try {
-            if (!q)
-                return reply("*Please give me words to search on bard ai !*");
+            if (!q) return reply("*Please give me words!*");
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/use-blackbox?query=${q}&apiKey=${randChoice(
-                    global.APIKEYS.yanz
-                )}`
+                `https://itzpire.com/ai/blackbox-ai?q=${q}`
             );
-            if (response?.status == 200) {
+            if (response?.status == "success") {
                 return await reply(response.result);
             } else {
-                if (isMe || isdev)
-                    m.sendError(
-                        new Error("Invalid ApiKey"),
-                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
-                    );
-                else
-                    m.sendError(
-                        new Error("Invalid ApiKey"),
-                        "*Server is busy. Try again later.!*"
-                    );
+                m.sendError(
+                    new Error("Check api endpiont"),
+                    "*Server is busy. Try again later.!*"
+                );
             }
         } catch (e) {
             m.sendError(e, "*Server is busy. Try again later.!*");
@@ -549,11 +540,13 @@ cmd(
                 { text: "thinking......" },
                 { quoted: mek }
             );
-            res = await gpt4(args.join(" "));
-            if (res.status === 200) {
+            res = await fetchJson(
+                `https://itzpire.com/ai/gpt?model=gpt-4-32k-0314&q=${q}`
+            );
+            if (res.status === "success") {
                 await conn.sendMessage(
                     from,
-                    { text: res.reply, edit: msg.key },
+                    { text: res.data.response, edit: msg.key },
                     { quoted: mek }
                 );
                 await mek.react("🤖");

@@ -131,13 +131,11 @@ async function connectToWA() {
                 message = {
                     viewOnceMessage: {
                         message: {
-                            interactiveMessage: {
-                                messageContextInfo: {
-                                    deviceListMetadataVersion: 2,
-                                    deviceListMetadata: {}
-                                },
-                                ...message
-                            }
+                            messageContextInfo: {
+                                deviceListMetadataVersion: 2,
+                                deviceListMetadata: {}
+                            },
+                            ...message
                         }
                     }
                 };
@@ -1158,10 +1156,12 @@ async function connectToWA() {
                 case "restart":
                     {
                         if (isMe) {
-                          conn.sendMessage("restarting....")
-                          restart();
+                            conn.sendMessage("restarting....");
+                            restart();
                         } else {
-                          conn.sendMessage("command if for owner and devs only")
+                            conn.sendMessage(
+                                "command if for owner and devs only"
+                            );
                         }
                     }
                     break;

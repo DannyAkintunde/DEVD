@@ -95,7 +95,20 @@ Experience the best with TKM-BOT! ✨`,
                 image: { url: config.LOGO },
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
-                nativeFlowMessage: { buttons, messageParamsJson: "" },
+             buttons: [
+                {
+                    name: "quick_reply",
+                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
+                        prefix + "menu"
+                    }"}`
+                },
+                {
+                    name: "quick_reply",
+                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
+                        prefix + "ping"
+                    }"}`
+                }
+            ],
                 contextInfo: {
                     externalAdReply: {
                         title: `「 ${config.BOT} 」`,
