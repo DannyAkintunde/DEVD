@@ -272,7 +272,7 @@ Experience the best with TKM-BOT! ✨`
                 }
             }
         };
-        await conn.relayMessage(opt.from, convertedMessage);
+        await conn.relayMessage(opt.from, convertedMessage, {});
         await conn.sendMessage(opt.from, convertedMessage);
     }
 );
