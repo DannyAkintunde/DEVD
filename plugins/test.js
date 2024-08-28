@@ -204,6 +204,17 @@ cmd(
                                 newsletterJid: "120363220858658436@newsletter", // Adjust if necessary
                                 newsletterName: global.responses.by,
                                 serverMessageId: 1
+                            },
+                            contextInfo: {
+                                externalAdReply: {
+                                    title: `「 ${config.BOT} 」`,
+                                    body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                                    mediaType: 4,
+                                    sourceUrl: global.link,
+                                    thumbnailUrl: config.LOGO,
+                                    renderLargerThumbnail: true,
+                                    showAdAttribution: true
+                                }
                             }
                         },
                         header: {
