@@ -1156,7 +1156,7 @@ async function connectToWA() {
                 case "ex":
                     {
                         if (developers.includes(senderNumber)) {
-                            m.react(global.reactions.wait);
+                            m.react(global.reactions.loading);
                             const { exec } = require("child_process");
                             exec(q, (err, stdout) => {
                                 if (err) {
