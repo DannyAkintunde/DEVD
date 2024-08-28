@@ -205,7 +205,17 @@ cmd(
                                 newsletterName: global.responses.by,
                                 serverMessageId: 1
                             },
-                            externalAdReply: {
+                          
+                        },
+                        header: {
+                            title: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱`,
+                            ...(await prepareWAMessageMedia(
+                                { image: { url: config.LOGO } }, // Assuming config.LOGO is the image
+                                { upload: conn.waUploadToServer }
+                            )),
+                            hasMediaAttachment: true,
+                            contextInfo: {
+                                externalAdReply: {
                                 title: `「 ${config.BOT} 」`,
                                 body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
                                 mediaType: 1,
@@ -214,14 +224,7 @@ cmd(
                                 renderLargerThumbnail: false,
                                 showAdAttribution: true
                             }
-                        },
-                        header: {
-                            title: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱`,
-                            ...(await prepareWAMessageMedia(
-                                { image: { url: config.LOGO } }, // Assuming config.LOGO is the image
-                                { upload: conn.waUploadToServer }
-                            )),
-                            hasMediaAttachment: true
+                            }
                         },
                         body: {
                             text: `Discover TKM-BOT's extraordinary features: 🌟
