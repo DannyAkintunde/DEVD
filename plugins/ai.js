@@ -620,9 +620,9 @@ cmd(
                 { quoted: mek }
             );
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/gpt-4o?query=${q}&system=TKM-BOT&apiKey=${randChoice(
+                `https://api.yanzbotz.my.id/api/ai/gpt-4o?query=${q}&system=YanzBotz-MD&apiKey=${randChoice(
                     global.APIKEYS.yanz
-                )}&id=${m.key.id}`
+                )}&id=${from}`
             );
             m.react(global.THEME.reactions.success);
             if (response?.status == 200) {
