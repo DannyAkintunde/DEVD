@@ -8,12 +8,12 @@ else tmsg = "Get bot source code.";
 
 cmd(
     {
-        pattern: "sc",
+        pattern: "repo",
         react: "👨‍💻",
-        alias: ["script", "repo", "source"],
+        alias: ["script", "sc", "source"],
         desc: tmsg,
         category: "main",
-        use: ".alive",
+        use: ".repo",
         filename: __filename
     },
     async (
@@ -57,16 +57,25 @@ cmd(
             let monspacenew = "`";
             var buttons = [
                 {
-                    name: "quick_reply",
-                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
-                        prefix + "menu"
-                    }"}`
+                    buttonId: `${prefix}sc`,
+                    buttonText: {
+                        displayText: "BOT SCRIPT"
+                    },
+                    type: 1
                 },
                 {
-                    name: "quick_reply",
-                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
-                        prefix + "ping"
-                    }"}`
+                    buttonId: `${prefix}ping`,
+                    buttonText: {
+                        displayText: "CHECK PING"
+                    },
+                    type: 1
+                },
+                {
+                    type: 2,
+                    buttonText: {
+                        displayText: "Whatsapp Channel"
+                    },
+                    url: "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g"
                 }
             ];
             const buttonMessage = {
@@ -95,20 +104,7 @@ Experience the best with TKM-BOT! ✨`,
                 image: { url: config.LOGO },
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
-             buttons: [
-                {
-                    name: "quick_reply",
-                    buttonParamsJson: `{"display_text":"COMMAND MENU","id":"${
-                        prefix + "menu"
-                    }"}`
-                },
-                {
-                    name: "quick_reply",
-                    buttonParamsJson: `{"display_text":"CHECK PING","id":"${
-                        prefix + "ping"
-                    }"}`
-                }
-            ],
+                buttons: buttons,
                 contextInfo: {
                     externalAdReply: {
                         title: `「 ${config.BOT} 」`,

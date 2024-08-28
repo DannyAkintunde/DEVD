@@ -574,11 +574,11 @@ async function connectToWA() {
 
             conn.buttonMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
+                    msgData.contextInfo.mentionedJid = [jid]
                     const loaddedMessage = await loadButtonMessage(
                         msgData,
                         conn
                     );
-                    await conn.sendMessage(jid, { text: JSON.stringify(loaddedMessage)});
                     await conn.relayMessage(jid, loaddedMessage, {});
                 } else if (NON_BUTTON) {
                     let result = "";

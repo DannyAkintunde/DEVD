@@ -17,6 +17,13 @@ const defualtBtn = [
             displayText: "CHECK PING"
         },
         type: 1
+    },
+    {
+        type: 2,
+        buttonText: {
+            displayText: "Whatsapp Channel"
+        },
+        url: "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g"
     }
 ];
 
