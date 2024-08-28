@@ -198,37 +198,68 @@ cmd(
                 message: {
                     interactiveMessage: {
                         contextInfo: {
-                            mentionedJid: [m.sender], // Add the necessary JID here, like [m.sender]
-                            isForwarded: true, // Adjust based on whether the message is forwarded
+                            mentionedJid: [m.sender],
+                            groupMentions: [],
+                            forwardingScore: 1,
+                            isForwarded: true,
                             forwardedNewsletterMessageInfo: {
-                                newsletterJid: "120363220858658436@newsletter", // Adjust if necessary
-                                newsletterName: global.responses.by,
-                                serverMessageId: 1
+                                newsletterJid: "120363220858658436@newsletter",
+                                serverMessageId: 127,
+                                newsletterName: global.responses.by
                             },
-                            contextInfo: {
-                                externalAdReply: {
-                                    title: `「 ${config.BOT} 」`,
-                                    body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                                    mediaType: 4,
-                                    sourceUrl: global.link,
-                                    thumbnailUrl: config.LOGO,
-                                    renderLargerThumbnail: true,
-                                    showAdAttribution: true
-                                }
+                            externalAdReply: {
+                                title: `「 ${config.BOT} 」`,
+                                body: "test",
+                                mediaType: 1,
+                                sourceUrl: global.link,
+                                thumbnailUrl: config.LOGO,
+                                renderLargerThumbnail: false,
+                                showAdAttribution: true
                             }
                         },
                         header: {
                             title: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱`,
+                            contextInfo: {
+                                mentionedJid: [m.sender],
+                                groupMentions: [],
+                                forwardingScore: 1,
+                                isForwarded: true,
+                                forwardedNewsletterMessageInfo: {
+                                    newsletterJid:
+                                        "120363220858658436@newsletter",
+                                    newsletterName: global.responses.by,
+                                    serverMessageId: 127
+                                },
+                                externalAdReply: {
+                                    title: `「 ${config.BOT} 」`,
+                                    body: "test",
+                                    mediaType: 1,
+                                    sourceUrl: global.link,
+                                    thumbnailUrl: config.LOGO,
+                                    renderLargerThumbnail: false,
+                                    showAdAttribution: true
+                                }
+                            },
                             ...(await prepareWAMessageMedia(
                                 {
                                     contextInfo: {
+                                        mentionedJid: [m.sender],
+                                        groupMentions: [],
+                                        forwardingScore: 1,
+                                        isForwarded: true,
+                                        forwardedNewsletterMessageInfo: {
+                                            newsletterJid:
+                                                "120363220858658436@newsletter",
+                                            newsletterName: global.responses.by,
+                                            serverMessageId: 127
+                                        },
                                         externalAdReply: {
                                             title: `「 ${config.BOT} 」`,
-                                            body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                                            mediaType: 4,
+                                            body: "test",
+                                            mediaType: 1,
                                             sourceUrl: global.link,
                                             thumbnailUrl: config.LOGO,
-                                            renderLargerThumbnail: true,
+                                            renderLargerThumbnail: false,
                                             showAdAttribution: true
                                         }
                                     },
@@ -241,13 +272,23 @@ cmd(
                         },
                         body: {
                             contextInfo: {
+                                mentionedJid: [m.sender],
+                                groupMentions: [],
+                                forwardingScore: 1,
+                                isForwarded: true,
+                                forwardedNewsletterMessageInfo: {
+                                    newsletterJid:
+                                        "120363220858658436@newsletter",
+                                    newsletterName: global.responses.by,
+                                    serverMessageId: 127
+                                },
                                 externalAdReply: {
                                     title: `「 ${config.BOT} 」`,
-                                    body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                                    mediaType: 4,
+                                    body: "test",
+                                    mediaType: 1,
                                     sourceUrl: global.link,
                                     thumbnailUrl: config.LOGO,
-                                    renderLargerThumbnail: true,
+                                    renderLargerThumbnail: false,
                                     showAdAttribution: true
                                 }
                             },
