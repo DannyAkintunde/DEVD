@@ -13,7 +13,7 @@
             "pattern": "downmenu",
             "images": ["https://telegra.ph/file/24b19e11c51c3b8dde0a1.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "● ═════════════ ●",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -21,7 +21,7 @@
         "SEARCH": {
             "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "● ═════════════ ●",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -29,7 +29,7 @@
         "CONVERT": {
             "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "● ═════════════ ●",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -37,7 +37,7 @@
         "LOGO": {
             "images": ["https://telegra.ph/file/5e61a90b90c6307a0757e.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "● ═════════════ ●",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -45,7 +45,7 @@
         "OWNER": {
             "images": ["https://telegra.ph/file/787b6b23e75057e08e69b.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "*● ═════════════ ●*",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -53,7 +53,7 @@
         "ADMIN": {
             "images": ["https://telegra.ph/file/7f48f7bbbe85de4532d71.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "*● ═════════════ ●*",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -61,14 +61,14 @@
         "OTHER": {
             "images": ["https://telegra.ph/file/01994d1adb2fe606c3dd2.jpg"],
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "*● ═════════════ ●*",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
         },
         "DEFAULT": {
             "templates": {
-                "header": "● ══════════════ ●",
+                "header": "*● ═════════════ ●*",
                 "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
                 "footer": ""
             }
@@ -78,7 +78,7 @@
         "owner": "This command is only for my *Owner* !",
         "admin": "This command is only for group *Admins* !",
         "group": "This feature is only for *groups* !",
-        "private": "This feature is only gor my *Private chats* !",
+        "private": "This feature is only for my *Private chats* !",
         "bot": "This feature is only for the *bot number* !",
         "botAdmin": "Please provide me an *Admin Role* !",
         "wait": "Loading...",
