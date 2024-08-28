@@ -574,7 +574,10 @@ async function connectToWA() {
 
             conn.buttonMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
-                    const loaddedMessage = await loadButtonMessage(msgData, conn);
+                    const loaddedMessage = await loadButtonMessage(
+                        msgData,
+                        conn
+                    );
                     await conn.relayMessage(jid, loaddedMessage, {});
                 } else if (NON_BUTTON) {
                     let result = "";
@@ -1153,13 +1156,20 @@ async function connectToWA() {
                 case "ex":
                     {
                         if (developers.includes(senderNumber)) {
+                            m.react(global.reactions.wait);
                             const { exec } = require("child_process");
                             exec(q, (err, stdout) => {
-                                if (err) return reply(`-------\n\n` + err);
+                                if (err) {
+                                    m.react(global.reactions.error);
+                                    return reply(`-------\n\n` + err);
+                                }
                                 if (stdout) {
+                                    m.react(global.reactions.success);
                                     return reply(`-------\n\n` + stdout);
                                 }
                             });
+                        } else {
+                            reply("this command is for developers only");
                         }
                     }
                     break;
