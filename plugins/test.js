@@ -204,8 +204,7 @@ cmd(
                                 newsletterJid: "120363220858658436@newsletter", // Adjust if necessary
                                 newsletterName: global.responses.by,
                                 serverMessageId: 1
-                            },
-                          
+                            }
                         },
                         header: {
                             title: `Introducing TKM-BOT: Revolutionizing WhatsApp! 🎉📱`,
@@ -216,14 +215,14 @@ cmd(
                             hasMediaAttachment: true,
                             contextInfo: {
                                 externalAdReply: {
-                                title: `「 ${config.BOT} 」`,
-                                body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                                mediaType: 1,
-                                sourceUrl: global.link,
-                                thumbnailUrl: config.LOGO,
-                                renderLargerThumbnail: false,
-                                showAdAttribution: true
-                            }
+                                    title: `「 ${config.BOT} 」`,
+                                    body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
+                                    mediaType: 1,
+                                    sourceUrl: global.link,
+                                    thumbnailUrl: config.LOGO,
+                                    renderLargerThumbnail: false,
+                                    showAdAttribution: true
+                                }
                             }
                         },
                         body: {
@@ -275,7 +274,7 @@ Experience the best with TKM-BOT! ✨`
                 }
             }
         };
-        await conn.relayMessage(opt.from, convertedMessage, {});
-        await conn.sendMessage(opt.from, convertedMessage);
+        await conn.relayMessage(opt.from, convertedMessage, {quoted: mek});
+        //await conn.sendMessage(opt.from, convertedMessage);
     }
 );
