@@ -32,6 +32,7 @@ const {
     getFile,
     translate
 } = require("./lib/functions");
+const { loadButtonMessage } = require("./lib/buttons.js");
 const { sms, downloadMediaMessage } = require("./lib/msg");
 const axios = require("axios");
 const { File } = require("megajs");
@@ -573,7 +574,12 @@ async function connectToWA() {
 
             conn.buttonMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
-                    await conn.sendMessage(jid, msgData);
+                  const loaddedMessage = await loadButtonMessage(msgData)
+                    await conn.relayMessage(
+                        jid,
+                        loaddedMessage,
+                        {}
+                    );
                 } else if (NON_BUTTON) {
                     let result = "";
                     const CMD_ID_MAP = [];
