@@ -268,7 +268,7 @@ Experience the best with TKM-BOT! ✨`
                                 },
                                 {
                                     name: "cta_url",
-                                    buttonParamsJson: `{"display_text":"Saluran WhatsApp","url":"https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g","merchant_url":"https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g"}`
+                                    buttonParamsJson: `{"display_text":"WhatsApp Channel","url":"https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g","merchant_url":"https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g"}`
                                 }
                             ],
                             messageParamsJson: ""
