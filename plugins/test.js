@@ -214,14 +214,15 @@ cmd(
                                         externalAdReply: {
                                             title: `「 ${config.BOT} 」`,
                                             body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                                            mediaType: 1,
+                                            mediaType: 4,
                                             sourceUrl: global.link,
                                             thumbnailUrl: config.LOGO,
                                             renderLargerThumbnail: false,
                                             showAdAttribution: true
                                         }
                                     },
-                                    image: { url: config.LOGO }
+                                    image: { url: config.LOGO },
+                                    headerType: 9
                                 }, // Assuming config.LOGO is the image
                                 { upload: conn.waUploadToServer }
                             )),
