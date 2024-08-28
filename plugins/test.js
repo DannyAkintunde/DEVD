@@ -344,3 +344,66 @@ Experience the best with TKM-BOT! ✨`
         //await conn.sendMessage(opt.from, convertedMessage);
     }
 );
+
+cmd({ pattern: "test3", category: "test" , react: "🙃"}, async (conn, mek, m, opt) => {
+    const listMessage = {
+        text: "This is a list",
+        footer: "Footer text",
+        title: "List Title",
+        buttonText: "Choose an option",
+        sections: [
+            {
+                title: "Section 1",
+                rows: [
+                    { title: "Option 1", rowId: "option1" },
+                    { title: "Option 2", rowId: "option2" }
+                ]
+            },
+            {
+                title: "Section 2",
+                rows: [
+                    { title: "Option 3", rowId: "option3" },
+                    { title: "Option 4", rowId: "option4" }
+                ]
+            }
+        ]
+    };
+
+    await conn.sendMessage(opt.from, listMessage);
+
+    const templateMessage = {
+        text: "Choose an option",
+        footer: "Footer text",
+        templateButtons: [
+            {
+                index: 1,
+                quickReplyButton: { displayText: "Option 1", id: "id1" }
+            },
+            {
+                index: 2,
+                quickReplyButton: { displayText: "Option 2", id: "id2" }
+            },
+            {
+                index: 3,
+                urlButton: {
+                    displayText: "Visit Website",
+                    url: "https://example.com"
+                }
+            }
+        ]
+    };
+
+    await conn.sendMessage(opt.from, templateMessage);
+
+    const buttonMessage = {
+        text: "Do you like Baileys?",
+        footer: "Choose an option",
+        buttons: [
+            { buttonId: "id1", buttonText: { displayText: "Yes" }, type: 1 },
+            { buttonId: "id2", buttonText: { displayText: "No" }, type: 1 }
+        ],
+        headerType: 1
+    };
+
+    await conn.sendMessage(opt.from, buttonMessage);
+});
