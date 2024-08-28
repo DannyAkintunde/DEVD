@@ -574,7 +574,9 @@ async function connectToWA() {
 
             conn.buttonMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
-                    msgData.contextInfo.mentionedJid = [jid]
+                    msgData.contextInfo
+                        ? (msgData.contextInfo.mentionedJid = [jid])
+                        : (msgData.contextInfo = { mentionedJid: [jid] });
                     const loaddedMessage = await loadButtonMessage(
                         msgData,
                         conn
