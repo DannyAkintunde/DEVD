@@ -574,12 +574,8 @@ async function connectToWA() {
 
             conn.buttonMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
-                  const loaddedMessage = await loadButtonMessage(msgData)
-                    await conn.relayMessage(
-                        jid,
-                        loaddedMessage,
-                        {}
-                    );
+                    const loaddedMessage = await loadButtonMessage(msgData, conn);
+                    await conn.relayMessage(jid, loaddedMessage, {});
                 } else if (NON_BUTTON) {
                     let result = "";
                     const CMD_ID_MAP = [];
