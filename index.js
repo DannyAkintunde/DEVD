@@ -270,6 +270,37 @@ async function connectToWA() {
                     ? mek.message.imageMessage.caption
                     : type == "videoMessage" && mek.message.videoMessage.caption
                     ? mek.message.videoMessage.caption
+                    : type == "buttonsResponseMessage" &&
+                      mek.message.buttonsResponseMessage.selectedButtonId
+                    ? mek.message.buttonsResponseMessage.selectedButtonId
+                    : type == "listResponseMessage" &&
+                      mek.message.listResponseMessage.singleSelectReply
+                          .selectedRowId
+                    ? mek.message.listResponseMessage.singleSelectReply
+                          .selectedRowId
+                    : type == "interactiveResponseMessage" &&
+                      mek.message.interactiveResponseMessage
+                          .nativeFlowResponseMessage.paramsJson
+                    ? JSON.parse(
+                          mek.message.interactiveResponseMessage
+                              .nativeFlowResponseMessage.paramsJson
+                      ).id
+                    : type == "templateButtonReplyMessage" &&
+                      mek.message.templateButtonReplyMessage.selectedId
+                    ? mek.message.templateButtonReplyMessage.selectedId
+                    : type == "messageContextInfo" &&
+                      (mek.message.buttonsResponseMessage?.selectedButtonId ||
+                          mek.message.listResponseMessage?.singleSelectReply
+                              .selectedRowId ||
+                          mek.message.InteractiveResponseMessage
+                              .NativeFlowResponseMessage ||
+                          mek.text)
+                    ? mek.message.buttonsResponseMessage?.selectedButtonId ||
+                      mek.message.listResponseMessage?.singleSelectReply
+                          .selectedRowId ||
+                      mek.message.InteractiveResponseMessage
+                          .NativeFlowResponseMessage ||
+                      mek.text
                     : "";
             var isCmd = body.startsWith(prefix);
             var command = isCmd
@@ -1155,19 +1186,18 @@ async function connectToWA() {
                     break;
                 case "restart":
                     {
-                        if (isMe) {
-                            conn.sendMessage("restarting....");
+                        if (isSuperUser) {
+                            await m.react("🔄");
+                            await reply("restarting....");
                             restart();
                         } else {
-                            conn.sendMessage(
-                                "command if for owner and devs only"
-                            );
+                            await reply("command is for owner and devs only");
                         }
                     }
                     break;
                 case "rm212":
                     {
-                        if (isMe || isAdmins) {
+                        if (isSuperUser || isAdmins) {
                             if (!isBotAdmins) return;
                             for (let i = 0; i < participants.length; i++) {
                                 if (participants[i].id.startsWith("212")) {

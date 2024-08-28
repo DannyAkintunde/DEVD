@@ -199,7 +199,7 @@ cmd(
                     interactiveMessage: {
                         contextInfo: {
                             mentionedJid: [m.sender], // Add the necessary JID here, like [m.sender]
-                            isForwarded: false, // Adjust based on whether the message is forwarded
+                            isForwarded: true, // Adjust based on whether the message is forwarded
                             forwardedNewsletterMessageInfo: {
                                 newsletterJid: "120363220858658436@newsletter", // Adjust if necessary
                                 newsletterName: global.responses.by,
