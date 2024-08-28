@@ -1,7 +1,6 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
 var os = require("os");
-const fs = require("fs")
 const { prepareWAMessageMedia } = require("@whiskeysockets/baileys");
 
 cmd(
@@ -218,15 +217,11 @@ cmd(
                                             mediaType: 4,
                                             sourceUrl: global.link,
                                             thumbnailUrl: config.LOGO,
-                                            //renderLargerThumbnail: false,
+                                            renderLargerThumbnail: true,
                                             showAdAttribution: true
                                         }
                                     },
-
-                                    document: fs.readFileSync(`../config.js`),
-                                    fileName: `vetus ligna quae mortui sunt☔`,
-                                    caption: "xyz",
-                                    mimetype: "application/pdf",
+                                    image: { url: config.LOGO },
                                     headerType: 9
                                 }, // Assuming config.LOGO is the image
                                 { upload: conn.waUploadToServer }
@@ -241,7 +236,7 @@ cmd(
                                     mediaType: 4,
                                     sourceUrl: global.link,
                                     thumbnailUrl: config.LOGO,
-                                    renderLargerThumbnail: false,
+                                    renderLargerThumbnail: true,
                                     showAdAttribution: true
                                 }
                             },
