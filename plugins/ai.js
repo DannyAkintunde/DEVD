@@ -194,7 +194,7 @@ cmd(
         try {
             if (!q) return await reply("*Give me a prompt to generate images*");
             let response = await fetchJson(
-                `https://api.betabotz.eu.org/api/search/bing-img?text=${q}&apiKey=${randChoice(
+                `https://api.betabotz.eu.org/api/search/bing-img?text=${q}&apikey=${randChoice(
                     global.APIKEYS.betabotz
                 )}`
             );
