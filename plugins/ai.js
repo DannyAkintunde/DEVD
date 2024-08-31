@@ -476,6 +476,7 @@ cmd(
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
+                fs.unlinkSync(imagePath);
             } else {
                 if (isMe || isdev)
                     m.sendError(
@@ -579,6 +580,7 @@ cmd(
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
+                fs.unlinkSync(imagePath);
             } else {
                 if (isMe || isdev)
                     m.sendError(
