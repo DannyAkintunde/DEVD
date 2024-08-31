@@ -296,7 +296,7 @@ cmd(
                 to: "en"
             });
             fetch(
-                `https://itzpire.com/ai/gpt-logic?q=${message}&logic=${payload}&chat_id=${from}&realtime=true`
+                `https://itzpire.com/ai/gpt-logic?q=${message}&logic=${payload}&chat_id=${from}&realtime=false`
             )
                 .then(response => response.json())
                 .then(data => {
