@@ -551,7 +551,7 @@ cmd(
                     }
                 }
             );
-            let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
+            let caption = `*Prompt:* ${q}`;
             if (image && image?.status != 404) {
                 const imagePath = await saveBuffer(image);
                 await conn.buttonMessage(
