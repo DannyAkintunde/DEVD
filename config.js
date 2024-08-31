@@ -5,7 +5,7 @@ function convertToBool(text, fault = "true") {
 }
 
 global.APIKEYS = {
-    yanz: ["Danny", "tkminc", "tkminc2", "yanzdev"],
+    yanz: ["Danny", "tkminc", "tkminc2"],
     betabotz: ["CLftgUOG"]
 };
 module.exports = {

@@ -273,7 +273,7 @@ cmd(
         use: ".tkm <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l, pushname }) => {
+    async (conn, mek, m, { args, reply, l, pushname, from }) => {
         const payload = `you are an ai chatbot created by TKM INC,
             your developers are Akintunde Daniel popularly known as Danny and Takudzwa popularly know as Tkm ,lord tkm or Cod3Uchiha,
             you are implimebted into a whatsapp bot named TKM-BOT,
