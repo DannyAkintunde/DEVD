@@ -447,10 +447,11 @@ cmd(
             );
             let caption = `*Prompt:* ${q}`;
             if (image && image?.status != 404) {
+                const imageUrl = await bufferImg2Url(image);
                 await conn.buttonMessage(
                     from,
                     {
-                        image: { url: await bufferImg2Url(image) },
+                        image: { url: imageUrl },
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
@@ -549,10 +550,11 @@ cmd(
             );
             let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
             if (image && image?.status != 404) {
+                const imageUrl = await bufferImg2Url(image);
                 await conn.buttonMessage(
                     from,
                     {
-                        image: { url: await bufferImg2Url(image) },
+                        image: { url: imageUrl },
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
