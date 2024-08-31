@@ -2,16 +2,12 @@ const config = require("../config");
 const { cmd, commands } = require("../command");
 var os = require("os");
 
-var tmsg = "";
-if (config.LANG === "SI") tmsg = "එය Bot link ලබා දෙයි.";
-else tmsg = "Get bot source code.";
-
 cmd(
     {
         pattern: "repo",
         react: "👨‍💻",
         alias: ["script", "sc", "source"],
-        desc: tmsg,
+        desc: "Get bot source code.",
         category: "main",
         use: ".repo",
         filename: __filename

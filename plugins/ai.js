@@ -155,6 +155,7 @@ cmd(
 cmd(
     {
         pattern: "bingimgai",
+        alias: ["bingimg"],
         react: "📷",
         desc: "Generate Images using Bing AI",
         category: "ai",
@@ -182,6 +183,7 @@ cmd(
             botNumber,
             pushname,
             isMe,
+            isdev,
             isOwner,
             groupMetadata,
             groupName,
@@ -244,6 +246,16 @@ cmd(
                 m.react(global.reactions.notFound);
                 reply("No images found for the given prompt");
             } else if (!response.status) {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
             }
         } catch (e) {
             m.sendError(e, "Unable to generate images to the given prompt");
@@ -261,38 +273,40 @@ cmd(
         use: ".tkm <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l }) => {
+    async (conn, mek, m, { args, reply, l, pushname }) => {
+        const payload = `you are an ai chatbot created by TKM INC,
+            your developers are Akintunde Daniel popularly known as Danny and Takudzwa popularly know as Tkm ,lord tkm or Cod3Uchiha,
+            you are implimebted into a whatsapp bot named TKM-BOT,
+            your name is TKM ai,
+            you are currenty being asked a question by ${pushname},
+            if a question us beyond your intelect give you user you debs contact,
+            your dev contact info are Danny: +2348098309204[whatsapp number] and TKM: +263785028126[whatsapp number],
+            you are to act like ${global.THEME.ai.identity}, you are also to shoy chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character`;
         if (!args) return reply("Yes, i'm listening to you.");
         try {
             const message = await trans(args.join(" "), {
                 to: "en"
             });
-            l(message);
             fetch(
-                `http://api.brainshop.ai/get?bid=182418&key=UQXAO1yyrPLRnhf6&uid=[uid]&msg=${message}`
+                `https://itzpire.com/ai/gpt-logic?q=${message}&logic=${payload}&chat_id=${from}&realtime=true`
             )
                 .then(response => response.json())
                 .then(data => {
-                    const botResponse = data.cnt;
-                    l(botResponse);
-
+                    const botResponse = data.result;
                     trans(botResponse, { to: config.LANG.toLowerCase() })
                         .then(translatedResponse => {
+                            m.react("🤖");
                             reply(translatedResponse);
                         })
                         .catch(error => {
-                            console.error(
-                                "Error when translating into " +
-                                    config.LANG +
-                                    " :",
-                                error
+                            m.sendError(
+                                error,
+                                `Error when translating into ${config.LANG}`
                             );
-                            reply(`Error when translating into ${config.LANG}`);
                         });
                 })
                 .catch(error => {
-                    console.error("Error requesting BrainShop :", error);
-                    reply("Error requesting BrainShop");
+                    m.sendError(error, "*Error generating response*");
                 });
         } catch (e) {
             m.sendError(e);
