@@ -13,10 +13,10 @@ const {
     fetchJson,
     randChoice,
     text2prompt,
-    bufferImg2Url
+    saveBuffer
 } = require("../lib/functions");
 const fs = require("fs");
-const fileType = require("file-type");
+
 const cheerio = require("cheerio");
 const axios = require("axios");
 const vm = require("vm");
@@ -449,11 +449,11 @@ cmd(
             );
             let caption = `*Prompt:* ${q}`;
             if (image && image?.status != 404) {
-                const imageUrl = await bufferImg2Url(image);
+                const imagePath = await saveBuffer(image);
                 await conn.buttonMessage(
                     from,
                     {
-                        image: { url: imageUrl },
+                        image: fs.readFileSync(imagePath),
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
@@ -552,11 +552,11 @@ cmd(
             );
             let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
             if (image && image?.status != 404) {
-                const imageUrl = await bufferImg2Url(image);
+                const imagePath = await saveBuffer(image);
                 await conn.buttonMessage(
                     from,
                     {
-                        image: { url: imageUrl },
+                        image: fs.readFileSync(imagePath),
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
