@@ -12,7 +12,8 @@ const {
     sleep,
     fetchJson,
     randChoice,
-    text2prompt
+    text2prompt,
+    bufferImg2Url
 } = require("../lib/functions");
 const cheerio = require("cheerio");
 const axios = require("axios");
@@ -352,6 +353,9 @@ cmd(
                         image: { url: imageUrl },
                         caption: caption,
                         footer: config.FOOTER,
+                        contextInfo: {
+                            isForwarded: false
+                        },
                         ...(config.BUTTON
                             ? {
                                   buttons: [
@@ -446,9 +450,12 @@ cmd(
                 await conn.buttonMessage(
                     from,
                     {
-                        image: image,
+                        image: await bufferImg2Url(image),
                         caption: caption,
                         footer: config.FOOTER,
+                        contextInfo: {
+                            isForwarded: false
+                        },
                         ...(config.BUTTON
                             ? {
                                   buttons: [
@@ -545,9 +552,12 @@ cmd(
                 await conn.buttonMessage(
                     from,
                     {
-                        image: image,
+                        image: await bufferImg2Url(image),
                         caption: caption,
                         footer: config.FOOTER,
+                        contextInfo: {
+                            isForwarded: false
+                        },
                         ...(config.BUTTON
                             ? {
                                   buttons: [
@@ -861,6 +871,9 @@ cmd(
                                 : ""
                         }`,
                         footer: config.FOOTER,
+                        contextInfo: {
+                            isForwarded: false
+                        },
                         ...(config.BUTTON
                             ? {
                                   buttons: [
