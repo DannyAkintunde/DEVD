@@ -203,7 +203,7 @@ cmd(
                 response &&
                 response.result &&
                 Array.isArray(response.result) &&
-                response.result.length > 0
+                response.result?.length > 0
             ) {
                 m.react(global.reactions.upload);
                 for (let i = 0; i < response.result.length; i++) {
@@ -219,11 +219,15 @@ cmd(
                 m.react(global.reactions.success);
                 const txt = `*Prompt*: ${q.trim()}\n*Results*: ${
                     response.result.length
-                }\n${config.FOOTER}`;
+                }`;
                 await conn.buttonMessage(
                     from,
                     {
                         text: txt,
+                        footer: config.FOOTER,
+                        contextInfo: {
+                            isForwarded: false
+                        },
                         buttons: [
                             {
                                 type: 1,
@@ -239,6 +243,7 @@ cmd(
             } else if (response.result.length == 0) {
                 m.react(global.reactions.notFound);
                 reply("No images found for the given prompt");
+            } else if (!response.status) {
             }
         } catch (e) {
             m.sendError(e, "Unable to generate images to the given prompt");
