@@ -230,7 +230,7 @@ cmd(
                             isForwarded: false
                         },
                         footer: config.FOOTER,
-                        ...(config.BUTTONS
+                        ...(config.BUTTON
                             ? {
                                   buttons: [
                                       {
@@ -285,7 +285,8 @@ cmd(
             you are currenty being asked a question by ${pushname},
             if a question us beyond your intelect give you user you debs contact,
             your dev contact info are Danny: +2348098309204[whatsapp number] and TKM: +263785028126[whatsapp number],
-            you are to act like ${global.THEME.ai.identity}, you are also to shoy chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character when required`;
+            you are to act like ${global.THEME.ai.identity}, you are also to shoy chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character when required,
+            for updates about you or TKM-BOT check our whatsapp channel ${global.link}`;
         if (!args) return reply("Yes, i'm listening to you.");
         try {
             const message = await trans(args.join(" "), {
@@ -351,7 +352,7 @@ cmd(
                         image: { url: imageUrl },
                         caption: caption,
                         footer: config.FOOTER,
-                        ...(config.BUTTONS
+                        ...(config.BUTTON
                             ? {
                                   buttons: [
                                       {
@@ -448,7 +449,7 @@ cmd(
                         image: image,
                         caption: caption,
                         footer: config.FOOTER,
-                        ...(config.BUTTONS
+                        ...(config.BUTTON
                             ? {
                                   buttons: [
                                       {
@@ -547,7 +548,7 @@ cmd(
                         image: image,
                         caption: caption,
                         footer: config.FOOTER,
-                        ...(config.BUTTONS
+                        ...(config.BUTTON
                             ? {
                                   buttons: [
                                       {
@@ -860,7 +861,7 @@ cmd(
                                 : ""
                         }`,
                         footer: config.FOOTER,
-                        ...(config.BUTTONS
+                        ...(config.BUTTON
                             ? {
                                   buttons: [
                                       {
