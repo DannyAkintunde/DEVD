@@ -226,19 +226,23 @@ cmd(
                     from,
                     {
                         text: txt,
-                        footer: config.FOOTER,
                         contextInfo: {
                             isForwarded: false
                         },
-                        buttons: [
-                            {
-                                type: 1,
-                                buttonId: `${prefix}bingimgai ${q}`,
-                                buttonText: {
-                                    displayText: "Regenerate 🔁"
-                                }
-                            }
-                        ]
+                        footer: config.FOOTER,
+                        ...(config.BUTTONS
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 1,
+                                          buttonId: `${prefix}bingimgai ${q}`,
+                                          buttonText: {
+                                              displayText: "Regenerate 🔁"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
                     },
                     { quoted: mek }
                 );
@@ -281,7 +285,7 @@ cmd(
             you are currenty being asked a question by ${pushname},
             if a question us beyond your intelect give you user you debs contact,
             your dev contact info are Danny: +2348098309204[whatsapp number] and TKM: +263785028126[whatsapp number],
-            you are to act like ${global.THEME.ai.identity}, you are also to shoy chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character`;
+            you are to act like ${global.THEME.ai.identity}, you are also to shoy chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character when required`;
         if (!args) return reply("Yes, i'm listening to you.");
         try {
             const message = await trans(args.join(" "), {
@@ -323,7 +327,7 @@ cmd(
         use: ".dalle <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l, from }) => {
+    async (conn, mek, m, { args, reply, l, from, prefix }) => {
         try {
             if (!args || args.length === 0) {
                 return reply(
@@ -337,13 +341,30 @@ cmd(
             );
 
             const data = response.data;
-            let caption = `*Prompt:* ${image}\n${config.FOOTER}`;
+            let caption = `*Prompt:* ${image}`;
 
             if (data.result && data.code === 200) {
                 const imageUrl = data.result;
-                await conn.sendMessage(
+                await conn.buttonMessage(
                     from,
-                    { image: { url: imageUrl }, caption: caption },
+                    {
+                        image: { url: imageUrl },
+                        caption: caption,
+                        footer: config.FOOTER,
+                        ...(config.BUTTONS
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 1,
+                                          buttonId: `${prefix}dalle ${image}`,
+                                          buttonText: {
+                                              displayText: "Regenerate 🔁"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
+                    },
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
@@ -419,11 +440,28 @@ cmd(
                     }
                 }
             );
-            let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
+            let caption = `*Prompt:* ${q}`;
             if (image && image?.status != 404) {
-                await conn.sendMessage(
+                await conn.buttonMessage(
                     from,
-                    { image: image, caption: caption },
+                    {
+                        image: image,
+                        caption: caption,
+                        footer: config.FOOTER,
+                        ...(config.BUTTONS
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 1,
+                                          buttonId: `${prefix}dalle3 ${q}`,
+                                          buttonText: {
+                                              displayText: "Regenerate 🔁"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
+                    },
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
@@ -503,9 +541,26 @@ cmd(
             );
             let caption = `*Prompt:* ${q}\n${config.FOOTER}`;
             if (image && image?.status != 404) {
-                await conn.sendMessage(
+                await conn.buttonMessage(
                     from,
-                    { image: image, caption: caption },
+                    {
+                        image: image,
+                        caption: caption,
+                        footer: config.FOOTER,
+                        ...(config.BUTTONS
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 1,
+                                          buttonId: `${prefix}mj ${q}`,
+                                          buttonText: {
+                                              displayText: "Regenerate 🔁"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
+                    },
                     { quoted: mek }
                 );
                 await m.react(global.THEME.reactions.success);
@@ -795,15 +850,29 @@ cmd(
                 `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
             );
             if (result.status === "success") {
-                await conn.sendMessage(
+                await conn.buttonMessage(
                     from,
                     {
                         image: { url: result.result },
-                        caption: `*Prompt:* ${prompt}\n${
+                        caption: `*Prompt:* ${prompt}${
                             negative_prompt
-                                ? "*Negative prompt:* " + negative_prompt
+                                ? "\n*Negative prompt:* " + negative_prompt
                                 : ""
-                        }\n${config.FOOTER}`
+                        }`,
+                        footer: config.FOOTER,
+                        ...(config.BUTTONS
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 1,
+                                          buttonId: `${prefix}imagine ${q}`,
+                                          buttonText: {
+                                              displayText: "Regenerate 🔁"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
                     },
                     { quoted: mek }
                 );
