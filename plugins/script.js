@@ -75,7 +75,7 @@ cmd(
                     buttonText: {
                         displayText: "Whatsapp Channel"
                     },
-                    url: "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g"
+                    url: global.link
                 }
             ];
             const buttonMessage = {

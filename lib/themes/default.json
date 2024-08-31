@@ -90,7 +90,9 @@
         "error": "⚠️",
         "loading": "⌛",
         "retry": "🔁",
-        "download": "📥"
+        "download": "📥",
+        "upload": "📤",
+        "notFound": "🤕"
     },
     "anim": {
         "loading": [

@@ -194,9 +194,9 @@ cmd(
         try {
             if (!q) return await reply("*Give me a prompt to generate images*");
             let response = await fetchJson(
-                "https://api.yanzbotz.my.id/api/text2img/bing-image?prompt=" +
-                    q +
-                    "&apiKey=vihangayt0"
+                `https://api.betabotz.eu.org/api/search/bing-img?text=${q}&apiKey=${randChoice(
+                    global.APIKEYS.betabotz
+                )}`
             );
             if (
                 response &&
@@ -204,19 +204,39 @@ cmd(
                 Array.isArray(response.result) &&
                 response.result.length > 0
             ) {
+                m.react(global.reactions.upload);
                 for (let i = 0; i < response.result.length; i++) {
                     await conn.sendMessage(
                         from,
                         {
-                            image: { url: response.result[i] },
-                            caption:
-                                `┃powered by ⬡〘${config.BOT}〙⬡┃` +
-                                `\n${config.FOOTER}`
+                            image: { url: response.result[i] }
+                            // caption: `${config.FOOTER}`
                         },
                         { quoted: mek }
                     );
                 }
-            } else {
+                m.react(global.reactions.success);
+                const txt = `*Prompt*: ${q.trim()}\n*Results*: ${
+                    response.result.length
+                }\n${config.FOOTER}`;
+                await conn.buttonMessage(
+                    from,
+                    {
+                        text: txt,
+                        buttons: [
+                            {
+                                type: 1,
+                                buttonId: `${prefix}bingimgai ${q}`,
+                                buttonText: {
+                                    displayText: "Regenerate 🔁"
+                                }
+                            }
+                        ]
+                    },
+                    { quoted: mek }
+                );
+            } else if (response.result.length == 0) {
+                m.react(global.reactions.notFound);
                 reply("No images found for the given prompt");
             }
         } catch (e) {
