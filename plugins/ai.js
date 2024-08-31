@@ -450,7 +450,7 @@ cmd(
                 await conn.buttonMessage(
                     from,
                     {
-                        image: await bufferImg2Url(image),
+                        image: { url: await bufferImg2Url(image) },
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
@@ -552,7 +552,7 @@ cmd(
                 await conn.buttonMessage(
                     from,
                     {
-                        image: await bufferImg2Url(image),
+                        image: { url: await bufferImg2Url(image) },
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
