@@ -169,6 +169,7 @@ cmd(
             from,
             l,
             quoted,
+            prefix,
             body,
             isCmd,
             command,
