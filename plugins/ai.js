@@ -15,6 +15,8 @@ const {
     text2prompt,
     bufferImg2Url
 } = require("../lib/functions");
+const fs = require("fs");
+const fileType = require()
 const cheerio = require("cheerio");
 const axios = require("axios");
 const vm = require("vm");
