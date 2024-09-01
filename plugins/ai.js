@@ -450,36 +450,34 @@ cmd(
             );
             let caption = `*Prompt:* ${q}`;
             if (image && image?.status == 200) {
-               // const imagePath = await saveBuffer(image);
-                convertBufferToJpeg(image).then(path => {
-                    conn.buttonMessage(
-                        from,
-                        {
-                            image: fs.readFileSync(path),
-                            caption: caption,
-                            footer: config.FOOTER,
-                            contextInfo: {
-                                isForwarded: false
-                            },
-                            ...(config.BUTTON
-                                ? {
-                                      buttons: [
-                                          {
-                                              type: 1,
-                                              buttonId: `${prefix}dalle3 ${q}`,
-                                              buttonText: {
-                                                  displayText: "Regenerate 🔁"
-                                              }
-                                          }
-                                      ]
-                                  }
-                                : {})
+                const imagePath = await saveBuffer(image);
+                conn.buttonMessage(
+                    from,
+                    {
+                        image: fs.readFileSync(imagePath),
+                        caption: caption,
+                        footer: config.FOOTER,
+                        contextInfo: {
+                            isForwarded: false
                         },
-                        { quoted: mek }
-                    );
-                    m.react(global.THEME.reactions.success);
-                    fs.unlinkSync(path);
-                });
+                        ...(config.BUTTON
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 1,
+                                          buttonId: `${prefix}dalle3 ${q}`,
+                                          buttonText: {
+                                              displayText: "Regenerate 🔁"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
+                    },
+                    { quoted: mek }
+                );
+                m.react(global.THEME.reactions.success);
+                fs.unlinkSync(imagePath);
             } else {
                 if (isMe || isdev)
                     m.sendError(
@@ -555,7 +553,7 @@ cmd(
                 }
             );
             let caption = `*Prompt:* ${q}`;
-            if (image && image?.status != 404) {
+            if (image && image?.status == 200) {
                 const imagePath = await saveBuffer(image);
                 await conn.buttonMessage(
                     from,
