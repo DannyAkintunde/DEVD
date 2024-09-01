@@ -13,7 +13,8 @@ const {
     fetchJson,
     randChoice,
     text2prompt,
-    saveBuffer
+    saveBuffer,
+    convertBufferToJpeg
 } = require("../lib/functions");
 const fs = require("fs");
 
@@ -448,35 +449,37 @@ cmd(
                 }
             );
             let caption = `*Prompt:* ${q}`;
-            if (image && image?.status != 404) {
-                const imagePath = await saveBuffer(image);
-                await conn.buttonMessage(
-                    from,
-                    {
-                        image: fs.readFileSync(imagePath),
-                        caption: caption,
-                        footer: config.FOOTER,
-                        contextInfo: {
-                            isForwarded: false
-                        },
-                        ...(config.BUTTON
-                            ? {
-                                  buttons: [
-                                      {
-                                          type: 1,
-                                          buttonId: `${prefix}dalle3 ${q}`,
-                                          buttonText: {
-                                              displayText: "Regenerate 🔁"
+            if (image && image?.status == 200) {
+               // const imagePath = await saveBuffer(image);
+                convertBufferToJpeg(image).then(path => {
+                    conn.buttonMessage(
+                        from,
+                        {
+                            image: fs.readFileSync(path),
+                            caption: caption,
+                            footer: config.FOOTER,
+                            contextInfo: {
+                                isForwarded: false
+                            },
+                            ...(config.BUTTON
+                                ? {
+                                      buttons: [
+                                          {
+                                              type: 1,
+                                              buttonId: `${prefix}dalle3 ${q}`,
+                                              buttonText: {
+                                                  displayText: "Regenerate 🔁"
+                                              }
                                           }
-                                      }
-                                  ]
-                              }
-                            : {})
-                    },
-                    { quoted: mek }
-                );
-                await m.react(global.THEME.reactions.success);
-                fs.unlinkSync(imagePath);
+                                      ]
+                                  }
+                                : {})
+                        },
+                        { quoted: mek }
+                    );
+                    m.react(global.THEME.reactions.success);
+                    fs.unlinkSync(path);
+                });
             } else {
                 if (isMe || isdev)
                     m.sendError(
