@@ -449,12 +449,13 @@ cmd(
                 }
             );
             let caption = `*Prompt:* ${q}`;
-            if (image && image?.status == 200) {
+            if (image && image?.status != 404) {
                 const imagePath = await saveBuffer(image);
+                image = fs.readFileSync(imagePath);
                 conn.buttonMessage(
                     from,
                     {
-                        image: fs.readFileSync(imagePath),
+                        image,
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
@@ -553,12 +554,13 @@ cmd(
                 }
             );
             let caption = `*Prompt:* ${q}`;
-            if (image && image?.status == 200) {
+            if (image && image?.status != 404) {
                 const imagePath = await saveBuffer(image);
+                image = fs.readFileSync(imagePath);
                 await conn.buttonMessage(
                     from,
                     {
-                        image: fs.readFileSync(imagePath),
+                        image,
                         caption: caption,
                         footer: config.FOOTER,
                         contextInfo: {
