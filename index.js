@@ -186,6 +186,7 @@ async function connectToWA() {
                 restart();
             }
         } else if (connection === "open") {
+            const path = require("path");
             console.log(
                 fs.readFileSync(
                     path.join(__dirname, "lib", "well.txt").toString()
@@ -197,7 +198,6 @@ async function connectToWA() {
                 text: "TKM-BOT V3 connected sucessfully"
             });
             console.log(chalk.yellow("Installing plugins 🔌... "));
-            const path = require("path");
             fs.readdirSync("./plugins/").forEach(plugin => {
                 if (path.extname(plugin).toLowerCase() == ".js") {
                     try {
