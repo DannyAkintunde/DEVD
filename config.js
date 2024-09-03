@@ -6,7 +6,8 @@ function convertToBool(text, fault = "true") {
 
 global.APIKEYS = {
     yanz: ["Danny"],
-    betabotz: ["CLftgUOG"]
+    betabotz: ["CLftgUOG"],
+    zubair: ["4c8dc29dc35b8e258b"]
 };
 module.exports = {
     SESSION_ID: process.env.SESSION_ID || "youre session id",

@@ -186,6 +186,11 @@ async function connectToWA() {
                 restart();
             }
         } else if (connection === "open") {
+            console.log(
+                fs.readFileSync(
+                    path.join(__dirname, "lib", "well.txt").toString()
+                )
+            );
             global.MODE = config.MODE === "private" ? "private" : "public";
             console.log(chalk.green("✅ connection successfull! ☺️"));
             conn.sendMessage(conn.user.id, {
@@ -439,15 +444,17 @@ async function connectToWA() {
                 } else if (NON_BUTTON) {
                     let result = "";
                     const CMD_ID_MAP = [];
-                    msgData.buttons.forEach((button, bttnIndex) => {
-                        const mainNumber = `${bttnIndex + 1}`;
-                        result += `\n*${mainNumber} | ${button.buttonText.displayText}*\n`;
+                    msgData.buttons
+                        .filter(button => button.type == 1)
+                        .forEach((button, bttnIndex) => {
+                            const mainNumber = `${bttnIndex + 1}`;
+                            result += `\n*${mainNumber} | ${button.buttonText.displayText}*\n`;
 
-                        CMD_ID_MAP.push({
-                            cmdId: mainNumber,
-                            cmd: button.buttonId
+                            CMD_ID_MAP.push({
+                                cmdId: mainNumber,
+                                cmd: button.buttonId
+                            });
                         });
-                    });
 
                     if (msgData.headerType === 1) {
                         const buttonMessage = `${msgData.text}\n\n🔢 Reply you want number,${result}\n${msgData.footer}`;
@@ -585,15 +592,17 @@ async function connectToWA() {
                 } else if (NON_BUTTON) {
                     let result = "";
                     const CMD_ID_MAP = [];
-                    msgData.buttons.forEach((button, bttnIndex) => {
-                        const mainNumber = `${bttnIndex + 1}`;
-                        result += `\n*${mainNumber} | ${button.buttonText.displayText}*\n`;
+                    msgData.buttons
+                        .filter(button => button.type == 1)
+                        .forEach((button, bttnIndex) => {
+                            const mainNumber = `${bttnIndex + 1}`;
+                            result += `\n*${mainNumber} | ${button.buttonText.displayText}*\n`;
 
-                        CMD_ID_MAP.push({
-                            cmdId: mainNumber,
-                            cmd: button.buttonId
+                            CMD_ID_MAP.push({
+                                cmdId: mainNumber,
+                                cmd: button.buttonId
+                            });
                         });
-                    });
 
                     if (msgData.headerType === 1) {
                         const buttonMessage = `${

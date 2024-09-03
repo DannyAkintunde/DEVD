@@ -450,7 +450,7 @@ cmd(
             );
             let caption = `*Prompt:* ${q}`;
             if (image && image?.status != 404) {
-                const imagePath = await saveBuffer(image);
+                //const imagePath = await saveBuffer(image);
                 //image = fs.readFileSync(imagePath);
                 conn.buttonMessage(
                     from,
@@ -555,8 +555,8 @@ cmd(
             );
             let caption = `*Prompt:* ${q}`;
             if (image && image?.status != 404) {
-                const imagePath = await saveBuffer(image);
-               // image = fs.readFileSync(imagePath);
+                //const imagePath = await saveBuffer(image);
+                // image = fs.readFileSync(imagePath);
                 await conn.buttonMessage(
                     from,
                     {
@@ -782,7 +782,13 @@ cmd(
 cmd(
     {
         pattern: "text2prompt",
-        alias: ["t2p"],
+        alias: [
+            "t2p",
+            "promptgen",
+            "prompt-gen",
+            "generate-prompt",
+            "texttoprompt"
+        ],
         react: "📡",
         desc: "Generate AI prompts from text",
         category: "ai",
@@ -794,21 +800,60 @@ cmd(
             return await reply(
                 `text argument is required \n> try ${prefix}text2prompt a sad cat`
             );
-
         const text = await trans(args.join(" "), { to: "en" });
-
-        await text2prompt(text).then(sus).catch(err);
-
-        function sus(res) {
-            if (res.status)
-                return reply(
-                    trans(res.prompt),
-                    config.LANG.toLocaleLowerCase()
+        try {
+            let response;
+            for (let key = 0; key < global.APIKEYS.zubair.length; key++) {
+                response = await fetchJson(
+                    `https://api.maher-zubair.xyz/ai/prompt-gen?apikey=${global.APIKEYS.zubair[key]}&prompt=${text}`
                 );
-            else reply("an error occoured genrating prompt");
-        }
-        function err(e) {
-            m.sendError(e, "an error occoured genrating prompt");
+                if (response && response.status == 200) break;
+            }
+            if (response.status == 200) {
+                const result = response.result
+                    ? trans(response.result, { to: config.LANG?.toLowerCase() })
+                    : null;
+                conn.buttonMessage(
+                    from,
+                    {
+                        text: `*Qurey*: ${args.join("")}\n*Prompt*: ${result}`,
+                        footer: config.FOOTER,
+                        ...(config.BUTTON
+                            ? {
+                                  buttons: [
+                                      {
+                                          type: 4,
+                                          buttonId: "result_prompt",
+                                          buttonText: {
+                                              text: result,
+                                              displayText: "Copy prompt"
+                                          }
+                                      }
+                                  ]
+                              }
+                            : {})
+                    },
+                    { quoted: mek }
+                );
+            } else if (response.status == 402) {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
+            } else {
+                m.sendError(
+                    new Error("check endpoint"),
+                    "*an error occoured genrating prompt*"
+                );
+            }
+        } catch (e) {
+            m.sendError(e, "*an error occoured genrating prompt*");
         }
     }
 );
