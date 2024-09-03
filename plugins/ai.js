@@ -808,6 +808,7 @@ cmd(
                     `https://api.maher-zubair.xyz/ai/prompt-gen?apikey=${global.APIKEYS.zubair[key]}&prompt=${text}`
                 );
                 if (response && response.status == 200) break;
+                reply(JSON.stringify(response))
             }
             if (response.status == 200) {
                 const result = response.result
