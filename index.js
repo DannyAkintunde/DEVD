@@ -188,9 +188,9 @@ async function connectToWA() {
         } else if (connection === "open") {
             const path = require("path");
             console.log(
-                fs.readFileSync(
-                    path.join(__dirname, "media", "well.txt").toString()
-                )
+                fs
+                    .readFileSync(path.join(__dirname, "media", "well.txt"))
+                    .toString()
             );
             global.MODE = config.MODE === "private" ? "private" : "public";
             console.log(chalk.green("✅ connection successfull! ☺️"));
