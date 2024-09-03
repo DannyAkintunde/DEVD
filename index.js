@@ -189,7 +189,7 @@ async function connectToWA() {
             const path = require("path");
             console.log(
                 fs.readFileSync(
-                    path.join(__dirname, "lib", "well.txt").toString()
+                    path.join(__dirname, "media", "well.txt").toString()
                 )
             );
             global.MODE = config.MODE === "private" ? "private" : "public";
