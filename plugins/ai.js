@@ -71,7 +71,7 @@ cmd(
             if (!q)
                 return reply("*Please give me words to search on bard ai !*");
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/bard?query=${q}&apiKey=${randChoice(
+                `https://api.yanzbotz.live/api/ai/bard?query=${q}&apiKey=${randChoice(
                     global.APIKEYS.yanz
                 )}`
             );
@@ -440,7 +440,7 @@ cmd(
                 );
 
             let image = await getBuffer(
-                `https://api.yanzbotz.my.id/api/text2img/dalle-3`,
+                `https://api.yanzbotz.live/api/text2img/dalle-3`,
                 {
                     params: {
                         prompt: q,
@@ -545,7 +545,7 @@ cmd(
                     `Please enter the necessary information to generate the image.`
                 );
             let image = await getBuffer(
-                `https://api.yanzbotz.my.id/api/text2img/midjourney`,
+                `https://api.yanzbotz.live/api/text2img/midjourney`,
                 {
                     params: {
                         prompt: q,
@@ -735,7 +735,7 @@ cmd(
                 { quoted: mek }
             );
             let response = await fetchJson(
-                `https://api.yanzbotz.my.id/api/ai/gpt-4o?query=${q}&system=YanzBotz-MD&apiKey=${randChoice(
+                `https://api.yanzbotz.live/api/ai/gpt-4o?query=${q}&system=YanzBotz-MD&apiKey=${randChoice(
                     global.APIKEYS.yanz
                 )}&id=${from}`
             );
@@ -808,7 +808,7 @@ cmd(
                     `https://api.maher-zubair.xyz/ai/prompt-gen?apikey=${global.APIKEYS.zubair[key]}&prompt=${text}`
                 );
                 if (response && response.status == 200) break;
-                reply(JSON.stringify(response))
+                reply(JSON.stringify(response));
             }
             if (response.status == 200) {
                 const result = response.result
