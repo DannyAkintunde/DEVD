@@ -516,7 +516,14 @@ async function connectToWA() {
                             },
                             { quoted: quotemek || mek }
                         );
-                        await updateCMDStore(imgmsg.key.id, CMD_ID_MAP);
+                        for (let i = 0; i < cmdArray.length; i++) {
+                            await id_db.input_data(
+                                cmdArray[i].rowId,
+                                cmdArray[i].title,
+                                imgmsg.key.id
+                            );
+                        }
+                        // await updateCMDStore(imgmsg.key.id, CMD_ID_MAP);
                     }
                 }
             };
@@ -582,7 +589,9 @@ async function connectToWA() {
             conn.buttonMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
                     msgData.contextInfo
-                        ? (msgData.contextInfo.mentionedJid = [jid])
+                        ? msgData.contextInfo.mentionedJid
+                            ? null
+                            : (msgData.contextInfo.mentionedJid = [jid])
                         : (msgData.contextInfo = { mentionedJid: [jid] });
                     const loaddedMessage = await loadButtonMessage(
                         msgData,
@@ -636,7 +645,14 @@ async function connectToWA() {
                             },
                             { quoted: quotemek || mek }
                         );
-                        await updateCMDStore(textmsg.key.id, CMD_ID_MAP);
+                        for (let i = 0; i < cmdArray.length; i++) {
+                            await id_db.input_data(
+                                cmdArray[i].rowId,
+                                cmdArray[i].title,
+                                textmsg.key.id
+                            );
+                        }
+                        // await updateCMDStore(textmsg.key.id, CMD_ID_MAP);
                     } else if (msgData.headerType === 4) {
                         const buttonMessage = `${msgData.caption}\n\n🔢 Reply you want number,${result}\n${msgData.footer}`;
                         const imgmsg = await conn.sendMessage(
@@ -731,7 +747,17 @@ async function connectToWA() {
 
             conn.listMessage = async (jid, msgData, quotemek) => {
                 if (!NON_BUTTON) {
-                    await conn.sendMessage(jid, msgData);
+                    msgData.contextInfo
+                        ? msgData.contextInfo.mentionedJid
+                            ? null
+                            : (msgData.contextInfo.mentionedJid = [jid])
+                        : (msgData.contextInfo = { mentionedJid: [jid] });
+                    const loaddedMessage = await loadButtonMessage(
+                        msgData,
+                        conn,
+                        "sl"
+                    );
+                    await conn.relayMessage(jid, loaddedMessage, {});
                 } else if (NON_BUTTON) {
                     let result = "";
                     const CMD_ID_MAP = [];
