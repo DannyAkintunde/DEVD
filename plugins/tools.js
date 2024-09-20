@@ -13,7 +13,7 @@ cmd(
         filename: __filename
     },
     async (conn, mek, m, { q, args, reply }) => {
-        if (!q && !m.quoted) return reply("i need a query !");
+        if (!q && !m.quoted?.body) return reply("i need a query !");
         let langCode = (await isValidLangCode(config.LANG.toLowerCase()))
             ? config.LANG.toLowerCase()
             : "en";

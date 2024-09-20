@@ -14,14 +14,16 @@ const {
     randChoice,
     text2prompt,
     saveBuffer,
-    convertBufferToJpeg
+    convertBufferToJpeg,
+    trans
 } = require("../lib/functions");
 const fs = require("fs");
-
+const fileType = require("file-type");
+const path = require("path")
 const cheerio = require("cheerio");
 const axios = require("axios");
 const vm = require("vm");
-const { trans } = require("../lib/functions.js");
+const { img2url } = require("@blackamda/telegram-image-url");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -32,7 +34,7 @@ cmd(
         react: "👾",
         desc: "It search on bard ai for what you provided.",
         category: "ai",
-        use: ".bard ha",
+        use: ".bard hey",
         filename: __filename
     },
     async (
@@ -71,7 +73,7 @@ cmd(
             if (!q)
                 return reply("*Please give me words to search on bard ai !*");
             let response = await fetchJson(
-                `https://api.yanzbotz.live/api/ai/bard?query=${q}&apiKey=${randChoice(
+                `https://api.yanzbotz.live/api/ai/bard?query=${encodeURIComponent(q)}&apiKey=${randChoice(
                     global.APIKEYS.yanz
                 )}`
             );
@@ -102,7 +104,7 @@ cmd(
         react: "👾",
         desc: "Blackbox ai chat",
         category: "ai",
-        use: ".blackbox ha",
+        use: ".blackbox hey",
         filename: __filename
     },
     async (
@@ -140,7 +142,7 @@ cmd(
         try {
             if (!q) return reply("*Please give me words!*");
             let response = await fetchJson(
-                `https://itzpire.com/ai/blackbox-ai?q=${q}`
+                `https://itzpire.com/ai/blackbox-ai?q=${encodeURIComponent(q)}`
             );
             if (response?.status == "success") {
                 return await reply(response.result);
@@ -199,9 +201,13 @@ cmd(
         }
     ) => {
         try {
-            if (!q) return await reply("*Give me a prompt to generate images*");
+            if (!q && !m.quoted?.body) return await reply("*Give me a prompt to generate images*");
+            let text = q;
+            if (m.quoted) {
+                text = m.quoted.body;
+            }
             let response = await fetchJson(
-                `https://api.betabotz.eu.org/api/search/bing-img?text=${q}&apikey=${randChoice(
+                `https://api.betabotz.eu.org/api/search/bing-img?text=${encodeURIComponent(text)}&apikey=${randChoice(
                     global.APIKEYS.betabotz
                 )}`
             );
@@ -281,23 +287,23 @@ cmd(
         use: ".tkm <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l, pushname, from }) => {
+    async (conn, mek, m, { q, reply, l, pushname, from }) => {
         const payload = `you are an ai chatbot created by TKM INC,
             your developers are Akintunde Daniel popularly known as Danny and Takudzwa popularly know as Tkm ,lord tkm or Cod3Uchiha,
-            you are implimebted into a whatsapp bot named TKM-BOT,
+            you are implimented into a whatsapp bot named TKM-BOT,
             your name is TKM ai,
-            you are currenty being asked a question by ${pushname},
-            if a question us beyond your intelect give you user you debs contact,
+            the name of the current usser is ${pushname} use it to your will,
+            if a question us beyond your intelect make sure to let the user know,
             your dev contact info are Danny: +2348098309204[whatsapp number] and TKM: +263785028126[whatsapp number],
-            you are to act like ${global.THEME.ai.identity}, you are also to shoy chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character when required,
+            you are to act like ${global.THEME.ai.identity}, you are also to show chracter similar to ${global.THEME.ai.character} also try to put some emojis in your response similar to that of this character when required,
             for updates about you or TKM-BOT check our whatsapp channel ${global.link}`;
-        if (!args) return reply("Yes, i'm listening to you.");
+        if (!q) return reply("Yes, i'm listening to you.");
         try {
-            const message = await trans(args.join(" "), {
+            const message = await trans(q, {
                 to: "en"
             });
             fetch(
-                `https://itzpire.com/ai/gpt-logic?q=${message}&logic=${payload}&chat_id=${from}&realtime=false`
+                `https://itzpire.com/ai/gpt-logic?q=${encodeURIComponent(message)}&logic=${payload}&chat_id=${from}&realtime=false`
             )
                 .then(response => response.json())
                 .then(data => {
@@ -332,17 +338,20 @@ cmd(
         use: ".dalle <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l, from, prefix }) => {
+    async (conn, mek, m, { q, reply, l, from, prefix }) => {
         try {
-            if (!args || args.length === 0) {
+            if (!q && !m.quoted?.body) {
                 return reply(
                     `Please enter the necessary information to generate the image.`
                 );
             }
-            const image = args.join(" ");
+            let image = q
+            if (m.quoted) {
+                image = m.quoted.body;
+            }
             //m.react(global.THEME.reactions.loading)
             const response = await axios.get(
-                `https://itzpire.com/ai/dalle?prompt=${image}`
+                `https://itzpire.com/ai/dalle?prompt=${encodeURIComponent(image)}`
             );
 
             const data = response.data;
@@ -434,16 +443,20 @@ cmd(
         }
     ) => {
         try {
-            if (!q)
+            if (!q && !m.quoted?.body)
                 return reply(
                     `Please enter the necessary information to generate the image.`
                 );
+            let text = q
+            if (m.quoted) {
+                text = m.quoted.body;
+            }
 
             let image = await getBuffer(
                 `https://api.yanzbotz.live/api/text2img/dalle-3`,
                 {
                     params: {
-                        prompt: q,
+                        prompt: text,
                         apiKey: randChoice(global.APIKEYS.yanz)
                     }
                 }
@@ -540,15 +553,19 @@ cmd(
         }
     ) => {
         try {
-            if (!q)
+            if (!q && !m.quoted?.body)
                 return reply(
                     `Please enter the necessary information to generate the image.`
                 );
+            let text = q
+            if (m.quoted) {
+                text = m.quoted.body;
+            }
             let image = await getBuffer(
                 `https://api.yanzbotz.live/api/text2img/midjourney`,
                 {
                     params: {
-                        prompt: q,
+                        prompt: text,
                         apiKey: randChoice(global.APIKEYS.yanz)
                     }
                 }
@@ -612,14 +629,13 @@ cmd(
         use: ".gpt <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { args, reply, l }) => {
+    async (conn, mek, m, { q, reply, l }) => {
         try {
-            if (!args || args.length === 0) {
+            if (!q) {
                 return reply(`Please ask a question.`);
             }
-            const question = args.join(" ");
             const response = await axios.get(
-                `https://itzpire.com/ai/gpt?model=gpt-3.5-turbo&q=${question}`
+                `https://itzpire.com/ai/gpt?model=gpt-3.5-turbo&q=${encodeURIComponent(q)}`
             );
 
             const data = response.data.data;
@@ -644,7 +660,7 @@ cmd(
         react: "📡",
         desc: "ChatGPT4 AI chat",
         category: "ai",
-        use: ".gpt <prompt>",
+        use: ".gpt4 <prompt>",
         filename: __filename
     },
     async (conn, mek, m, { reply, from, q }) => {
@@ -656,7 +672,7 @@ cmd(
                 { quoted: mek }
             );
             res = await fetchJson(
-                `https://itzpire.com/ai/gpt?model=gpt-4-32k-0314&q=${q}`
+                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${jid}`
             );
             if (res.status === "success") {
                 await conn.sendMessage(
@@ -735,7 +751,7 @@ cmd(
                 { quoted: mek }
             );
             let response = await fetchJson(
-                `https://api.yanzbotz.live/api/ai/gpt-4o?query=${q}&system=YanzBotz-MD&apiKey=${randChoice(
+                `https://api.yanzbotz.live/api/ai/gpt-4o?query=${encodeURIComponent(q)}&system=YanzBotz-MD&apiKey=${randChoice(
                     global.APIKEYS.yanz
                 )}&id=${from}`
             );
@@ -901,11 +917,11 @@ cmd(
         }
     ) => {
         try {
-            if (!q)
+            if (!q && !m.quoted?.body)
                 return reply(
                     "*Example: .imagine woman,hair cut collor red,full body,bokeh*"
                 );
-            let prompt = q;
+            let prompt = m.quoted?.body ? m.quoted.body : q
             let negative_prompt = "";
             if (q.split("|").length > 1) {
                 prompt = q.split("|")[0].trim();
@@ -913,7 +929,7 @@ cmd(
             }
             //m.react(global.THEME.reactions.loading);
             let result = await fetchJson(
-                `https://itzpire.com/ai/stablediffusion-2.1?prompt=${prompt}&negative_prompt=${negative_prompt}`
+                `https://itzpire.com/ai/stablediffusion-2.1?prompt=${encodeURIComponent(prompt)}&negative_prompt=${encodeURIComponent(negative_prompt)}`
             );
             if (result.status === "success") {
                 await conn.buttonMessage(
@@ -952,3 +968,77 @@ cmd(
         }
     }
 );
+
+cmd(
+  {
+    pattern: "gemini",
+    react: "📡",
+    category: "ai",
+    desc: "Gemini AI chat",
+    use: ".gemini hey there",
+    filename: __filename
+  },
+  async (conn, mek, m, {q, reply}) => {
+    const downloadPath = path.join("../", "media", "temp")
+    let filename = getRandom("")
+    let question = q || m.quoted?.body
+    if (!question) return reply("Ask a question")
+    let image = m.download(path.resolve(path.join(downloadPath, filename))) || m.quoted?.download(path.resolve(path.join(downloadPath, filename)))
+    const type = await fileType.fromBuffer(image)
+    filename = filename + type.ext
+    let mode = "text"
+    if (image) mode = "image"
+    const options = {
+        "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+        ...(global.APIKEYS?.fastapi ? { "x-api-key": randChoice(global.APIKEYS.fastapi) } : {})
+    }
+    async function handleResponse(response){
+      if (response?.status == 200) {
+            await conn.sendMessage(
+                from,
+                {
+                    text: response.answer,
+                    //edit: msg.key
+                },
+                { quoted: mek }
+            );
+            mek.react("🤖");
+          } else if (response.status == 403) {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached"
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*"
+                    );
+          } else if (response.status == 429) {
+            m.sendError(new Error("Too Many Requests"), "Too many requests within 1 minute/daily/monthly. Please try again later")
+          }
+    }
+    try{
+      switch (mode){
+      case "text":
+        {
+          response = fetchJson(`https://fastrestapis.fasturl.cloud/ai/gemini/chat?ask=${encodeURIComponent(question)}`, options)
+          await handleResponse(response)
+        }
+        break;
+      case "image":
+        {
+          filePath = path.resolve(path.join(downloadPath, filename))
+          img2url(filePath).then(async url => {
+            response = fetchJson(`https://fastrestapis.fasturl.cloud/ai/gemini/chat?ask=${encodeURIComponent(question)}&image=${encodeURIComponent(url)}`, options)
+            await handleResponse(response)
+          })
+        }
+        break;
+    }
+    } catch (e) {
+      m.sendError(e)
+    }
+  }
+  )

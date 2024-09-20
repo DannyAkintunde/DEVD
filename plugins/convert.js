@@ -1,5 +1,5 @@
 const { cmd, commands } = require("../command");
-let { img2url } = require("@blackamda/telegram-image-url");
+const { img2url } = require("@blackamda/telegram-image-url");
 const { getRandom, fetchJson, getBuffer, json } = require("../lib/functions");
 const fs = require("fs");
 const config = require("../config");
