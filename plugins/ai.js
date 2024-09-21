@@ -308,6 +308,7 @@ cmd(
                 .then(response => response.json())
                 .then(data => {
                     const botResponse = data.result;
+                    reply(botResponse);
                     trans(botResponse, { to: config.LANG.toLowerCase() })
                         .then(translatedResponse => {
                             m.react("🤖");
@@ -672,7 +673,7 @@ cmd(
                 { quoted: mek }
             );
             res = await fetchJson(
-                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${jid}`
+                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${from}`
             );
             if (res.status === "success") {
                 await conn.sendMessage(
