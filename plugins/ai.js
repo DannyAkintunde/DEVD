@@ -651,7 +651,7 @@ cmd(
         use: ".gpt4 <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { reply, from, q }) => {
+    async (conn, mek, m, { reply, from, q, isMe, isdev}) => {
         try {
             if (!q) return await reply("ask something");
             const msg = await conn.sendMessage(
@@ -660,23 +660,36 @@ cmd(
                 { quoted: mek }
             );
             const options = {
-            headers: {
+              headers: {
                 "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-                ...(global.APIKEYS?.fastapi ? { "x-api-key": randChoice(global.APIKEYS.fastapi) } : {})
+                "x-api-key": randChoice(global.APIKEYS.fastapi)
+              }
             }
-          }
             res = await fetchJson(
                 `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${encodeURIComponent(from.split('@')[0])}`,
                 options
             );
-            if (res.status === "success") {
+            if (res.status === 200) {
                 await conn.sendMessage(
                     from,
                     { text: res.data.response, edit: msg.key },
                     { quoted: mek }
                 );
                 await mek.react("🤖");
+            } else if (res.status == 403) {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached",
+                        msg.key
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*",
+                        msg.key
+                    );
             } else {
                 await m.sendError(new Error("an error occured generation response at gpt4"), "an error occred generating resopnce", msg.key);
             }
@@ -977,9 +990,9 @@ cmd(
     if (image) mode = "image"
     const options = {
         headers: {
-        "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-        ...(global.APIKEYS?.fastapi ? { "x-api-key": randChoice(global.APIKEYS.fastapi) } : {})
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+            "x-api-key": randChoice(global.APIKEYS.fastapi)
         }
     }
     async function handleResponse(response){
