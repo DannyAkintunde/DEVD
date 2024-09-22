@@ -299,27 +299,14 @@ cmd(
             for updates about you or TKM-BOT check our whatsapp channel ${global.link}`;
         if (!q) return reply("Yes, i'm listening to you.");
         try {
-            const message = await trans(q, {
-                to: "en"
-            });
             fetch(
-                `https://itzpire.com/ai/gpt-logic?q=${encodeURIComponent(message)}&logic=${payload}&chat_id=${from}&realtime=false`
+                `https://itzpire.com/ai/gpt-logic?q=${encodeURIComponent(q)}&logic=${encodeURIComponent(payload)}&chat_id=${encodeURIComponent(from.split('@')[0])}&realtime=false`
             )
                 .then(response => response.json())
                 .then(data => {
                     const botResponse = data.result;
-                    reply(botResponse);
-                    trans(botResponse, { to: config.LANG.toLowerCase() })
-                        .then(translatedResponse => {
-                            m.react("🤖");
-                            reply(translatedResponse);
-                        })
-                        .catch(error => {
-                            m.sendError(
-                                error,
-                                `Error when translating into ${config.LANG}`
-                            );
-                        });
+                    m.react("🤖");
+                    return await reply(botResponse);
                 })
                 .catch(error => {
                     m.sendError(error, "*Error generating response*");
@@ -673,7 +660,7 @@ cmd(
                 { quoted: mek }
             );
             res = await fetchJson(
-                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${from}`
+                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${encodeURIComponent(from.split('@')[0])}`
             );
             if (res.status === "success") {
                 await conn.sendMessage(
@@ -683,15 +670,7 @@ cmd(
                 );
                 await mek.react("🤖");
             } else {
-                await conn.sendMessage(
-                    from,
-                    {
-                        text: "an error occred generating resopnce",
-                        edit: msg.key
-                    },
-                    { quoted: mek }
-                );
-                await mek.react("⚠️");
+                await m.sendError(new Error("an error occured generation response at gpt4"), "an error occred generating resopnce", msg.key);
             }
         } catch (e) {
             m.sendError(
@@ -773,8 +752,7 @@ cmd(
                         mek.react("🤖");
                     })
                     .catch(
-                        e => m.sendError(e, "*Error translating response*"),
-                        msg.key
+                        e => m.sendError(e, "*Error translating response*", msg.key)
                     );
             } else {
                 if (isMe || isdev)
