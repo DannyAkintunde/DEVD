@@ -976,9 +976,11 @@ cmd(
     let mode = "text"
     if (image) mode = "image"
     const options = {
+        headers: {
         "User-Agent":
                     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
         ...(global.APIKEYS?.fastapi ? { "x-api-key": randChoice(global.APIKEYS.fastapi) } : {})
+        }
     }
     async function handleResponse(response){
       if (response?.status == 200) {
