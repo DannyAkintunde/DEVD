@@ -673,7 +673,7 @@ cmd(
             if (res.status === 200) {
                 await conn.sendMessage(
                     from,
-                    { text: res.data.response, edit: msg.key },
+                    { text: res.response, edit: msg.key },
                     { quoted: mek }
                 );
                 await mek.react("🤖");
