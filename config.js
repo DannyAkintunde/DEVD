@@ -8,7 +8,7 @@ global.APIKEYS = {
     yanz: ["Danny"],
     betabotz: ["CLftgUOG"],
     zubair: ["4c8dc29dc35b8e258b"],
-    fastapi: []
+    fastapi: ["44849ead-bf02-4fdf-8efc-73d2ed9eb1a7","b368cd01-4266-4383-9924-ee6f596e2165"]
 };
 module.exports = {
     SESSION_ID: process.env.SESSION_ID || "youre session id",
