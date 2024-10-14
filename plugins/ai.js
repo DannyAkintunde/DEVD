@@ -299,26 +299,14 @@ cmd(
             for updates about you or TKM-BOT check our whatsapp channel ${global.link}`;
         if (!q) return reply("Yes, i'm listening to you.");
         try {
-            const message = await trans(q, {
-                to: "en"
-            });
             fetch(
-                `https://itzpire.com/ai/gpt-logic?q=${encodeURIComponent(message)}&logic=${payload}&chat_id=${from}&realtime=false`
+                `https://itzpire.com/ai/gpt-logic?q=${encodeURIComponent(q)}&logic=${encodeURIComponent(payload)}&chat_id=${encodeURIComponent(from.split('@')[0])}&realtime=false`
             )
                 .then(response => response.json())
                 .then(data => {
                     const botResponse = data.result;
-                    trans(botResponse, { to: config.LANG.toLowerCase() })
-                        .then(translatedResponse => {
-                            m.react("🤖");
-                            reply(translatedResponse);
-                        })
-                        .catch(error => {
-                            m.sendError(
-                                error,
-                                `Error when translating into ${config.LANG}`
-                            );
-                        });
+                    m.react("🤖");
+                    return reply(botResponse);
                 })
                 .catch(error => {
                     m.sendError(error, "*Error generating response*");
@@ -663,7 +651,7 @@ cmd(
         use: ".gpt4 <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { reply, from, q }) => {
+    async (conn, mek, m, { reply, from, q, isMe, isdev}) => {
         try {
             if (!q) return await reply("ask something");
             const msg = await conn.sendMessage(
@@ -671,26 +659,39 @@ cmd(
                 { text: "thinking......" },
                 { quoted: mek }
             );
+            const options = {
+              headers: {
+                "User-Agent":
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+                "x-api-key": randChoice(global.APIKEYS.fastapi)
+              }
+            }
             res = await fetchJson(
-                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${jid}`
+                `https://fastrestapis.fasturl.cloud/ai/gpt4?prompt=${encodeURIComponent(q)}&sessionId=${encodeURIComponent(from.split('@')[0])}`,
+                options
             );
-            if (res.status === "success") {
+            if (res.status === 200) {
                 await conn.sendMessage(
                     from,
-                    { text: res.data.response, edit: msg.key },
+                    { text: res.response, edit: msg.key },
                     { quoted: mek }
                 );
                 await mek.react("🤖");
+            } else if (res.status == 403) {
+                if (isMe || isdev)
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "can't get response check *Apikey*.\n> apikey limit could have been reached",
+                        msg.key
+                    );
+                else
+                    m.sendError(
+                        new Error("Invalid ApiKey"),
+                        "*Server is busy. Try again later.!*",
+                        msg.key
+                    );
             } else {
-                await conn.sendMessage(
-                    from,
-                    {
-                        text: "an error occred generating resopnce",
-                        edit: msg.key
-                    },
-                    { quoted: mek }
-                );
-                await mek.react("⚠️");
+                await m.sendError(new Error("an error occured generation response at gpt4"), "an error occred generating resopnce", msg.key);
             }
         } catch (e) {
             m.sendError(
@@ -772,8 +773,7 @@ cmd(
                         mek.react("🤖");
                     })
                     .catch(
-                        e => m.sendError(e, "*Error translating response*"),
-                        msg.key
+                        e => m.sendError(e, "*Error translating response*", msg.key)
                     );
             } else {
                 if (isMe || isdev)
@@ -989,9 +989,11 @@ cmd(
     let mode = "text"
     if (image) mode = "image"
     const options = {
-        "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
-        ...(global.APIKEYS?.fastapi ? { "x-api-key": randChoice(global.APIKEYS.fastapi) } : {})
+        headers: {
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36",
+            "x-api-key": randChoice(global.getApi('fastapi'))
+        }
     }
     async function handleResponse(response){
       if (response?.status == 200) {
