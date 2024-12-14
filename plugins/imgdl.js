@@ -1,529 +1,190 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
-const {
-    getBuffer,
-    getGroupAdmins,
-    getRandom,
-    h2k,
-    isUrl,
-    Json,
-    runtime,
-    sleep,
-    fetchJson
-} = require("../lib/functions");
-const gis = require("async-g-i-s");
-const { unsplash, pixabay } = require("@sl-code-lords/image-library");
+const parseCommand = require("../lib/commands/commandParser");
+const { sleep } = require("../lib/functions");
+const { image: googleImage } = require("googlethis");
+const { randomUUID } = require("crypto");
 
-var imgmsg = "";
-if (config.LANG === "SI") imgmsg = "```කරුණාකර වචන කිහිපයක් ලියන්න!```";
-else imgmsg = "```Please write a few words!```";
 
-var desc = "";
-if (config.LANG === "SI") desc = "ගූගල් හි අදාළ පින්තූර සෙවීම.";
-else desc = "Search for related pics on Google.";
-
-var desc2 = "";
-if (config.LANG === "SI") desc2 = "unsplash.com හි අදාළ පින්තූර සෙවීම.";
-else desc2 = "Search for related pics on unsplash.com.";
-
-var desc3 = "";
-if (config.LANG === "SI") desc3 = "pixabay.com හි අදාළ පින්තූර සෙවීම.";
-else desc3 = "Search for related pics on pixabay.com.";
-
-var desc4 = "";
-if (config.LANG === "SI") desc4 = "bing හි අදාළ පින්තූර සෙවීම.";
-else desc4 = "Searche for related pics on bing.";
-
-var errt = "";
-if (config.LANG === "SI") errt = "*මට කිසිවක් සොයාගත නොහැකි විය :(*";
-else errt = "*I couldn't find anything :(*";
+const googleImageSearchs = {};
 
 cmd(
     {
         pattern: "img",
-        react: "🖼️",
-        desc: desc2,
+        alias: ["gimg", "googleimage"],
+        react: "✔️",
+        desc: "Google image search.",
         category: "search",
-        use: ".img2 car",
-        filename: __filename
+        use: ".wabeta"
     },
     async (
         conn,
         mek,
         m,
-        {
-            from,
-            l,
-            quoted,
-            prefix,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
+        { q, from, prefix, command, sender, isSuperUser, reply }
     ) => {
-        try {
-            let dat = `「 ${config.BOT} 」
-
-  *𝗦𝗘𝗟𝗘𝗖𝗧 𝗜𝗠𝗚 𝗗𝗢𝗪𝗡𝗟𝗢𝗗𝗘𝗥 𝗧𝗬𝗣𝗘*`;
-
-            const sections = [
-                {
-                    title: "",
-                    rows: [
-                        {
-                            title: "1",
-                            rowId: prefix + "img1 " + q,
-                            description: "Image list 1"
-                        },
-                        {
-                            title: "2",
-                            rowId: prefix + "img2 " + q,
-                            description: "Image list 2"
-                        },
-                        {
-                            title: "3",
-                            rowId: prefix + "img3 " + q,
-                            description: "Image list 3"
-                        },
-                        {
-                            title: "4",
-                            rowId: prefix + "img4 " + q,
-                            description: "Image list 4"
-                        }
-                    ]
-                }
-            ];
-            const listMessage = {
-                text: dat,
-                footer: config.FOOTER,
-                buttonText: "🔢 Reply below number,",
-                sections,
-                contextInfo: {
-                    externalAdReply: {
-                        title: `「 ${config.BOT} 」`,
-                        body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                        mediaType: 1,
-                        sourceUrl: "",
-                        thumbnailUrl:
-                            "https://telegra.ph/file/ba8ea739e63bf28c30b37.jpg",
-                        renderLargerThumbnail: false,
-                        showAdAttribution: true
-                    }
-                }
-            };
-
-            return await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-            m.sendError(e, N_FOUND);
+        let text = q;
+        if (m.quoted) {
+            text = m.quoted.body;
+            text = text
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
         }
-    }
-);
-
-cmd(
-    {
-        pattern: "img4",
-        react: "🖼️",
-        desc: desc2,
-        category: "search",
-        use: ".img4 car",
-
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            prefix,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
+        if (!text) return await reply("*Please give me a query to search !!*");
+        const commandStr = `${prefix}${command} ${text}`;
+        const parsedCommand = parseCommand(commandStr);
+        const options = parsedCommand.options;
+        const page = parseInt(options.page || options.p);
+        if (isNaN(page) || page < 0)
+            return reply("Page must be an integer greater than or equal to 0.");
+        const resultLength = parseInt(options.l) || 5;
+        if (isNaN(resultLength) || resultLength > 20 || resultLength < 1)
+            return reply("Length must be an integer betwewn 1-20.");
+        let unsafe = (options.unsafe || options.us) && !config.NSFW;
+        if (unsafe && !isSuperUser) {
+            unsafe = !unsafe;
+            reply("You must be a superUser to use this option");
         }
-    ) => {
-        try {
-            if (!q) return await reply(imgmsg);
-            const results = await unsplash.search({ query: q, page: 1 });
-            let data = results;
-            if (data.result.length < 1)
-                return await conn.sendMessage(
-                    from,
-                    { text: N_FOUND },
-                    { quoted: mek }
-                );
-            var srh = [];
-            let nombor = 1;
-            for (var i = 0; i < data.result.length; i++) {
-                srh.push({
-                    description: "Image number: " + nombor++,
-                    title: i + 1,
-                    rowId: prefix + "dimg " + data.result[i]
-                });
+        const safe = !(unsafe || config.NSFW);
+        text = parsedCommand.args.join(" ");
+        const images = await googleImage(text, { page, safe });
+        const searchId = randomUUID();
+        googleImageSearchs[searchId] = {
+            range: resultLength,
+            images,
+            query: text.trim()
+        };
+        for (let i = 0; i < resultLength; i++) {
+            const image = images[i];
+            let caption = `*${image.origin?.title || "Here's your image"}*`;
+
+            if (image.origin?.website) {
+                const { width, height } = image;
+                const { name, domain, url } = image.origin.website;
+                caption += `\nFrom ${name || "Google"} ${
+                    domain ? "[" + domain + "]" : ""
+                }`;
+                if (width && height) {
+                    caption += `\n*Size*: ${width}x${height}`;
+                }
+                if (url) {
+                    caption += `\n*Read more*: ${url}`;
+                }
             }
-            const sections = [
-                {
-                    title: "Result from unsplash.com. 📲",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
-
-   *IMG DOWNLOADER 04*
-
-*🖼️ Image Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from unsplash.com. 📲",
-                buttonText: "Select Image",
-                sections
-            };
-            await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-            m.sendError(e, errt);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "img3",
-        react: "🖼️",
-        desc: desc3,
-        category: "search",
-        use: ".img3 car",
-
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            prefix,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q) return await reply(imgmsg);
-            const results = await pixabay.search({ query: q, page: 1 });
-            let data = results;
-            if (data.result.length < 1)
-                return await conn.sendMessage(
-                    from,
-                    { text: N_FOUND },
-                    { quoted: mek }
-                );
-            var srh = [];
-            let nombor = 1;
-            for (var i = 0; i < data.result.length; i++) {
-                srh.push({
-                    description: "Image number: " + nombor++,
-                    title: i + 1,
-                    rowId: prefix + "dimg " + data.result[i]
-                });
-            }
-            const sections = [
-                {
-                    title: "Result from pixabay.com. 📲",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
-
-   *IMG DOWNLOADER 03*
-
-*🖼️ Image Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from pixabay.com. 📲",
-                buttonText: "Select Image",
-                sections
-            };
-            await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-            m.sendError(e, errt);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "img2",
-        react: "🖼️",
-        desc: desc4,
-        category: "search",
-        use: ".img2 car",
-
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            prefix,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q) return await reply(imgmsg);
-            const results = await fetchJson(
-                "https://api.akuari.my.id/search/bingimage?query=" + q
-            );
-            let data = results.hasil;
-            if (data.results.length < 1)
-                return await conn.sendMessage(
-                    from,
-                    { text: N_FOUND },
-                    { quoted: mek }
-                );
-            var srh = [];
-            let nombor = 1;
-            for (var i = 0; i < data.results.length; i++) {
-                srh.push({
-                    description: data.results[i].title,
-                    title: i + 1,
-                    rowId: prefix + "dimg " + data.results[i].direct
-                });
-            }
-            const sections = [
-                {
-                    title: "Result from bing 📲",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
-
-   *IMG DOWNLOADER 02*
-
-*🖼️ Image Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from bing 📲",
-                buttonText: "Select Image",
-                sections
-            };
-            await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-            m.sendError(e, errt);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "img1",
-        react: "🖼️",
-        desc: desc,
-        category: "search",
-        use: ".img1 car",
-
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            prefix,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q) return await reply(imgmsg);
-            const results = await gis(q);
-            let data = results.slice(0, 100);
-            if (data.length < 1)
-                return await conn.sendMessage(
-                    from,
-                    { text: N_FOUND },
-                    { quoted: mek }
-                );
-            var srh = [];
-            let nombor = 1;
-            for (var i = 0; i < data.length; i++) {
-                srh.push({
-                    description: "Image number: " + nombor++,
-                    title: i + 1,
-                    rowId: prefix + "dimg " + data[i].url
-                });
-            }
-            const sections = [
-                {
-                    title: "Result from google. 📲",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
-
-   *IMG DOWNLOADER 01*
-
-*🖼️ Image Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from google. 📲",
-                buttonText: "Select Image",
-                sections
-            };
-            await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-            m.sendError(e, errt);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "dimg",
-        dontAddCommandList: true,
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            await conn.sendMessage(from, {
-                react: { text: "🔃", key: mek.key }
-            });
-            await conn.sendMessage(
+            const imageMsg = await conn.sendMessage(
                 from,
-                { image: { url: q }, caption: config.FOOTER },
+                {
+                    contextInfo: {
+                        mentionedJid: [sender]
+                    },
+                    image: { url: image.url },
+                    caption
+                },
                 { quoted: mek }
             );
-            await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
-            });
-        } catch (e) {
-            m.sendError(e, errt);
+            await sleep(100);
         }
+        const txt = `*Query*: ${text.trim()}\n*Results*: ${images.length}`;
+        await conn.buttonMessage(
+            from,
+            {
+                text: txt,
+                contextInfo: {
+                    isForwarded: false
+                },
+                footer: config.FOOTER,
+                ...(true
+                    ? {
+                          buttons: [
+                              {
+                                  type: 1,
+                                  buttonId: `${prefix}gimgm ${searchId} 1`,
+                                  buttonText: {
+                                      displayText: "More results"
+                                  }
+                              }
+                          ]
+                      }
+                    : {})
+            },
+            { quoted: mek }
+        );
+    }
+);
+
+cmd(
+    {
+        pattern: "gimgm",
+        dontAddCommandList: true,
+        filename: __filename,
+        category: "search"
+    },
+    async (conn, mek, m, { q, args, reply, from, sender, prefix }) => {
+        if (!q) m.sendError(new Error("No query"));
+        const [searchId, index] = args;
+        if (!(searchId || parseInt(index)))
+            return reply(global.responses.humanSpy);
+        if (args.length > 2) reply(global.responses.humanSpy);
+        const search = googleImageSearchs[searchId];
+        if (!search) return reply("search expired start a new search.");
+        const start = search.range * parseInt(index) - 1;
+        const end = start + search.range + 1;
+        const images = search.images.slice(start, end);
+        images.forEach(async image => {
+            let caption = `*${image.origin?.title || "Here's your image"}*`;
+
+            if (image.origin?.website) {
+                const { width, height } = image;
+                const { name, domain, url } = image.origin.website;
+                caption += `\nFrom ${name || "Google"} ${
+                    domain ? "[" + domain + "]" : ""
+                }`;
+                if (width && height) {
+                    caption += `\n*Size*: ${width}x${height}`;
+                }
+                if (url) {
+                    caption += `\n*Read more*: ${url}`;
+                }
+            }
+            const imageMsg = await conn.sendMessage(
+                from,
+                {
+                    contextInfo: {
+                        mentionedJid: [sender]
+                    },
+                    image: { url: image.url },
+                    caption
+                },
+                { quoted: mek }
+            );
+            await sleep(100);
+        });
+        const txt = `*Query*: ${search.query}\n*Sent*: ${images.length}`;
+        await conn.buttonMessage(
+            from,
+            {
+                text: txt,
+                contextInfo: {
+                    isForwarded: false
+                },
+                footer: config.FOOTER,
+                ...(true
+                    ? {
+                          buttons: [
+                              {
+                                  type: 1,
+                                  buttonId: `${prefix}gimgm ${searchId} ${
+                                      index + 1
+                                  }`,
+                                  buttonText: {
+                                      displayText: "More results"
+                                  }
+                              }
+                          ]
+                      }
+                    : {})
+            },
+            { quoted: mek }
+        );
     }
 );

@@ -1,15 +1,6 @@
 const config = require("../config");
 const util = require("util");
-const { find } = require("raganork-bot");
 const google = require("googlethis");
-const trueCaller = async num => {
-    try {
-        var res = await find(num, "", "");
-    } catch {
-        var res = false;
-    }
-    return res;
-};
 const { cmd, commands } = require("../command");
 const {
     getBuffer,
@@ -23,22 +14,69 @@ const {
     fetchJson
 } = require("../lib/functions");
 
-var tmsg = "";
-if (config.LANG === "SI") tmsg = "*කරුණාකර මට දුරකථන අංකයක් දෙන්න. !*";
-else tmsg = "*Please give me phone number !*";
-var descg = "";
-if (config.LANG === "SI")
-    descg = "එය ලබා දී ඇති දුරකථන අංකයේ හිමිකරු සොයා ගනී.";
-else descg = "It find owner of given phone number.";
+cmd(
+    {
+        pattern: "wabeta",
+        alias: ["wabetainfo", "betawa"],
+        react: "✔️",
+        desc: "It gives whatsapp beta news.",
+        category: "search",
+        use: ".wabeta"
+    },
+    async (
+        conn,
+        mek,
+        m,
+        {
+            from
+        }
+    ) => {
+        try {
+            const data = (
+                await fetchJson("https://vihangayt.me/details/wabetainfo")
+            ).data;
+            let info = `*🥏 Title :* ${data.title}
+*📅 Date :* ${data.date}
+*🖥️ Platform :* ${data.platform}
+*🔗 URL :* ${data.url}
+*🗞️ Short Desc :*
+${data.shortdesc}
+
+*ℹ️ FAQ*
+
+*❓ Question :* ${data.faq[0].question}
+*👨🏻‍💻 Answer :* ${data.faq[0].answer}
+
+*❓ Question :* ${data.faq[1].question}
+*👨🏻‍💻 Answer :* ${data.faq[1].answer}
+
+*❓ Question :* ${data.faq[2].question}
+*👨🏻‍💻 Answer :* ${data.faq[2].answer}
+
+*❓ Question :* ${data.faq[3].question}
+*👨🏻‍💻 Answer :* ${data.faq[3].answer}
+
+*📰 Full Desc :*
+${data.fulldesc}`;
+            return await conn.sendMessage(
+                from,
+                { image: { url: data.image }, caption: info },
+                { quoted: mek }
+            );
+        } catch (e) {
+            m.sendError(e, cantf);
+        }
+    }
+);
 
 cmd(
     {
-        pattern: "true",
-        alias: ["truecaller"],
-        react: "💯",
-        desc: descg,
+        pattern: "lyrics",
+        alias: ["lyric"],
+        react: "🎙️",
+        desc: "It gives lyrics of given song name",
         category: "search",
-        use: ".true <phone number>",
+        use: ".lyric <song name>",
         filename: __filename
     },
     async (
@@ -47,38 +85,51 @@ cmd(
         m,
         {
             from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
             q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
             pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
             reply
         }
     ) => {
         try {
-            if (!q) return reply(tmsg);
-            let trusend = q.replace(/[^0-9]/g, "");
-            let rslt = await trueCaller(trusend);
-            if (rslt === "false") return reply("Can't  find this number");
-            await reply(util.format(rslt));
+            if (!q) return reply("*Please give me a song name. !*");
+            const { data: result } = await fetchJson(
+                "https://itzpire.com/search/lyrics?query=" + q
+            );
+            if (result.lyrics) {
+                let response = `
+   *LYRICS SEARCH*
+   
+*${result.title}*
+_${result.album}_
+
+
+${result.lyrics}
+
+└───────────◉`;
+                return await conn.sendMessage(
+                    from,
+                    {
+                        image: { url: result.thumb },
+                        caption: response,
+                        contextInfo: {
+                            mentionedJid: [""],
+                            groupMentions: [],
+                            externalAdReply: {
+                                title: `「 LYRICS SEARCH 」`,
+                                body: result.title,
+                                mediaType: 1,
+                                sourceUrl: global.link,
+                                thumbnailUrl: config.LOGO,
+                                renderLargerThumbnail: false,
+                                showAdAttribution: true
+                            }
+                        }
+                    },
+                    { quoted: mek }
+                );
+            } else reply("*I cant find lyrics of this song !*");
         } catch (e) {
-            m.sendError(e)
+            m.sendError(e);
         }
     }
 );

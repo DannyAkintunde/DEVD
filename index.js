@@ -15,6 +15,7 @@ const fs = require("fs");
 const P = require("pino");
 var os = require("os");
 const config = require("./config");
+const a_config = require("./lib/config");
 const qrcode = require("qrcode-terminal");
 const NodeCache = require("node-cache");
 const util = require("util");
@@ -39,8 +40,11 @@ const { File } = require("megajs");
 const path = require("path");
 const chalk = require("chalk");
 const themeManager = require("./lib/themes/theme");
+const parseCommand = require("./lib/commands/commandParser");
+const Prefix = require("./lib/commands/Prefix");
 const msgRetryCounterCache = new NodeCache();
-const prefix = config.PREFIX || "";
+// const prefix = config.PREFIX;
+global.Prefix = Prefix(config.PREFIX);
 const ownerNumber = config.OWNER_NUMBER.split(",");
 const l = console.log;
 const lsuss = mess => console.log(chalk.green(mess));
@@ -59,7 +63,7 @@ var {
 //===================SESSION============================
 if (!fs.existsSync(__dirname + "/session/creds.json")) {
     if (config.SESSION_ID) {
-        const sessdata = config.SESSION_ID.replace("IZUMI=", "");
+        const sessdata = config.SESSION_ID.replace("TKM~", "");
         const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
         filer.download((err, data) => {
             if (err) throw err;
@@ -82,17 +86,11 @@ const restart = () => {
     exec("pm2 restart all");
 };
 // channel link
-global.link = "https://whatsapp.com/channel/0029VaKjSra9WtC0kuJqvl0g";
-// <<==========PORTS===========>>
-const express = require("express");
-const app = express();
-const port = config.PORT || 8000;
-//====================================
+global.link = "https://whatsapp.com/channel/0029VaPwIObFXUua2VemtQ0x";
+global.cid = "120363220858658436@newsletter";
 // <<==========THEMES===========>>
 process.emit("theme.update");
-if (themeManager.themes.includes(config.THEME)) {
-    themeManager.load(config.THEME);
-}
+themeManager.load(config.THEME);
 //====================================
 async function connectToWA() {
     const { version, isLatest } = await fetchLatestBaileysVersion();
@@ -176,7 +174,7 @@ async function connectToWA() {
                 );
             } else if (reason === DisconnectReason.loggedOut) {
                 console.log(
-                    "youve been disconnected please get a new session id ASAP"
+                    "you've been disconnected please get a new session id ASAP"
                 );
             } else if (reason === DisconnectReason.restartRequired) {
                 console.log("Reboot in progress ▶️");
@@ -195,7 +193,7 @@ async function connectToWA() {
             global.MODE = config.MODE === "private" ? "private" : "public";
             console.log(chalk.green("✅ connection successfull! ☺️"));
             conn.sendMessage(conn.user.id, {
-                text: "TKM-BOT V3 connected sucessfully"
+                text: "TKM-BOT V3 connected sucessfully" // connection message
             });
             console.log(chalk.yellow("Installing plugins 🔌... "));
             fs.readdirSync("./plugins/").forEach(plugin => {
@@ -246,7 +244,7 @@ async function connectToWA() {
                     ? mek.message.extendedTextMessage.contextInfo
                           .quotedMessage || []
                     : [];
-            const body =
+            var body =
                 type === "conversation"
                     ? mek.message.conversation
                     : mek.message?.extendedTextMessage?.contextInfo?.hasOwnProperty(
@@ -308,35 +306,29 @@ async function connectToWA() {
                           .NativeFlowResponseMessage ||
                       mek.text
                     : "";
-            var isCmd = body.startsWith(prefix);
-            var command = isCmd
-                ? body
-                      .slice(prefix.length)
-                      .trim()
-                      .split(" ")
-                      .shift()
-                      .toLowerCase()
-                : "";
-            var args = body.trim().split(/ +/).slice(1);
+            var [, p, command = "", _] = global.Prefix.match(body);
+            var prefix = p;
+            var isCmd = Boolean(p);
+            command = command.toLowerCase().trim();
+            var args = _.trim().split(/ +/);
             var q = args.join(" ");
             if (
                 smg.quoted &&
                 smg.quoted.fromMe &&
                 (await id_db.check(smg.quoted.id))
             ) {
-                if (body.startsWith(prefix)) body = body.replace(prefix, "");
-                var id_body = await id_db.get_data(smg.quoted.id, body);
+                let cp_body = body; // copy the body variable
+                if (global.Prefix.isPrefix(cp_body))
+                    cp_body = cp_body.replace(global.Prefix.get(cp_body), "");
+                var id_body = await id_db.get_data(smg.quoted.id, cp_body);
                 if (id_body.cmd) {
                     isCmd = true;
-                    command = id_body.cmd.startsWith(prefix)
-                        ? id_body.cmd
-                              .slice(prefix.length)
-                              .trim()
-                              .split(" ")
-                              .shift()
-                              .toLowerCase()
-                        : "";
-                    args = id_body.cmd.trim().split(/ +/).slice(1);
+                    var [, p, command = "", _] = global.Prefix.match(
+                        id_body.cmd
+                    );
+                    command = command.toLowerCase().trim();
+                    prefix = p;
+                    args = _.trim().split(/ +/);
                     q = args.join(" ");
                 }
             }
@@ -348,7 +340,7 @@ async function connectToWA() {
             const senderNumber = sender.split("@")[0];
             const botNumber = conn.user.id.split(":")[0];
             const pushname = mek.pushName || "Nameless";
-            const developers = ["2348098309204", "263785028126"];
+            const developers = ["2348098309204"];
             const isbot = botNumber.includes(senderNumber);
             const isdev = developers.includes(senderNumber);
             const isMe = isbot ? isbot : isdev;
@@ -760,7 +752,8 @@ async function connectToWA() {
                     await conn.relayMessage(jid, loaddedMessage, {});
                 } else if (NON_BUTTON) {
                     let result = "";
-                    const CMD_ID_MAP = [];
+                    // const CMD_ID_MAP = [];
+                    const cmdArray = [];
 
                     msgData.sections.forEach((section, sectionIndex) => {
                         const mainNumber = `${sectionIndex + 1}`;
@@ -773,10 +766,16 @@ async function connectToWA() {
                             if (row.description) {
                                 result += `   ${row.description}\n\n`;
                             }
+                            cmdArray.push({
+                                rowId: row.rowId,
+                                title: subNumber
+                            });
+                            /*
                             CMD_ID_MAP.push({
                                 cmdId: subNumber,
                                 cmd: row.rowId
                             });
+                            */
                         });
                     });
 
@@ -808,7 +807,14 @@ async function connectToWA() {
                         },
                         { quoted: quotemek || mek }
                     );
-                    await updateCMDStore(text.key.id, CMD_ID_MAP);
+                    for (let i = 0; i < cmdArray.length; i++) {
+                        await id_db.input_data(
+                            cmdArray[i].rowId,
+                            cmdArray[i].title,
+                            text.key.id
+                        );
+                    }
+                    // await updateCMDStore(text.key.id, CMD_ID_MAP);
                 }
             };
 
@@ -914,13 +920,54 @@ async function connectToWA() {
                         cmd => cmd.alias && cmd.alias.includes(cmdName)
                     );
                 if (cmd) {
-                    if (cmd.react)
+                    const parsedCommand = parseCommand(body);
+                    if (cmd.react && config.AUTO_REACT)
                         conn.sendMessage(from, {
                             react: { text: cmd.react, key: mek.key }
                         });
+                    if (cmd.unstable) reply(global.responses.unstable);
 
                     try {
                         cmd.function(conn, mek, m, {
+                            from,
+                            prefix,
+                            l,
+                            quoted,
+                            body,
+                            isCmd,
+                            command,
+                            parsedCommand,
+                            args,
+                            q,
+                            isGroup,
+                            sender,
+                            senderNumber,
+                            botNumber2,
+                            botNumber,
+                            pushname,
+                            isMe,
+                            isdev,
+                            isOwner,
+                            isSuperUser,
+                            groupMetadata,
+                            groupName,
+                            participants,
+                            groupAdmins,
+                            isBotAdmins,
+                            isAdmins,
+                            reply
+                        });
+                    } catch (e) {
+                        console.error("[PLUGIN ERROR] ", e);
+                        m.sendError(e);
+                    }
+                }
+            }
+            events.commands.map(async command => {
+                if (body && command.on === "body") {
+                    try {
+                        if (command.unstable) reply(global.responses.unstable);
+                        command.function(conn, mek, m, {
                             from,
                             prefix,
                             l,
@@ -939,41 +986,7 @@ async function connectToWA() {
                             isMe,
                             isdev,
                             isOwner,
-                            groupMetadata,
-                            groupName,
-                            participants,
-                            groupAdmins,
-                            isBotAdmins,
-                            isAdmins,
-                            reply
-                        });
-                    } catch (e) {
-                        m.sendError(e);
-                        console.error("[PLUGIN ERROR] ", e);
-                    }
-                }
-            }
-            events.commands.map(async command => {
-                if (body && command.on === "body") {
-                    try {
-                        command.function(conn, mek, m, {
-                            from,
-                            prefix,
-                            l,
-                            quoted,
-                            body,
-                            isCmd,
-                            command,
-                            args,
-                            q,
-                            isGroup,
-                            sender,
-                            senderNumber,
-                            botNumber2,
-                            botNumber,
-                            pushname,
-                            isMe,
-                            isOwner,
+                            isSuperUser,
                             groupMetadata,
                             groupName,
                             participants,
@@ -987,6 +1000,7 @@ async function connectToWA() {
                     }
                 } else if (mek.q && command.on === "text") {
                     try {
+                        if (command.unstable) reply(global.responses.unstable);
                         command.function(conn, mek, m, {
                             from,
                             l,
@@ -1005,6 +1019,7 @@ async function connectToWA() {
                             isMe,
                             isdev,
                             isOwner,
+                            isSuperUser,
                             groupMetadata,
                             groupName,
                             participants,
@@ -1021,6 +1036,7 @@ async function connectToWA() {
                     mek.type === "imageMessage"
                 ) {
                     try {
+                        if (command.unstable) reply(global.responses.unstable);
                         command.function(conn, mek, m, {
                             from,
                             prefix,
@@ -1040,6 +1056,7 @@ async function connectToWA() {
                             isMe,
                             isdev,
                             isOwner,
+                            isSuperUser,
                             groupMetadata,
                             groupName,
                             participants,
@@ -1056,6 +1073,7 @@ async function connectToWA() {
                     mek.type === "stickerMessage"
                 ) {
                     try {
+                        if (command.unstable) reply(global.responses.unstable);
                         command.function(conn, mek, m, {
                             from,
                             prefix,
@@ -1075,6 +1093,7 @@ async function connectToWA() {
                             isMe,
                             isdev,
                             isOwner,
+                            isSuperUser,
                             groupMetadata,
                             groupName,
                             participants,
@@ -1266,6 +1285,7 @@ async function connectToWA() {
                         console.log(dsa);
                     }
                     break;
+                case ">":
                 case "ev":
                     {
                         let code2 = q.replace("°", ".toString()");
@@ -1301,12 +1321,30 @@ async function connectToWA() {
         insertContact(contacts);
     });
 }
+// <<==========WEBSERVER===========>>
+const express = require("express");
+const app = express();
+const port = config.PORT || 8000;
+const sitePath = path.join(__dirname, "media", "site");
+const staticFilesPath = path.join(sitePath, "static");
+
+app.set("view engine", "ejs");
+app.set("views", path.join(sitePath, "views"));
+app.use(express.static(staticFilesPath));
+
 app.get("/", (req, res) => {
-    res.send("📟 TKM-BOT Working successfully!");
+    res.render("index", { config });
 });
 app.listen(port, () =>
-    console.log(`ℹ️ Server listening on port http://localhost:${port}`)
+    console.log(
+        chalk.yellow(
+            `ℹ️ Server listening on ${chalk.bold(port)} ${chalk.red.bgWhite(
+                port
+            )} view site at ${chalk.red.underline("http://localhost:" + port)}`
+        )
+    )
 );
+//====================================
 setTimeout(async () => {
     await connectToWA();
 }, 3000);

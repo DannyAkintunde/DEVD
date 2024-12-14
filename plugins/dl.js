@@ -1,411 +1,112 @@
 const config = require("../config");
-const fg = require("api-dylux");
+const { GDriveError, fetchInfo: GDriveDl } = require("gdrive-file-info");
 const { cmd, commands } = require("../command");
+const parseCommand = require("../lib/commands/commandParser");
 const {
-    getBuffer,
-    getGroupAdmins,
-    getRandom,
-    h2k,
     isUrl,
     Json,
-    runtime,
     sleep,
-    fetchJson
+    fetchJson,
+    fetchBuffer,
+    getBuffer,
+    formatSize,
+    fetchSocialPreview
 } = require("../lib/functions");
-const cheerio = require("cheerio");
-const axios = require("axios");
+const { toPTT } = require("../lib/editor");
+const mime = require("mime-types");
+const {
+    tiktok,
+    fbsaver,
+    aiodl,
+    mediaFire,
+    igdl,
+    spotify,
+    threads
+} = require("../lib/scrapers");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
-const vm = require("vm");
-const { mediafireDl } = require("mfiredlcore-vihangayt");
-const { Download } = require("nima-threads-dl-api");
-const { Tiktok } = require("../lib/tiktok");
-var { subsearch, subdl } = require("@sl-code-lords/si-subdl");
 
-cmd(
-    {
-        pattern: "fmmods",
-        alias: ["wamod", "wamods", "fmmod"],
-        react: "📲",
-        desc: "Download all fmmods.",
-        category: "download",
-        use: ".fmmods",
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            prefix,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            let response = (
-                await fetchJson("https://vihangayt.me/download/fmmods")
-            ).data;
-            var buttons = [
-                {
-                    buttonId:
-                        prefix +
-                        "dmod " +
-                        response.com_whatsapp.link +
-                        "+" +
-                        response.com_whatsapp.name,
-                    buttonText: { displayText: response.com_whatsapp.name },
-                    type: 1
-                },
-                {
-                    buttonId:
-                        prefix +
-                        "dmod " +
-                        response.com_fmwhatsapp.link +
-                        "+" +
-                        response.com_fmwhatsapp.name,
-                    buttonText: { displayText: response.com_fmwhatsapp.name },
-                    type: 1
-                },
-                {
-                    buttonId:
-                        prefix +
-                        "dmod " +
-                        response.com_gbwhatsapp.link +
-                        "+" +
-                        response.com_gbwhatsapp.name,
-                    buttonText: { displayText: response.com_gbwhatsapp.name },
-                    type: 1
-                },
-                {
-                    buttonId:
-                        prefix +
-                        "dmod " +
-                        response.com_yowhatsapp.link +
-                        "+" +
-                        response.com_yowhatsapp.name,
-                    buttonText: { displayText: response.com_yowhatsapp.name },
-                    type: 1
-                }
-            ];
-
-            const buttonMessage = {
-                caption: `「 ${config.BOT} 」
-      
-*Foud Whatsapp Mod Downloader 📲*
-`,
-                footer: config.FOOTER,
-                buttons: buttons,
-                headerType: 1
-            };
-            return await conn.buttonMessage(from, buttonMessage, mek);
-        } catch (e) {
-            m.sendError(e);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "dmod",
-        dontAddCommandList: true,
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
-            });
-            let [modlink, modname] = q.split`+`;
-            await conn.sendMessage(
-                from,
-                {
-                    document: { url: modlink },
-                    fileName: modname + ".apk",
-                    mimetype: "application/vnd.android.package-archive"
-                },
-                { quoted: mek }
-            );
-            await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
-            });
-        } catch (e) {
-            m.sendError(e);
-        }
-    }
-);
-
-async function fbDownloader(url) {
-    try {
-        const response1 = await axios({
-            method: "POST",
-            url: "https://snapsave.app/action.php?lang=vn",
-            headers: {
-                accept: "*/*",
-                "accept-language": "vi,en-US;q=0.9,en;q=0.8",
-                "content-type": "multipart/form-data",
-                "sec-ch-ua":
-                    '"Chromium";v="110", "Not A(Brand";v="24", "Microsoft Edge";v="110"',
-                "sec-ch-ua-mobile": "?0",
-                "sec-ch-ua-platform": '"Windows"',
-                "sec-fetch-dest": "empty",
-                "sec-fetch-mode": "cors",
-                "sec-fetch-site": "same-origin",
-                Referer: "https://snapsave.app/vn",
-                "Referrer-Policy": "strict-origin-when-cross-origin"
-            },
-            data: {
-                url
-            }
-        });
-
-        let html;
-        const evalCode = response1.data.replace(
-            "return decodeURIComponent",
-            "html = decodeURIComponent"
-        );
-        eval(evalCode);
-        html = html
-            .split('innerHTML = "')[1]
-            .split('";\n')[0]
-            .replace(/\\"/g, '"');
-
-        const $ = cheerio.load(html);
-        const download = [];
-
-        const tbody = $("table").find("tbody");
-        const trs = tbody.find("tr");
-
-        trs.each(function (i, elem) {
-            const trElement = $(elem);
-            const tds = trElement.children();
-            const quality = $(tds[0]).text().trim();
-            const url = $(tds[2]).children("a").attr("href");
-            if (url != undefined) {
-                download.push({
-                    quality,
-                    url
-                });
-            }
-        });
-
-        return {
-            success: true,
-            download
-        };
-    } catch (err) {
-        return {
-            success: false
-        };
-    }
-}
 function fbreg(url) {
     const fbRegex =
-        /(?:https?:\/\/)?(?:www\.)?(m\.facebook|facebook|fb)\.(com|me|watch)\/(?:(?:\w\.)*#!\/)?(?:groups\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)/;
+        /(?:(https|http)?:\/\/)?(?:www\.)?(m\.facebook|facebook|fb)\.(com|me|watch)\/(?:(?:\w\.)*#!\/)?(?:groups\/)?(?:[\w\-\.]*\/)*([\w\-\.]*)/;
     return fbRegex.test(url);
 }
-
-var desc = "";
-if (config.LANG === "SI") desc = "Facebook වෙතින් වීඩියෝ බාගත කරයි.";
-else desc = "Download videos from Facebook.";
-
-var N_FOUND = "";
-if (config.LANG === "SI") N_FOUND = "*මට කිසිවක් සොයාගත නොහැකි විය :(*";
-else N_FOUND = "*I couldn't find anything :(*";
-
-var urlneed = "";
-if (config.LANG === "SI")
-    urlneed = "*කරුණාකර facebook video url එකක් ලබා දෙන්න*";
-else urlneed = "*Please give me facebook video url..*";
 
 cmd(
     {
         pattern: "fb",
         react: "#️⃣",
         alias: ["fbdl"],
-        desc: desc,
+        desc: "Download videos from Facebook.",
         category: "download",
         use: ".fb <Fb video link>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            prefix,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, prefix, q, reply }) => {
         try {
-            if (!fbreg(q)) return await reply(urlneed);
-            let data = await fbDownloader(q);
-            let l = data.download;
+            if (!fbreg(q))
+                return await reply("*Please give me facebook video url..*");
+            const fdata = await fbsaver.download(q);
+            const dldata = await aiodl.dl(q);
+            if (!fdata || !fdata?.success || !dldata || dldata.error)
+                return await reply(global.responses.notFound);
             let dat = `「 ${config.BOT} 」
 
-   *𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 𝗗𝗢𝗪𝗡𝗟𝗢𝗗𝗘𝗥*
+  *𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞 𝗗𝗢𝗪𝗡𝗟𝗢𝗗𝗘𝗥*
 
-*📎 Url:* ${q}`;
-            if (!l[0]) return await reply(N_FOUND);
-            var buttons;
-            if (!l[1]) {
-                var buttons = [
-                    {
-                        buttonId: prefix + "dvideo " + l[0].url,
-                        buttonText: { displayText: l[0].quality + " VIDEO" },
-                        type: 1
-                    }
-                ];
-            } else {
-                var buttons = [
-                    {
-                        buttonId: prefix + "dvideo " + l[0].url,
-                        buttonText: { displayText: l[0].quality + " VIDEO" },
-                        type: 1
+*📎 Url:* ${dldata.url}
+*👤 Author:* ${fdata.userInfo?.name}
+*✨ Title:* ${dldata.title}`;
+            const rows = [];
+            let i = 0;
+            dldata.medias.forEach(stream => {
+                let col = {
+                    title: `${++i}`,
+                    rowId: `${prefix}dmenu ${stream.url}`,
+                    description: `Video ${stream.quality} (${stream.formattedSize})`
+                };
+                rows.push(col);
+            });
+            rows.append({
+                title: `${++i}`,
+                rowId: `${prefix}dau ${fdata.video}|convert`,
+                description: "Audio"
+            });
+            const sections = [
+                {
+                    title: "Select option",
+                    rows: rows
+                }
+            ];
+            const listMessage = {
+                contextInfo: {
+                    forwardingScore: 1,
+                    isForwarded: true,
+                    forwardedNewsletterMessageInfo: {
+                        newsletterJid: global.cid,
+                        serverMessageId: 127
                     },
-                    {
-                        buttonId: prefix + "dvideo " + l[1].url,
-                        buttonText: { displayText: l[1].quality + " VIDEO" },
-                        type: 1
+                    externalAdReply: {
+                        title: `「 𝗙𝗕 𝗗𝗢𝗪𝗡𝗟𝗢𝗗𝗘𝗥 」`,
+                        body: `${dldata.title || config.BOT}`,
+                        mediaType: 1,
+                        sourceUrl: q,
+                        thumbnailUrl:
+                            fdata.userInfo?.profilePicture || config.LOGO,
+                        renderLargerThumbnail: false,
+                        showAdAttribution: true
                     }
-                ];
-            }
-            const buttonMessage = {
-                image: {
-                    url: "https://media.idownloadblog.com/wp-content/uploads/2022/04/Download-Facebook-data.jpg"
                 },
+                image: {
+                    url: fdata.thumbnail
+                },
+                buttonText: "🔢 Reply below number,",
                 caption: dat,
                 footer: config.FOOTER,
-                buttons: buttons,
+                sections,
                 headerType: 4
             };
-            return await conn.buttonMessage(from, buttonMessage, mek);
-        } catch (e) {
-            m.sendError(e, N_FOUND);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "dvideo",
-        dontAddCommandList: true,
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
-            });
-            await conn.sendMessage(
-                from,
-                { video: { url: q }, caption: config.FOOTER },
-                { quoted: mek }
-            );
-            await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
-            });
+            return await conn.listMessage(from, listMessage, mek);
         } catch (e) {
             m.sendError(e);
         }
@@ -422,81 +123,77 @@ cmd(
         use: ".gdrive <googledrive link>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, q, reply }) => {
         try {
-            if (!q) return await reply("*Please give me googledrive url !!*");
-            let res = await fg.GDriveDl(q);
-            reply(`*📃 File name:*  ${res.fileName}
-*💈 File Size:* ${res.fileSize}
-*🕹️ File type:* ${res.mimetype}`);
-            conn.sendMessage(
+            const url = m.quoted?.body || q;
+            if (!url || !url.includes("drive.google.com") || !isUrl(url))
+                return await reply("*Please give me google drive url !!*");
+            let data = await GDriveDl(url);
+            const info = await conn.sendMessage(
                 from,
                 {
-                    document: { url: res.downloadUrl },
-                    fileName: res.fileName,
-                    mimetype: res.mimetype
+                    image: {
+                        url:
+                            (await data.thumbnailUrl({
+                                width: 1280,
+                                height: 720
+                            })) || "https://picsum.photos/1280/720"
+                    },
+                    caption: `*📃 File name:*  ${data.fileName}
+*💈 File Size:* ${formatSize(data.sizeBytes)}
+*🕹️ File type:* ${mime.lookup(data.fileName)}`,
+                    contextInfo: {
+                        externalAdReply: {
+                            title: `「 GD DOWNLODER 」`,
+                            body: data.fileName,
+                            mediaType: 1,
+                            sourceUrl: url,
+                            thumbnailUrl:
+                                "https://cdn1.iconfinder.com/data/icons/google-new-logos-1/32/google_drive_new_logo-1024.png", // "https://files.catbox.moe/0k7cth.jpg",
+                            renderLargerThumbnail: false,
+                            showAdAttribution: true
+                        }
+                    }
                 },
                 { quoted: mek }
             );
+            if (data.sizeBytes > config.MAX_SIZE * 1024 * 1024)
+                return reply("*File size is too big...*");
+            m.react(global.reactions.upload);
+            const gfile = await conn.sendMessage(
+                from,
+                {
+                    document: { url: data.downloadUrl },
+                    fileName: data.fileName,
+                    mimetype: mime.lookup(data.fileName),
+                    jpegThumbnail:
+                        (await data.thumbnailUrl({
+                            width: 512,
+                            height: 512
+                        })) || "https://picsum.photos/512/512",
+                    contextInfo: {
+                        mentionedJid: [sender]
+                    }
+                },
+                { quoted: info }
+            );
+            await conn.sendMessage(from, {
+                react: { text: global.reactions.file, key: gfile.key }
+            });
+            m.react(global.reactions.done);
         } catch (e) {
-            m.sendError(e);
+            let mess = global.responses.error;
+            if (e instanceof TypeError) {
+                mess = "*Invalid drive url*";
+            } else if (e instanceof GDriveError) {
+                mess =
+                    "*An error occured acessing drive, ensure that drive exists and is publicly accessable*";
+            }
+            m.sendError(e, mess);
         }
     }
 );
 
-async function Insta(match) {
-    const result = [];
-    const form = {
-        url: match,
-        submit: ""
-    };
-    const { data } = await axios(`https://downloadgram.org/`, {
-        method: "POST",
-        data: form
-    });
-    const $ = cheerio.load(data);
-    $("#downloadhere > a").each(function (a, b) {
-        const url = $(b).attr("href");
-        if (url) result.push(url);
-    });
-    return result;
-}
-
-var needus = "";
-if (config.LANG === "SI") needus = "*කරුණාකර මට Instagram url එකක් දෙන්න !!*";
-else needus = "*Please give me Instagram url !!*";
-var cantf = "";
-if (config.LANG === "SI") cantf = "*මට මෙම වීඩියෝව සොයාගත නොහැක!*";
-else cantf = "*I cant find this video!*";
 cmd(
     {
         pattern: "ig",
@@ -507,61 +204,41 @@ cmd(
         use: ".ig <Instagram link>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, q, sender, reply }) => {
         try {
-            if (!q) return await reply(needus);
-            let response = await fetchJson(
-                "https://vihangayt.me/download/instagram?url=" + q
+            const url = m.quoted?.body || q;
+            if (!url || !isUrl(url))
+                return await reply("*Please give me Instagram url !!*");
+            const response = await igdl(url);
+            if (!response.success)
+                return await reply("*I cant find this video!*");
+            const data = fetchBuffer(response.downloadLink);
+            if (data.size > config.MAX_SIZE * 1024 * 1024)
+                return await reply("*This file is too big !!*");
+            m.react(global.reactions.upload);
+            await conn.sendMessage(
+                from,
+                {
+                    ...(data.mime?.includes("image")
+                        ? { image: data.data }
+                        : { video: data.data }),
+                    caption: config.FOOTER,
+                    contextInfo: {
+                        mentionedJid: [sender],
+                        externalAdReply: {
+                            title: `「 IG DOWNLODER 」`,
+                            body: config.BOT,
+                            mediaType: 1,
+                            sourceUrl: url,
+                            thumbnailUrl: response.thumbnail,
+                            renderLargerThumbnail: false,
+                            showAdAttribution: true
+                        }
+                    }
+                },
+                { quoted: mek }
             );
-            for (let i = 0; i < response.data.data.length; i++) {
-                if (response.data.data[i].type === "image")
-                    await conn.sendMessage(
-                        from,
-                        {
-                            image: { url: response.data.data[i].url },
-                            caption: config.FOOTER
-                        },
-                        { quoted: mek }
-                    );
-                else
-                    await conn.sendMessage(
-                        from,
-                        {
-                            video: { url: response.data.data[i].url },
-                            caption: config.FOOTER
-                        },
-                        { quoted: mek }
-                    );
-            }
+            m.react(global.reactions.done);
         } catch (e) {
             m.sendError(e);
         }
@@ -578,299 +255,75 @@ cmd(
         use: ".mediafire <mediafire link>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, q, reply, sender }) => {
         try {
-            if (!q) return await reply("*Please give a url*");
-            if (!q.includes("mediafire.com"))
+            const url = m.quoted?.body || q;
+            if (!url) return await reply("*Please give a url*");
+            if (!isUrl(url)) return await reply("*Pleas give me a valid url*");
+            if (!url.includes("mediafire.com"))
                 return await reply("*Please give me mediafire url*");
-            if (!q.includes("/file"))
+            if (!mediaFire.validate(url))
                 return await reply("*Please give me valid mediafire file url*");
-            const baby1 = await mediafireDl(q);
-            if (
-                baby1.size.includes("MB") &&
-                baby1.size.replace("MB", "") > config.MAX_SIZE
-            )
-                return await reply("*This file is too big !!*");
-            if (baby1.size.includes("GB"))
-                return await reply("*This file is too big !!*");
-            const mfile = conn.sendMessage(
-                from,
-                {
-                    document: { url: baby1.link },
-                    fileName: baby1.name,
-                    mimetype: baby1.mime,
-                    caption: `*📁 Name* : ${baby1.name}
-*📊 Size* : ${baby1.size}
-*🕹️ Mime* : ${baby1.mime}`
-                },
-                { quoted: mek }
-            );
-            await conn.sendMessage(from, {
-                react: { text: "📁", key: mfile.key }
-            });
-        } catch (e) {
-            m.sendError(e);
-        }
-    }
-);
-
-var N_FOUND = "";
-if (config.LANG === "SI") N_FOUND = "*මට කිසිවක් සොයාගත නොහැකි විය :(*";
-else N_FOUND = "*I couldn't find anything :(*";
-
-var urlneed = "";
-if (config.LANG === "SI")
-    urlneed = "එය androidapksfree වෙතින් mod apps බාගත කරයි.";
-else urlneed = "It downloads mod apps from androidapksfree.";
-
-var imgmsg = "";
-if (config.LANG === "SI") imgmsg = "```කරුණාකර වචන කිහිපයක් ලියන්න!```";
-else imgmsg = "```Please write a few words!```";
-
-cmd(
-    {
-        pattern: "modapk",
-        react: "📱",
-        alias: ["androidapksfree", "mod"],
-        desc: urlneed,
-        category: "download",
-        use: ".modapk whatsapp",
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            prefix,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q)
-                return await conn.sendMessage(
+            const file = await mediaFire.request(url);
+            if (file.status) {
+                const caption = `
+*📁 Name* : ${file.name}
+*📊 Size* : ${file.size}
+*🕹️ Mime* : ${file.mime}`;
+                const info = await conn.sendMessage(
                     from,
-                    { text: imgmsg },
+                    {
+                        image: { url: file.thumbnail },
+                        caption,
+                        contextInfo: {
+                            mentionedJid: [sender],
+                            externalAdReply: {
+                                title: `「 MF DOWNLODER 」`,
+                                body: file.name,
+                                mediaType: 1,
+                                sourceUrl: url,
+                                thumbnailUrl:
+                                    "https://files.catbox.moe/em2d1j.jpg",
+                                renderLargerThumbnail: false,
+                                showAdAttribution: true
+                            }
+                        }
+                    },
                     { quoted: mek }
                 );
-            const era = await axios.get(`https://androidapksfree.com/?s=${q}`, {
-                withCredentials: true
-            });
-
-            var sedarch = [];
-            const $gs = cheerio.load(era.data);
-            $gs(
-                "html > body > div.main-wrap > div.main.wrap.cf > div > div > div > div > div.boxed-content > div.devapk-apps-list > section"
-            ).each(function (a, b) {
-                const link = $gs(b).find("h1 > a").attr("href");
-                const title = $gs(b).find("h1").text();
-                const update = $gs(b)
-                    .find("div.date-on-tax")
-                    .text()
-                    .replaceAll("\n", "");
-                sedarch.push({ link, title, update });
-            });
-            const data = sedarch;
-            if (data.length < 1)
-                return await conn.sendMessage(
+                if (
+                    file.size.includes("MB") &&
+                    file.size.replace("MB", "") > config.MAX_SIZE
+                )
+                    return await reply("*This file is too big !!*");
+                if (
+                    file.size.includes("GB") &&
+                    Number(data.size.replace(" GB", "")) * 1024 >
+                        config.MAX_SIZE
+                )
+                    return await reply("*This file is too big !!*");
+                const mfile = await conn.sendMessage(
                     from,
-                    { text: N_FOUND },
+                    {
+                        document: { url: file.downloadLink },
+                        jpegThumbnail: file.thumbnail,
+                        fileName: file.name,
+                        mimetype: file.mime,
+                        contextInfo: {
+                            mentionedJid: [sender]
+                        }
+                    },
                     { quoted: mek }
                 );
-            var srh = [];
-            for (var i = 0; i < data.length; i++) {
-                srh.push({
-                    title: data[i].title,
-                    rowId:
-                        prefix + "dapk2 " + data[i].link + "+" + data[i].title
+                await conn.sendMessage(from, {
+                    react: { text: global.reactions.file, key: mfile.key }
                 });
             }
-            const sections = [
-                {
-                    title: "_[Result from androidapksfree.]_",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
-
-   *MOD APK DOWNLOADER*
-
-*📱 Enterd Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from androidapksfree. 📲",
-                buttonText: "*🔢 Reply below number*",
-                sections
-            };
-            await conn.listMessage(from, listMessage, mek);
         } catch (e) {
             m.sendError(e);
         }
     }
 );
-
-cmd(
-    {
-        pattern: "dapk2",
-        dontAddCommandList: true,
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
-            });
-            if (!q)
-                return await conn.sendMessage(
-                    from,
-                    { text: "*Need apk link...*" },
-                    { quoted: mek }
-                );
-            let [link, title] = q.split("+");
-            const era = await axios.get(link + `download/`, {
-                withCredentials: true
-            });
-            const $g = cheerio.load(era.data);
-            const linkdl = $g(
-                "html > body > div.main-wrap > div.main.wrap.cf > div > div > div > div > div.post-container.cf > div > div > div.box > div.boxed-content.boxed-content-mobile > div > div > div.download-button-main.centered-element > a"
-            ).attr("href");
-            const icon = $g("div.app-icon-new > img").attr("src");
-            const size = $g(
-                "html > body > div.main-wrap > div.main.wrap.cf > div > div > div > div > div.post-container.cf > div > div > div.box > div.boxed-content.boxed-content-mobile > div > div > div.download-button-main.centered-element > a"
-            )
-                .text()
-                .split("(")[1]
-                .replaceAll(")", "");
-            let listdata = `*📚 Name :* ${title}
-*📥 Size :* ${size}`;
-            await conn.sendMessage(
-                from,
-                { image: { url: icon }, caption: listdata },
-                { quoted: mek }
-            );
-            if (size.includes("GB"))
-                return await conn.sendMessage(
-                    from,
-                    { text: "*File size is too big...*" },
-                    { quoted: mek }
-                );
-            if (
-                size.includes("MB") &&
-                size.replace(" MB", "") > config.MAX_SIZE
-            )
-                return await conn.sendMessage(
-                    from,
-                    { text: "*File size is too big...*" },
-                    { quoted: mek }
-                );
-            let sendapk = await conn.sendMessage(
-                from,
-                {
-                    document: { url: linkdl },
-                    mimetype: "application/vnd.android.package-archive",
-                    fileName: title + "." + "apk",
-                    caption: ""
-                },
-                { quoted: mek }
-            );
-            await conn.sendMessage(from, {
-                react: { text: "📁", key: sendapk.key }
-            });
-            await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
-            });
-        } catch (e) {
-            m.sendError(e, cantf);
-        }
-    }
-);
-
-var needus = "";
-if (config.LANG === "SI") needus = "*කරුණාකර මට threads url එකක් දෙන්න !!*";
-else needus = "*Please give me threads url !!*";
-var cantf = "";
-if (config.LANG === "SI") cantf = "*මට මෙම වීඩියෝව සොයාගත නොහැක!*";
-else cantf = "*I cant find this video!*";
 
 cmd(
     {
@@ -882,46 +335,47 @@ cmd(
         use: ".threads <threads link>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, q, reply, prefix, command }) => {
         try {
-            if (!q) return await reply(needus);
-            let response = await Download(q);
-            for (let i = 0; i < response.download.length; i++) {
-                if (response.download[i].type === "image")
+            let url = q;
+            if (m.quoted) {
+                url = m.quoted.body;
+                url = url
+                    .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                    .trim();
+            }
+            if (!url) return await reply("*Please give me threads url !!*");
+            if (!threads.test(url)) {
+                await reply("*Invalid threads url provided*");
+                m.react(global.reactions.question);
+                return;
+            }
+            let { success, data } = await threads.dl(url);
+            if (!success) m.sendError("```An error occured fetching threads.");
+            for (let i = 0; i < data.length; i++) {
+                const contextInfo = {
+                    externalAdReply: {
+                        title: data[i].user.name,
+                        body: data[i].caption,
+                        mediaType: 1,
+                        sourceUrl: url,
+                        thumbnailUrl: data[i].user.avata || config.LOGO,
+                        renderLargerThumbnail: false,
+                        showAdAttribution: true
+                    }
+                };
+                const caption = `「 *THREADS DOWNLOADER* 」
+
+*✍🏼 Author:* ${data[i].user.name}*
+*📃 Caption:* ${data[i].caption}*
+${config.FOOTER}`;
+                if (data[i].type === "image")
                     await conn.sendMessage(
                         from,
                         {
-                            image: { url: response.download[i].url },
-                            caption: config.FOOTER
+                            image: { url: data[i].downloadLink },
+                            caption,
+                            contextInfo
                         },
                         { quoted: mek }
                     );
@@ -929,102 +383,47 @@ cmd(
                     await conn.sendMessage(
                         from,
                         {
-                            video: { url: response.download[i].url },
-                            caption: config.FOOTER
+                            video: { url: data[i].downloadLink },
+                            caption,
+                            contextInfo
                         },
                         { quoted: mek }
                     );
             }
         } catch (e) {
-            m.sendError(e, cantf);
+            m.sendError(e, "*I cant find this video!*");
         }
     }
 );
-
-function regtik(url) {
-    return url.includes("tiktok.com");
-}
-
-var desc = "";
-if (config.LANG === "SI") desc = "Tiktok වෙතින් වීඩියෝ බාගත කරයි.";
-else desc = "Download videos from Tiktok.";
-
-var N_FOUND = "";
-if (config.LANG === "SI") N_FOUND = "*මට කිසිවක් සොයාගත නොහැකි විය :(*";
-else N_FOUND = "*I couldn't find anything :(*";
-
-var urlneed = "";
-if (config.LANG === "SI") urlneed = "*කරුණාකර Tiktok video url එකක් ලබා දෙන්න*";
-else urlneed = "*Please give me tiktok video url..*";
 
 cmd(
     {
         pattern: "tiktok",
         alias: ["ttdl"],
         react: "🏷️",
-        desc: desc,
+        desc: "Download videos from Tiktok.",
         category: "download",
         use: ".tiktok <Tiktok link>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            prefix,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, prefix, command, q, reply }) => {
         try {
-            if (!regtik(q)) return await reply(urlneed);
-            var l = "";
-            let tiktok = await fetchJson(
-                "https://api.sdbots.tech/tiktok?url=" + q
-            );
-            if (tiktok.msg == "OK") {
-                let data = tiktok;
-                l = {
-                    title: data.result.desc,
-                    nowm: data.result.withoutWaterMarkVideo,
-                    watermark: data.result.waterMarkVideo,
-                    audio: data.result.music,
-                    thumbnail: data.result.cover,
-                    author: data.result.author
-                };
-            } else {
-                let data = await Tiktok(q);
-                l = data;
+            let url = q;
+            if (m.quoted) {
+                url = m.quoted.body;
+                url = url
+                    .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                    .trim();
             }
+            if (!url.includes("tiktok.com") && !isUrl(url))
+                return await reply("*Please give me tiktok video url..*");
+            //"https://api.sdbots.tech/tiktok?url=" + q
+            const data = await tiktok(url);
 
-            let dat = `「 ${config.BOT} 」
+            let dat = `「 *TIKTOK DOWNLOADER* 」
 
-*TIKTOK DOWNLOADER*
-
-*📃 Title:* ${l.title}
-*✍🏼 Author:* ${l.author}`;
+*📃 Title:* ${data.title}
+*✍🏼 Author:* ${data.author}`;
 
             let sections = [
                 {
@@ -1032,24 +431,24 @@ cmd(
                     rows: [
                         {
                             title: "1",
-                            rowId: `${prefix}dvideo ${l.nowm}`,
+                            rowId: `${prefix}dmenu ${data.nowm}`,
                             description: "video without Watermark"
                         },
                         {
                             title: "2",
-                            rowId: `${prefix}dvideo ${l.watermark}`,
+                            rowId: `${prefix}dmenu ${data.watermark}`,
                             description: "Video with Watermark"
                         },
                         {
                             title: "3",
-                            rowId: `${prefix}dau ${l.audio}`,
+                            rowId: `${prefix}dau ${data.audio}`,
                             description: "Download audio"
                         }
                     ]
                 }
             ];
             const listMessage = {
-                image: { url: l.thumbnail },
+                image: { url: data.thumbnail },
                 caption: dat,
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
@@ -1059,7 +458,7 @@ cmd(
                         title: `「 ${config.BOT} 」`,
                         body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
                         mediaType: 1,
-                        sourceUrl: global.link,
+                        sourceUrl: url,
                         thumbnailUrl: config.LOGO,
                         renderLargerThumbnail: false,
                         showAdAttribution: true
@@ -1069,7 +468,307 @@ cmd(
 
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            m.sendError(e, N_FOUND);
+            m.sendError(e, "*I couldn't find anything :(*");
+        }
+    }
+);
+
+cmd(
+    {
+        pattern: "spotify",
+        category: "download",
+        desc: "download musics from spotify",
+        alias: ["sdl", "sp", "spdl"],
+        use: ".spotify <query/link>",
+        filename: __filename
+    },
+    async (conn, mek, m, { from, q, reply, prefix, command }) => {
+        let text = q;
+        if (m.quoted) {
+            text = m.quoted.body;
+            text = text
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
+        }
+        if (!text) return reply("Need a query or link");
+        const spotLinkRegrex = /^((https|http):\/\/)?open\.spotify\.com\/.+/;
+        let mode = "link";
+        if (!spotLinkRegrex.test(text)) mode = "search";
+        switch (mode) {
+            case "link":
+                {
+                    m.react(global.reactions.loading);
+                    const song = await spotify.dl(text);
+                    if (!song.success)
+                        return m.sendError(
+                            new Error("An error occured Fetching song.")
+                        );
+                    await conn.sendMessage(from, {
+                        audio: await getBuffer(song.link),
+                        fileName: song.metadata.title + ".mp3",
+                        mimetype: "audio/mpeg",
+                        ptt: true,
+                        contextInfo: {
+                            mentionedJid: [from],
+                            externalAdReply: {
+                                title: `「 SP DOWNLOADER 」`,
+                                body: song.metadata.title,
+                                thumbnail: await getBuffer(
+                                    song.metadata.cover || config.LOGO
+                                ),
+                                mediaType: 2,
+                                mediaUrl: text
+                            }
+                        }
+                    });
+                }
+                break;
+            case "search":
+                {
+                    m.react(global.reactions.search);
+                    const song = await spotify.play(text);
+                    if (!song.success)
+                        return m.sendError(
+                            new Error(
+                                "An error occured fetching searching song."
+                            )
+                        );
+                    const caption = `*🎶 Song Title:* ${song.name}
+*🎤 Artist:* ${song.artist}
+*📅 Release Date:* ${song.release_date}
+*⏰ Duration:* ${song.duration}
+*🔗 Link:* ${song.link}`;
+                    const songMsg = await conn.sendMessage(
+                        from,
+                        {
+                            image: {
+                                url: encodeURI(
+                                    `https://api.yanzbotz.live/api/maker/spotify-card?author=${song.artist}&title=${song.name}&album=${song.name}&img=${song.image_url}`
+                                )
+                            },
+                            caption,
+                            contextInfo: {
+                                mentionedJid: [from],
+                                externalAdReply: {
+                                    title: `「 SP DOWNLOADER 」`,
+                                    body: `${song.name}:${song.artist}`,
+                                    mediaType: 1,
+                                    sourceUrl: song.link,
+                                    thumbnailUrl: song.image_url || config.LOGO,
+                                    renderLargerThumbnail: false,
+                                    showAdAttribution: true
+                                }
+                            }
+                        },
+                        { quoted: mek }
+                    );
+                    const dlsong = await song.dlink();
+                    await conn.sendMessage(from, {
+                        audio: await getBuffer(dlsong.link),
+                        fileName: song.name + ".mp3",
+                        mimetype: "audio/mpeg",
+                        ptt: true,
+                        contextInfo: {
+                            mentionedJid: [from],
+                            externalAdReply: {
+                                title: `「 SP DOWNLODER 」`,
+                                body: dlsong.metadata.title,
+                                thumbnail: await getBuffer(
+                                    dlsong.metadata.cover || config.LOGO
+                                ),
+                                mediaType: 2,
+                                mediaUrl: song.link
+                            }
+                        }
+                    });
+                }
+                break;
+        }
+        m.react(global.reactions.success);
+    }
+);
+
+// <============clone===============>
+cmd(
+    {
+        pattern: "gitclone",
+        alias: ["gclone"],
+        react: "🧵",
+        desc: "clone github repositories",
+        category: "download",
+        use: ".gitclone <repo link>",
+        filename: __filename
+    },
+    async (conn, mek, m, { q, reply, prefix, command, sender }) => {
+        if (!q && !m.quoted?.body)
+            return reply(
+                `Please enter the necessary information to generate the image.`
+            );
+        let text = q;
+        if (m.quoted) {
+            text = m.quoted.body;
+            text = text
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
+        }
+        const commandStr = `${prefix}${command} ${text}`;
+        const parsedCommand = parseCommand(commandStr);
+        const options = parsedCommand.options;
+        let branch = options.branch || options.b;
+        const tar = Boolean(options.tar);
+        text = parsedCommand.args.join(" ");
+        // validate inputs
+        const linkMatch = text.match(
+            /((https|http|git):\/\/)?(www\.)?(git@)?github.com(:|\/)?(.+)/
+        )[6];
+        if (!linkMatch) return reply("```Invalid github url```");
+        const [user, repo] = linkMatch.replace(/.git/, "").split("/");
+        const repoInfoRes = await fetch(
+            `https://api.github.com/repos/${user}/${repo}`
+        );
+        if (!repoInfoRes.ok) return reply("```Repo not found```");
+        const repoInfo = await repoInfoRes.json();
+        if (!branch) {
+            branch = repoInfo["default_branch"];
+        } else {
+            const branchesInfoRes = await fetch(
+                `https://api.github.com/repos/${user}/${repo}/branches`
+            );
+            const branchesInfo = await branchesInfoRes.json();
+            const isValidBranch = Boolean(
+                branchesInfo.filter(branchObj => branchObj.name === branch)
+                    ?.length
+            ); // validating the branch
+            if (!isValidBranch) return reply("```Invalid branch specified```");
+        }
+        const format = tar ? "tarball" : "zipball";
+        const downloadLink = `https://api.github.com/repos/${user}/${repo}/${format}/${branch}`;
+        m.react(global.reactions.upload);
+        const filename = `${repo}-${branch}.${
+            format === "tarball" ? ".tar.gz" : ".zip"
+        }`;
+        const preview = await fetchSocialPreview(repoInfo["html_url"]);
+        const repoFile = await conn.sendMessage(
+            from,
+            {
+                document: { url: downloadLink },
+                fileName: filename,
+                mimetype: mime.lookup(filename),
+                jpegThumbnail: preview || "https://picsum.photos/512/512",
+                contextInfo: {
+                    mentionedJid: [sender]
+                }
+            },
+            { quoted: info }
+        );
+        await conn.sendMessage(from, {
+            react: { text: global.reactions.file, key: repoFile.key }
+        });
+        m.react(global.reactions.done);
+    }
+);
+
+// <<=========utility cmds=========>>
+cmd(
+    {
+        pattern: "dmenu",
+        dontAddCommandList: true,
+        filename: __filename
+    },
+    async (conn, mek, m, { from, q, prefix }) => {
+        try {
+            m.react(global.reactions.question);
+            const buttons = [
+                {
+                    buttonId: `${prefix}dvideo ${q}`,
+                    buttonText: { displayText: "Video" },
+                    type: 1
+                },
+                {
+                    buttonId: `${prefix}dvdoc ${q}`,
+                    buttonText: { displayText: "Document" },
+                    type: 1
+                }
+            ];
+            conn.buttonMessage(
+                from,
+                {
+                    contextInfo: {
+                        forwardingScore: 1,
+                        isForwarded: true,
+                        forwardedNewsletterMessageInfo: {
+                            newsletterJid: global.cid,
+                            serverMessageId: 127
+                        },
+                        externalAdReply: {
+                            title: `「 𝗗𝗢𝗪𝗡𝗟𝗢𝗗𝗘𝗥 」`,
+                            body: `${config.BOT}`,
+                            mediaType: 1,
+                            sourceUrl: global.link,
+                            thumbnailUrl: config.LOGO,
+                            renderLargerThumbnail: false,
+                            showAdAttribution: true
+                        }
+                    },
+                    image: {
+                        url: config.LOGO
+                    },
+                    caption: `*Video Download Menu*`,
+                    footer: config.FOOTER,
+                    buttons: buttons,
+                    headerType: 4
+                },
+                mek
+            );
+        } catch (e) {
+            m.sendError(e);
+        }
+    }
+);
+
+cmd(
+    {
+        pattern: "dvideo",
+        dontAddCommandList: true,
+        filename: __filename
+    },
+    async (conn, mek, m, { from, q }) => {
+        try {
+            m.react(global.reactions.download);
+            await conn.sendMessage(
+                from,
+                { video: { url: q }, caption: config.FOOTER },
+                { quoted: mek }
+            );
+            m.react(global.reactions.done);
+        } catch (e) {
+            m.sendError(e);
+        }
+    }
+);
+
+cmd(
+    {
+        pattern: "dvdoc",
+        dontAddCommandList: true,
+        filename: __filename
+    },
+    async (conn, mek, m, { from, q }) => {
+        try {
+            m.react(global.reactions.download);
+            await conn.sendMessage(
+                from,
+                {
+                    document: { url: q },
+                    mimetype: "video/mp4",
+                    // fileName: "TikTok Audio" + ".mp3",
+                    caption: config.FOOTER
+                },
+                { quoted: mek }
+            );
+            m.react(global.reactions.done);
+        } catch (e) {
+            m.sendError(e);
         }
     }
 );
@@ -1080,461 +779,34 @@ cmd(
         dontAddCommandList: true,
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, q }) => {
         try {
-            await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
-            });
+            const query = q.split("|");
+            const url = query[0];
+            const mode = query[1];
+            m.react(global.reactions.download);
+            let audBuff;
+            if (mode?.trim() === "convert") {
+                const vidBuff = getBuffer(url);
+                audBuff = toPTT(vidBuff, "mp4").options;
+                m.react(global.reactions.loading);
+            } else {
+                audBuff = getBuffer(url);
+            }
             await conn.sendMessage(
                 from,
                 {
-                    document: { url: q },
+                    document: audBuff,
                     mimetype: "audio/mpeg",
-                    fileName: "TikTok Audio" + ".mp3",
+                    // fileName: "TikTok Audio" + ".mp3",
                     caption: config.FOOTER
                 },
                 { quoted: mek }
             );
-            await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
-            });
-        } catch (e) {
-                        m.sendError(e);
-        }
-    }
-);
-
-var N_FOUND = "";
-if (config.LANG === "SI") N_FOUND = "*මට කිසිවක් සොයාගත නොහැකි විය :(*";
-else N_FOUND = "*I couldn't find anything :(*";
-
-var urlneed = "";
-if (config.LANG === "SI")
-    urlneed = "එය Baiscopelk වෙතින් සිංහල උපසිරැසි බාගත කරයි.";
-else urlneed = "It downloads sinhala subtitle from Baiscopelk.";
-
-var imgmsg = "";
-if (config.LANG === "SI") imgmsg = "```කරුණාකර වචන කිහිපයක් ලියන්න!```";
-else imgmsg = "```Please write a few words!```";
-
-cmd(
-    {
-        pattern: "sub",
-        react: "🎞️",
-        alias: ["subtitle", "sinhalasub", "sisub", "sinhalasubtitle"],
-        desc: urlneed,
-        category: "download",
-        use: ".sub spiderman",
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            prefix,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q)
-                return await conn.sendMessage(
-                    from,
-                    { text: imgmsg },
-                    { quoted: mek }
-                );
-            const data2 = await subsearch(q);
-            const data = data2.results;
-            if (data.length < 1)
-                return await conn.sendMessage(
-                    from,
-                    { text: N_FOUND },
-                    { quoted: mek }
-                );
-            var srh = [];
-            for (var i = 0; i < data.length; i++) {
-                srh.push({
-                    description: data[i].title,
-                    title: i + 1,
-                    rowId: prefix + "dsub " + data[i].link
-                });
-            }
-            const sections = [
-                {
-                    title: "_[Result from Baiscopelk.com]_",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
-
-   *SI SUB DOWNLOADER*
-
-*📜 Entered Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from Baiscopelk.com 📲",
-                buttonText: "*🔢 Reply below number*",
-                sections
-            };
-            await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-                        m.sendError(e);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "dsub",
-        dontAddCommandList: true,
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
-            });
-            if (!q)
-                return await conn.sendMessage(
-                    from,
-                    { text: "*Need sub link...*" },
-                    { quoted: mek }
-                );
-            const dataq = await subdl(q);
-            let data = dataq.results;
-            let listdata = `*📚 Title :* ${data.title.trim()}
-*💼 Creater :* ${data.creater}`;
-            await conn.sendMessage(
-                from,
-                { image: { url: data.img }, caption: listdata },
-                { quoted: mek }
-            );
-            let sendapk = await conn.sendMessage(
-                from,
-                {
-                    document: { url: data.dl_link },
-                    mimetype: "application/zip",
-                    fileName: data.title.trim() + "." + "zip",
-                    caption: ""
-                },
-                { quoted: mek }
-            );
-            await conn.sendMessage(from, {
-                react: { text: "📁", key: sendapk.key }
-            });
-            await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
-            });
-        } catch (e) {
-                        m.sendError(e);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "slsub",
-        react: "📃",
-        alias: ["srisub"],
-        desc: "Search Sinhala Subtitles  from Web Site",
-        category: "download",
-        use: ".slsub",
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isCreator,
-            isDev,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q)
-                return reply(
-                    "❗ *Please enter movie name to download Subtitles*"
-                );
-            const duka = await subsearch(q);
-            const latest = await subdl(duka.results[0].link);
-            const maru = `*TKM-BOT SINHALA SUB DOWNLOADER*
-
-📊 *Movie Title - ${latest.results.title}*
-
-🔒 Creator - ${latest.results.creater}
-
-🖇️ _Link_ - ${duka.results[0].link}
-
-`;
-            await conn.sendMessage(
-                from,
-                {
-                    image: { url: latest.results.img },
-                    caption: maru + "\n " + config.FOOTER
-                },
-                { quoted: mek }
-            );
-            await conn.sendMessage(
-                from,
-                {
-                    document: { url: latest.results.dl_link },
-                    caption: latest.results.title,
-                    mimetype: "application/zip",
-                    fileName: `${latest.results.title}.zip`
-                },
-                { quoted: mek }
-            );
-        } catch (e) {
-                        m.sendError(e);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "slsubsearch",
-        react: "🔎",
-        desc: "Search All Subtitles  from Web Site",
-        category: "search",
-        use: ".technewsall",
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isCreator,
-            isDev,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q)
-                return reply(
-                    "❗ *Please enter movie name to Search Subtitles*"
-                );
-            const vid = await subsearch(q);
-            let yt =
-                "\n❍⚯────────────────────⚯❍\n        🌐  *𝚂𝙻 𝚂𝚄𝙱 𝚂𝙴𝙰𝚁𝙲𝙷 𝙻𝙸𝚂𝚃*  🌐\n ⚡ *Qᴜᴇᴇɴ-ɪᴢᴜᴍɪ ꜱʟ ꜱᴜʙᴛɪᴛʟᴇ ꜱᴇᴀʀᴄʜᴇʀ* ⚡\n❍⚯────────────────────⚯❍\n\n\n";
-            for (let i of vid.results) {
-                yt += `📃 *${i.no} - ${i.title}*\n🔗 _Link : ${i.link}_ \n\n\n`;
-            }
-            await conn.sendMessage(
-                from,
-                {
-                    image: {
-                        url: "https://telegra.ph/file/ba8ea739e63bf28c30b37.jpg"
-                    },
-                    caption:
-                        yt +
-                        "*Qᴜᴇᴇɴ-ɪᴢᴜᴍɪ-ᴍᴅ ᴡʜᴀᴛꜱᴀᴘᴘ ᴜꜱᴇʀ ʙᴏᴛ*\n*ᴘᴏᴡᴇʀᴇᴅ ʙʏ ᴛᴇᴄʜɴɪᴄᴀʟ ᴄʏʙᴇʀꜱ*"
-                },
-                { quoted: mek }
-            );
-        } catch (e) {
-                        m.sendError(e);
-        }
-    }
-);
-
-cmd(
-    {
-        pattern: "subdlfromlink",
-        react: "📃",
-        desc: "Download subtitles from Web Sites",
-        category: "download",
-        use: ".subdlfromlink",
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isCreator,
-            isDev,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            if (!q)
-                return reply(
-                    "❗ Please enter movie Link to download Subtitles*"
-                );
-            if (!q.includes("baiscope"))
-                return reply("🚫 *Please enter Valid Movie url*");
-            const latest = await subdl(q);
-            const maru = `*QUEEN-IZUMI-MD SL SUBTITLES DOWNLOADER*
-
-📊 *Movie title - ${latest.results.title}*
-
-🔒 Creator - ${latest.results.creater}
-
-🖇️ _Link_ - ${q}
-
-*Qᴜᴇᴇɴ-ɪᴢᴜᴍɪ-ᴍᴅ*
-*ᴀʟʟ ʀɪɢʜᴛ ʀᴇꜱᴇʀᴠᴇᴅ - ʙʏ ᴠᴀᴊɪʀᴀ & ᴛᴀᴍɪꜱʜᴀ*`;
-            await conn.sendMessage(from, { text: maru }, { quoted: mek });
-            await conn.sendMessage(
-                from,
-                {
-                    document: { url: latest.results.dl_link },
-                    caption: latest.results.title,
-                    mimetype: "application/zip",
-                    fileName: `${latest.results.title}.zip`
-                },
-                { quoted: mek }
-            );
+            m.react(global.reactions.done);
         } catch (e) {
             m.sendError(e);
         }
     }
 );
+// ==================================

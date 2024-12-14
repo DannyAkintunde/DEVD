@@ -82,8 +82,14 @@
         "bot": "This feature is only for the *bot number* !",
         "botAdmin": "Please provide me an *Admin Role* !",
         "wait": "Loading...",
-        "by": "Made by TKM inc.",
-        "error": "Opps an error occored ⚠️"
+        "by": "Made by Danny.",
+        "error": "```Opps an error occored ⚠️```",
+        "notFound": "*I couldn't find anything :(*",
+        "unstable": "> ⚠️ *Note* - warning unstable feature\nThis is a unstable feature and it's know to have errors keep this in mind while using.",
+        "overload": "_⚠️ server overloded please try again later._",
+        "large": "*File size is too big...*",
+        "noquery": "*Please give me a query*",
+        "humanSpy": "🚫 Whoa there! You’ve wandered into forbidden territory. This command isn’t for mere mortals. 🤖 Turn back before it’s too late!"
     },
     "reactions": {
         "success": "✅",
@@ -92,23 +98,51 @@
         "retry": "🔁",
         "download": "📥",
         "upload": "📤",
-        "notFound": "🤕"
+        "search": "🔎",
+        "notFound": "🤕",
+        "done": "✔",
+        "file": "📁",
+        "question": "❔",
+        "overload": "🤯"
     },
     "anim": {
-        "loading": [
-            "《 █▒▒▒▒▒▒▒▒▒▒▒》10%",
-            "《 ████▒▒▒▒▒▒▒▒》30%",
-            "《 ███████▒▒▒▒▒》50%",
-            "《 ██████████▒▒》80%",
-            "《 ████████████》100%",
-            "Loading Completed✅"
-        ]
+        "loading": {
+            "meta": {
+                "type": "dynamic",
+                "length": 20, // Length of the progress bar
+                "delay": 0 // Delay between updates
+            },
+            "frames": {
+                "bar": {
+                    "filled": "█", // Character for filled part
+                    "empty": "░", // Character for empty part
+                    "completed": "[-------Done-------]"
+                },
+                "body": {
+                    "left": "[", // Left bracket of the progress bar
+                    "right": "]" // Right bracket of the progress bar
+                }
+            }
+        },
+        "charge": {
+            "meta": {
+                "type": "static",
+                "mode": "forward",
+                "repeat": 1,
+                "done": "",
+                "stop": ""
+            },
+            "frames": {}
+        }
     },
     "styles": {
         "fonts": []
     },
     "ai": {
         "identity": "ayanokoji from class room of the elite",
-        "chracter": "be prise but fun and act kind always, you could act sussy once in a while"
+        "chracter": "be precise but fun and act kind always, you could act sussy once in a while",
+        "responses": {
+            "noquery": ["Yes, i'm listening to you."]
+        }
     }
 }

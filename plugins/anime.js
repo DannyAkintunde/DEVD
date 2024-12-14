@@ -11,18 +11,6 @@ const {
     sleep,
     fetchJson
 } = require("../lib/functions");
-const fs = require("fs");
-let { img2url } = require("@blackamda/telegram-image-url");
-var imgmsg = "";
-if (config.LANG === "SI") imgmsg = "*මට anime නමක් දෙන්න !*";
-else imgmsg = "*Give me a anime name !*";
-var descgs = "";
-if (config.LANG === "SI")
-    descgs = "එය ලබා දී ඇති anime නම පිළිබඳ විස්තර සපයයි.";
-else descgs = "It gives details of given anime name.";
-var cants = "";
-if (config.LANG === "SI") cants = "I cant find this anime.";
-else cants = "I cant find this anime.";
 
 cmd(
     {
@@ -67,20 +55,22 @@ cmd(
     ) => {
         try {
             if (!q) return reply("*Give me a anime name !*");
-            let anu = await fetchJson(`https://api.jikan.moe/v4/anime?q=${q}`);
+            const anu = await fetchJson(
+                global.getApi("jikan", "/v4/anime", { q })
+            );
             let sections = [];
+            const list = {
+                title: "",
+                rows: []
+            };
             for (let i of anu.data) {
-                const list = {
+                const row = {
                     title: `${i.title}`,
-                    rows: [
-                        {
-                            title: `${i.title}`,
-                            rowId: `${prefix}animeeg ${i.mal_id}`
-                        }
-                    ]
+                    rowId: `${prefix}animeeg ${i.mal_id}`
                 };
-                sections.push(list);
+                list.rows.push(row);
             }
+            sections.push(list);
             let listset = {
                 text: `「 ${config.BOT} 」
 
@@ -92,7 +82,7 @@ cmd(
                 buttonText: "*🔢 Reply below number*",
                 sections
             };
-            await conn.listMessage(from, listset, mek);
+            await conn.replyList(from, listset, mek);
         } catch (e) {
             m.sendError(e, "I cant find this anime.");
         }
@@ -102,6 +92,7 @@ cmd(
 cmd(
     {
         pattern: "animeeg",
+        category: "anime",
         dontAddCommandList: true,
         filename: __filename
     },
@@ -139,7 +130,7 @@ cmd(
             await conn.sendMessage(from, {
                 react: { text: "🔃", key: mek.key }
             });
-            res = await fetchJson(`https://api.jikan.moe/v4/anime/${q}`);
+            res = await fetchJson(global.getApi("jikan", `/v4/anime/${q}`));
             let txt = `*TITLE:* *${res.data.title}*\n*ENGLISH:* *${
                 res.data.title_english
             }*\n*JAPANESE:* *${res.data.title_japanese}*\n*TYPE ANIME:* *${

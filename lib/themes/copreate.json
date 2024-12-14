@@ -1,3 +1,118 @@
 {
     "name": "coperate"
+    "author": "TKM inc",
+    "lang": "en",
+    "menus": {
+        "MENU": {
+            "templates": {
+                "body": "👋 ❤ Hey {{pushname}} I'm alive now\n\n*👾 {{bot}} commands menu...*\n\n*🚀Version:* {{version}}\n*⌛Memory:* {{memory}}\n*🕒Runtime:* {{runtime}}\n*📍Platform:* {{hostname}}"
+            },
+            "images": ["https://telegra.ph/file/fe7774426ab8357963ebc.jpg"]
+        },
+        "DOWNLOAD": {
+            "pattern": "downmenu",
+            "images": ["https://telegra.ph/file/24b19e11c51c3b8dde0a1.jpg"],
+            "templates": {
+                "header": "● ════════════ ●",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "SEARCH": {
+            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"],
+            "templates": {
+                "header": "● ════════════ ●",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "CONVERT": {
+            "images": ["https://telegra.ph/file/0daa736951473c130e73f.jpg"],
+            "templates": {
+                "header": "● ════════════ ●",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "LOGO": {
+            "images": ["https://telegra.ph/file/5e61a90b90c6307a0757e.jpg"],
+            "templates": {
+                "header": "● ════════════ ●",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "OWNER": {
+            "images": ["https://telegra.ph/file/787b6b23e75057e08e69b.jpg"],
+            "templates": {
+                "header": "*● ════════════ ●*",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "ADMIN": {
+            "images": ["https://telegra.ph/file/7f48f7bbbe85de4532d71.jpg"],
+            "templates": {
+                "header": "*● ════════════ ●*",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "OTHER": {
+            "images": ["https://telegra.ph/file/01994d1adb2fe606c3dd2.jpg"],
+            "templates": {
+                "header": "*● ════════════ ●*",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        },
+        "DEFAULT": {
+            "templates": {
+                "header": "*● ════════════ ●*",
+                "body": "‎\n*{{category:uppercase}} COMMANDS MENU*\n\n{% #for command in commands %}{% #if {{command.category:quotestr}} == {{category:quotestr}} %}{% #if {{command.dontAddCommandList:not}} %}*📍➣Command :* {{command.pattern}}\n*📃➣Desc :*  {{command.desc}}\n*⌛➣Use:* {{command.use}}\n\n{% #endif %}{% #endif %}{% #endfor %}",
+                "footer": ""
+            }
+        }
+    },
+    "responses": {
+        "owner": "This command is only for my *Owner* !",
+        "admin": "This command is only for group *Admins* !",
+        "group": "This feature is only for *groups* !",
+        "private": "This feature is only for my *Private chats* !",
+        "bot": "This feature is only for the *bot number* !",
+        "botAdmin": "Please provide me an *Admin Role* !",
+        "wait": "Loading...",
+        "by": "Made by Danny.",
+        "error": "Opps an error occored ⚠️",
+        "unstable": "> ⚠️ *Note* - warning unstable frature\nThis is a unstable feature and it's know to have errors keep this in mind while using."
+    },
+    "reactions": {
+        "success": "✅",
+        "error": "⚠️",
+        "loading": "⌛",
+        "retry": "🔁",
+        "download": "📥",
+        "upload": "📤",
+        "notFound": "🤕"
+    },
+    "anim": {
+        "loading": [
+            "《 █▒▒▒▒▒▒▒▒▒▒▒》10%",
+            "《 ████▒▒▒▒▒▒▒▒》30%",
+            "《 ███████▒▒▒▒▒》50%",
+            "《 ██████████▒▒》80%",
+            "《 ████████████》100%",
+            "Loading Completed✅"
+        ]
+    },
+    "styles": {
+        "fonts": []
+    },
+    "ai": {
+        "identity": "ayanokoji from class room of the elite",
+        "chracter": "be precise but fun and act kind always, you could act sussy once in a while",
+        "responses": {
+          "noquery": ["Yes, i'm listening to you."]
+        }
+    }
 }

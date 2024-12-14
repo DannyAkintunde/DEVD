@@ -1,50 +1,8 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
-const axios = require("axios");
-const { igstalker, tikstalk } = require("../lib/stalker");
-const { fetchJson } = require("../lib/functions.js");
+const { igstalker, tikstalk, githubstalk, githubDescription, githubRoasting } = require("../lib/scrapers/stalker");
+const { fetchJson, trans } = require("../lib/functions.js");
 
-//--------
-async function githubstalk(user) {
-    return new Promise((resolve, reject) => {
-        axios.get("https://api.github.com/users/" + user).then(({ data }) => {
-            let info = {
-                username: data.login,
-                name: data.name,
-                bio: data.bio,
-                id: data.id,
-                nodeId: data.node_id,
-                profile_pic: data.avatar_url,
-                html_url: data.html_url,
-                type: data.type,
-                admin: data.site_admin,
-                company: data.company,
-                blog: data.blog,
-                location: data.location,
-                email: data.email,
-                public_repo: data.public_repos,
-                public_gists: data.public_gists,
-                followers: data.followers,
-                following: data.following,
-                created_at: data.created_at,
-                updated_at: data.updated_at
-            };
-            resolve(info);
-        });
-    });
-}
-
-var desct = "";
-if (config.LANG === "SI")
-    desct = "එය ලබා දී ඇති github username පිළිබඳ විස්තර සපයයි.";
-else desct = "It gives details of given github username.";
-var needus = "";
-if (config.LANG === "SI") needus = "*කරුණාකර මට github username ලබා දෙන්න !*";
-else needus = "*Please give me a github username !*";
-var cantf = "";
-if (config.LANG === "SI")
-    cantf = "*මට මෙම github පරිශීලකයා github හි සොයාගත නොහැක !*";
-else cantf = "*I cant find this user on github !*";
 
 cmd(
     {
@@ -52,82 +10,61 @@ cmd(
         alias: ["githubstalk"],
         category: "stalk",
         reaction: "🔎",
-        desc: desct,
+        desc: "It gives details of given github username.",
         filename: __filename,
-        use: config.PREFIX + "github <user name>"
+        use: ".github <user name>"
     },
 
-    async (conn, mek, m, { args, reply, from }) => {
-        if (!args[0]) return await reply(needus);
+    async (conn, mek, m, { q, reply, from }) => {
+        if (!q) return await reply("*Please give me a github username !*");
         try {
-            const {
-                username,
-                following,
-                followers,
-                type,
-                bio,
-                company,
-                blog,
-                location,
-                email,
-                public_repo,
-                public_gists,
-                profile_pic,
-                created_at,
-                updated_at,
-                html_url,
-                name,
-                id
-            } = await githubstalk(args.join(" "));
-            const info = `*── 「 GITHUB USER INFO 」 ──*
-
-🔖 *Nickname :* ${name}
-🔖 *Username :* ${username}
-🚩 *Id :* ${id}
-✨ *Bio :* ${bio}
-🏢 *Company :* ${company}
-📍 *Location :* ${location}
-📧 *Email :* ${email}
-📰 *Blog :* ${blog}
-🔓 *Public Repos :* ${public_repo}
-🔐 *Public Gists :* https://gist.github.com/${username}/
-💕 *Followers :* ${followers}
-👉 *Following :* ${following}
-🔄 *Updated At :* ${updated_at}
-🧩 *Created At :* ${created_at}
-👤 *Profile :* ${html_url}`;
+            const githubProfileData = await githubstalk(q);
+            let info = `*── 「 GITHUB USER INFO 」 ──*\n`
+            const profileDescription = await githubDescription(githubProfileData);
+            info += profileDescription;
+            info += `└───────────◉`;
             await conn.sendMessage(
                 from,
                 {
-                    image: { url: profile_pic },
+                    image: { url: githubProfileData.profile_pic },
                     caption: info
                 },
                 { quoted: mek }
             );
         } catch (e) {
-            m.sendError(e, cantf);
+            m.sendError(e, "*I cant find this user on github !*");
         }
     }
 );
 
-var desct = "";
-if (config.LANG === "SI")
-    desct = "එය ලබා දී ඇති tiktok username පිළිබඳ විස්තර සපයයි.";
-else desct = "It gives details of given tiktok username.";
-var needus = "";
-if (config.LANG === "SI") needus = "*කරුණාකර මට tiktok username ලබා දෙන්න !*";
-else needus = "*Please give me a tiktok username !*";
-var cantf = "";
-if (config.LANG === "SI")
-    cantf = "*මට මෙම tiktok පරිශීලකයා tiktok හි සොයාගත නොහැක !*";
-else cantf = "*I cant find this user on tiktok !*";
+cmd(
+  {
+    pattern: 'githubroast',
+    alias: ['ghroast'],
+    react: '🤣',
+    desc: 'Give a github account a good roast',
+    category: 'stalk',
+    filename: __filename,
+    use: '.githubroast <username>'
+  },
+  async (conn, mek, m, {q, reply, replyad}) => {
+    if (!q) return await reply("*Please give me a github username to inspect!*");
+    try {
+      const roast = await githubRoasting(q);
+      let translatedRoast = config.LANG === 'ID' || config.LANG === 'IND' ? roast : trans(roast, { to: config.LANG?.toLowerCase() });
+      return replyad(roast, "Roasted 🤣");
+    } catch (e) {
+      return m.sendError(e, "*I cant find this user on github !*");
+    }
+  }
+  );
 
 cmd(
     {
         pattern: "stiktok",
         alias: ["tiktokstalk", "stalktiktok", "tikstalk"],
         react: "📱",
-        desc: desct,
+        desc: "It gives details of given tiktok username.",
         category: "stalk",
         use: ".stiktok <tiktok username>",
         filename: __filename
@@ -138,32 +75,13 @@ cmd(
         m,
         {
             from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
             args,
             q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
             reply
         }
     ) => {
         try {
-            if (!q) return reply(needus);
+            if (!q) return reply("*Please give me a tiktok username !*");
             const dataget = await tikstalk(args[0]);
             const cap = `「 ${config.BOT} 」
 
@@ -188,30 +106,17 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            m.sendError(e, cantf);
+            m.sendError(e, "*I cant find this user on tiktok !*");
         }
     }
 );
-
-var desct = "";
-if (config.LANG === "SI")
-    desct = "එය ලබා දී ඇති instagram username පිළිබඳ විස්තර සපයයි.";
-else desct = "It gives details of given instagram username.";
-var needus = "";
-if (config.LANG === "SI")
-    needus = "*කරුණාකර මට instagram username ලබා දෙන්න !*";
-else needus = "*Please give me a instagram username !*";
-var cantf = "";
-if (config.LANG === "SI")
-    cantf = "*මට මෙම instagram පරිශීලකයා instagram හි සොයාගත නොහැක !*";
-else cantf = "*I cant find this user on instagram !*";
 
 cmd(
     {
         pattern: "igstalk",
         alias: ["instastalk", "instagramstalk", "igstalker"],
         react: "📷",
-        desc: desct,
+        desc: "It gives details of given instagram username.",
         category: "stalk",
         use: ".igstalk <instagram username>",
         filename: __filename
@@ -224,30 +129,13 @@ cmd(
             from,
             l,
             quoted,
-            body,
-            isCmd,
-            command,
             args,
             q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
             reply
         }
     ) => {
         try {
-            if (!q) return reply(needus);
+            if (!q) return reply("*Please give me a instagram username !*");
             const dataget = await igstalker(q);
             const cap = `「 ${config.BOT} 」
 
@@ -272,27 +160,17 @@ cmd(
                 { quoted: mek }
             );
         } catch (e) {
-            m.sendError(e, cantf);
+            m.sendError(e, "*I cant find this user on instagram !*");
         }
     }
 );
-
-var desct = "";
-if (config.LANG === "SI") desct = "එය ලබා දී ඇති ip එක පිළිබඳ විස්තර සපයයි.";
-else desct = "It gives details of given ip.";
-var needus = "";
-if (config.LANG === "SI") needus = "*කරුණාකර මට ip එකක් ලබා දෙන්න !*";
-else needus = "*Please give me a ip !*";
-var cantf = "";
-if (config.LANG === "SI") cantf = "*මට මෙම ip එක සොයාගත නොහැක !*";
-else cantf = "*I cant find this ip !*";
 
 cmd(
     {
         pattern: "ipstalk",
         alias: ["ip", "sip", "searchip", "ip-locator"],
         react: "🌐",
-        desc: desct,
+        desc: "It gives details of given ip.",
         category: "stalk",
         use: ".ipstalk 112.134.193.130",
         filename: __filename
@@ -305,30 +183,13 @@ cmd(
             from,
             l,
             quoted,
-            body,
-            isCmd,
-            command,
             args,
             q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
             reply
         }
     ) => {
         try {
-            if (!q) return reply(needus);
+            if (!q) return reply("*Please give me a ip !*");
             if (!q.includes(".")) return reply(needus);
             const IP = "IP :";
             const ST = "STATUS :";
@@ -412,7 +273,7 @@ cmd(
                 "└───────────◉";
             await conn.replyad(wea);
         } catch (e) {
-            m.sendError(e, cantf);
+            m.sendError(e, "*I cant find this ip !*");
         }
     }
 );

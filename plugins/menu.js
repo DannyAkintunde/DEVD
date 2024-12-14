@@ -79,7 +79,7 @@ function genMenu(
                 let menuc = `${convertTemplateToES6(menu.templates.header, obj)}
                 ${convertTemplateToES6(menu.templates.body, obj)}
                 ${convertTemplateToES6(menu.templates.footer, obj)}`;
-                let buttonMessaged = {
+                let buttonMessage = {
                     image: {
                         url: config.MENU_MEDIA
                             ? randChoice(config.MENU_MEDIA.split(","))
@@ -90,7 +90,7 @@ function genMenu(
                     headerType: 4,
                     buttons: buttons
                 };
-                return await conn.buttonMessage(from, buttonMessaged, mek);
+                return await conn.buttonMessage(from, buttonMessage, mek);
             } catch (e) {
                 m.sendError(e);
             }

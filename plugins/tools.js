@@ -12,7 +12,7 @@ cmd(
         use: ".tr Bonjour",
         filename: __filename
     },
-    async (conn, mek, m, { q, args, reply }) => {
+    async (conn, mek, m, { q, prefix, command, args, reply }) => {
         if (!q && !m.quoted?.body) return reply("i need a query !");
         let langCode = (await isValidLangCode(config.LANG.toLowerCase()))
             ? config.LANG.toLowerCase()
@@ -20,6 +20,9 @@ cmd(
         let text = q;
         if (m.quoted) {
             text = m.quoted.body;
+            text = text
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
         }
         trans(text, { to: langCode })
             .then(res => reply(res))
@@ -39,7 +42,7 @@ cmd(
         use: ".trt en Bonjour",
         filename: __filename
     },
-    async (conn, mek, m, { q, args, reply }) => {
+    async (conn, mek, m, { q, prefix, command, args, reply }) => {
         if (!q) return reply("i need a query !");
         if (args.length < 2 && !m.quoted)
             return reply("invalid format try\n> .trt en Bonjour");
@@ -48,6 +51,9 @@ cmd(
         let text = args.slice(1).join(" ");
         if (m.quoted) {
             text = m.quoted.body;
+            text = text
+                    .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                    .trim();
         }
         trans(text, { to: args[0].toLowerCase() })
             .then(res => reply(res))
