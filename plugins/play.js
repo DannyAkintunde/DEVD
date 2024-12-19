@@ -24,7 +24,9 @@ let soundcloud = async link => {
             formData: {
                 value: link,
                 "2311a6d881b099dc3820600739d52e64a1e6dcfe55097b5c7c649088c4e50c37":
-                    "710c08f2ba36bd969d1cbc68f59797421fcf90ca7cd398f78d67dfd8c3e554e3"
+                    "710c08f2ba36bd969d1cbc68f59797421fcf90ca7cd398f78d67dfd8c3e554e3",
+                csrf_token:
+                    "c5f4fce3a1adccadc27933b2fdb1b26aeab951b82abefa3f56c5ad8d896c8d62"
             }
         };
         request(options, async function (error, response, body) {
@@ -188,7 +190,7 @@ cmd(
             };
             await conn.replyList(from, listMessage, { quoted: mek });
         } catch (e) {
-            m.sendError(e)
+            m.sendError(e);
         }
     }
 );
@@ -346,7 +348,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            m.sendError(e)
+            m.sendError(e);
         }
     }
 );
@@ -421,7 +423,7 @@ cmd(
                 react: { text: "✔", key: mek.key }
             });
         } catch (e) {
-            m.sendError(e)
+            m.sendError(e);
         }
     }
 );

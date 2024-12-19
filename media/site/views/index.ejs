@@ -1,0 +1,23 @@
+<!-- media/site/views/index.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= config.BOT %></title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header>
+        <h1><%= config.BOT %> online</h1> <!-- Dynamic title from the server -->
+    </header>
+    <main>
+        <p><%= config.BOT %> is a simple whatapp bot made by Danny</p>
+        <p>Current date and time: <%= new Date().toLocaleString() %></p> <!-- Dynamic date/time -->
+    </main>
+    <footer>
+        <p>&copy; 2024 TKM-BOT The Dev Genius - Danny</p>
+    </footer>
+</body>
+</html>

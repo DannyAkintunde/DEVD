@@ -89,6 +89,7 @@
         "overload": "_⚠️ server overloded please try again later._",
         "large": "*File size is too big...*",
         "noquery": "*Please give me a query*",
+        "effectCreated": "*Heres your effect*",
         "humanSpy": "🚫 Whoa there! You’ve wandered into forbidden territory. This command isn’t for mere mortals. 🤖 Turn back before it’s too late!"
     },
     "reactions": {
@@ -102,6 +103,7 @@
         "notFound": "🤕",
         "done": "✔",
         "file": "📁",
+        "picture": "🖼️",
         "question": "❔",
         "overload": "🤯"
     },
