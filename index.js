@@ -63,7 +63,7 @@ var {
 //===================SESSION============================
 if (!fs.existsSync(__dirname + "/session/creds.json")) {
     if (config.SESSION_ID) {
-        const sessdata = config.SESSION_ID.replace("TKM~", "");
+        const sessdata = config.SESSION_ID.replace("DEVD~", "");
         const filer = File.fromURL(`https://mega.nz/file/${sessdata}`);
         filer.download((err, data) => {
             if (err) throw err;
@@ -193,7 +193,7 @@ async function connectToWA() {
             global.MODE = config.MODE === "private" ? "private" : "public";
             console.log(chalk.green("✅ connection successfull! ☺️"));
             conn.sendMessage(conn.user.id, {
-                text: "TKM-BOT V3 connected sucessfully" // connection message
+                text: "DEVD-BOT V3 connected sucessfully" // connection message
             });
             console.log(chalk.yellow("Installing plugins 🔌... "));
             fs.readdirSync("./plugins/").forEach(plugin => {
@@ -218,7 +218,7 @@ async function connectToWA() {
             lsuss("Plugins installed ✅");
             await connectdb();
             await updb();
-            lsuss("TKM-BOT connected ✅");
+            lsuss("DEVD-BOT connected ✅");
         }
     });
 

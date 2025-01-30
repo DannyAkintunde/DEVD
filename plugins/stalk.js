@@ -277,3 +277,13 @@ cmd(
         }
     }
 );
+
+cmd({
+        pattern: "wachannel",
+        alias: ["wachannelstalk", "iwac"],
+        react: "🌐",
+        desc: "It gives details of given whatsapp channel.",
+        category: "stalk",
+        use: ".wachannel <channel-link>",
+        filename: __filename
+    },async () => {})

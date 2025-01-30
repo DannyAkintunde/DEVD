@@ -9,14 +9,14 @@ global.mediaPath = path.join(__dirname, "media", "temp"); // Base directory
 
 module.exports = {
     SESSION_ID: process.env.SESSION_ID || "youre session id",
-    POSTGRESQL_URL:
-        process.env.POSTGRESQL_URL ||
-        process.env.DATABASE_URL ||
-        "youre POSTGRESQL url",
+    // POSTGRESQL_URL:
+    //     process.env.POSTGRESQL_URL ||
+    //     process.env.DATABASE_URL ||
+    //     "youre POSTGRESQL url",
     LANG: process.env.BOT_LANG?.toUpperCase() || "EN",
     PREFIX: process.env.PREFIX || "/",
     MODE: process.env.MODE ? process.env.MODE.toLowerCase() : "private",
-    BOT: process.env.BOT || "TKM-BOT",
+    BOT: process.env.BOT || "DEVD-BOT",
     OWNER_NAME: process.env.OWNER_NAME || process.env.OWNER || "",
     OWNER_NUMBER:
         process.env.OWNER_NUMBER || process.env.OWNER_NUM || "2348098309204",
@@ -46,5 +46,7 @@ module.exports = {
     NSFW: convertToBool(process.env.NSFW) ? true : false,
     // PM_PERMIT: convertToBool(process.env.PM_PERMIT || process.env.PERMIT || true);,
     EFFECTS_CONFIG: process.env.EFFECTS_CONFIG || "",
-    PLAYER: process.env.PLAYER || "soundcloud" // values are soundcloud, spotify, aplmate
+    PLAYER: process.env.PLAYER || "soundcloud", // values are soundcloud, spotify, applemusic
+    RMBG_HOST: process.env.RMBG_HOST,
+    RMBG_APIKEY: process.env.RMBG_APIKEY || "fLYByZwbPqdyqkdKK6zcBN9H"
 };
