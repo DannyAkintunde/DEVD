@@ -8,11 +8,9 @@ const {
     fetchJson,
     fetchBuffer
 } = require("../lib/functions");
-const { Maker } = require("../lib/scrapers/maker");
+const { Maker: maker } = require("../lib/scrapers");
 const fs = require("fs");
 const axios = require("axios");
-
-const maker = new Maker();
 
 const defaultMeta = {
     category: "logo",

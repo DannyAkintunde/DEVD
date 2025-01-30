@@ -1,194 +1,193 @@
 const config = require("../config");
+const { tmpdir } = require("os");
+const fs = require("fs");
+const path = require("path");
+const mime = require("mime-types");
 const { cmd, commands } = require("../command");
 const {
-    getBuffer,
-    getGroupAdmins,
+    fetchBuffer,
     getRandom,
-    h2k,
     isUrl,
-    Json,
-    runtime,
-    sleep,
-    fetchJson
+    getBuffer
 } = require("../lib/functions");
-var request = require("request");
-var cheerio = require("cheerio");
-let soundcloud = async link => {
-    return new Promise((resolve, reject) => {
-        const options = {
-            method: "POST",
-            url: "https://www.klickaud.co/download.php",
-            headers: {
-                "content-type": "application/x-www-form-urlencoded"
-            },
-            formData: {
-                value: link,
-                "2311a6d881b099dc3820600739d52e64a1e6dcfe55097b5c7c649088c4e50c37":
-                    "710c08f2ba36bd969d1cbc68f59797421fcf90ca7cd398f78d67dfd8c3e554e3",
-                csrf_token:
-                    "c5f4fce3a1adccadc27933b2fdb1b26aeab951b82abefa3f56c5ad8d896c8d62"
-            }
-        };
-        request(options, async function (error, response, body) {
-            if (error) throw new Error(error);
-            const $ = cheerio.load(body);
-            resolve({
-                judul: $(
-                    "#header > div > div > div.col-lg-8 > div > table > tbody > tr > td:nth-child(2)"
-                ).text(),
-                download_count: $(
-                    "#header > div > div > div.col-lg-8 > div > table > tbody > tr > td:nth-child(3)"
-                ).text(),
-                thumb: $(
-                    "#header > div > div > div.col-lg-8 > div > table > tbody > tr > td:nth-child(1) > img"
-                ).attr("src"),
-                link: $("#dlMP3")
-                    .attr("onclick")
-                    .split(`downloadFile('`)[1]
-                    .split(`',`)[0]
-            });
-        });
-    });
-};
+const { Maker, spotify, soundcloud, appleMusic } = require("../lib/scrapers");
 
-let axios = require("axios");
-async function ssearch(i) {
-    let e = "https://m.soundcloud.com",
-        t = await axios.get(`${e}/search?q=${encodeURIComponent(i)}`, {
-            headers: {
-                "User-Agent":
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.69 Safari/537.36"
+async function createSongPreview(template, img, songName, smallText) {
+    if (!isUrl(img)) throw new Error("Image URL invalid");
+
+    let tempFilePath; // Temporary file path placeholder
+
+    try {
+        const image = await fetchBuffer(img);
+
+        // Create a temporary file path
+        tempFilePath = path.join(
+            tmpdir(),
+            getRandom("." + (image.ext ?? "jpg")) // Default to ".jpg" if no extension
+        );
+
+        // Write image data to the temporary file
+        await fs.promises.writeFile(tempFilePath, image.data);
+
+        // Create the song preview effect
+        const effect = await Maker.create(template, {
+            text: [songName, smallText],
+            radio: [2],
+            image: [tempFilePath]
+        });
+        return effect.directURL;
+    } catch (e) {
+        // Log any errors that occur during processing
+        console.error(
+            `Error occurred creating song preview: ${e.message}\n${e.stack}`
+        );
+    } finally {
+        // Ensure the temporary file is deleted
+        if (tempFilePath) {
+            try {
+                await fs.promises.unlink(tempFilePath);
+            } catch (cleanupError) {
+                console.error(
+                    `Error occurred during cleanup: ${cleanupError.message}\n${cleanupError.stack}`
+                );
             }
-        }),
-        a = cheerio.load(t.data),
-        d = [];
-    return (
-        a("div > ul > li > div").each(function (i, t) {
-            let r = a(t).find("a").attr("aria-label"),
-                v = e + a(t).find("a").attr("href"),
-                s = a(t)
-                    .find("a > div > div > div > picture > img")
-                    .attr("src"),
-                n = a(t).find("a > div > div > div").eq(1).text(),
-                o = a(t).find("a > div > div > div > div > div").eq(0).text(),
-                u = a(t).find("a > div > div > div > div > div").eq(1).text(),
-                l = a(t).find("a > div > div > div > div > div").eq(2).text();
-            d.push({
-                title: r,
-                url: v,
-                thumb: s,
-                artist: n,
-                views: o,
-                release: l,
-                timestamp: u
-            });
-        }),
-        { status: t.status, creator: "Caliph", result: d }
-    );
+        }
+    }
 }
 
-var N_FOUND = "";
-if (config.LANG === "SI") N_FOUND = "*මට කිසිවක් සොයාගත නොහැකි විය :(*";
-else N_FOUND = "*I couldn't find anything :(*";
-
-var urlneed = "";
-if (config.LANG === "SI") urlneed = "එය soundcloud වෙතින් songs බාගත කරයි.";
-else urlneed = "It downloads songs from soundcloud.";
-
-var imgmsg = "";
-if (config.LANG === "SI") imgmsg = "```කරුණාකර වචන කිහිපයක් ලියන්න!```";
-else imgmsg = "```Please write a few words!```";
-
+// <=============soundcloud=============>
 cmd(
     {
-        pattern: "play",
+        pattern: "soundcloud",
         react: "📱",
-        desc: urlneed,
+        desc: "It downloads songs from soundcloud.",
         category: "download",
         use: ".soundcloud lelena",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            prefix,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, prefix, command, q, reply }) => {
         try {
-            if (!q)
-                return await conn.sendMessage(
-                    from,
-                    { text: imgmsg },
-                    { quoted: mek }
-                );
-            const data2 = await ssearch(q);
-            const data = data2.result;
-            if (data.length < 1)
-                return await conn.sendMessage(
-                    from,
-                    { text: N_FOUND },
-                    { quoted: mek }
-                );
-            var srh = [];
-            for (var i = 0; i < data.length; i++) {
-                if (data[i].thumb && !data[i].views.includes("Follow")) {
-                    srh.push({
-                        description:
-                            data[i].artist +
-                            " | " +
-                            data[i].views +
-                            " | " +
-                            data[i].release +
-                            " | " +
-                            data[i].timestamp,
-                        title: i + 1,
-                        rowId: prefix + "selectaud2 " + data[i].url
-                    });
-                }
+            let text = q;
+            if (m.quoted) {
+                text = m.quoted.body;
+                text = text
+                    .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                    .trim();
             }
-            const sections = [
-                {
-                    title: "_[Result from m.soundcloud.com]_",
-                    rows: srh
-                }
-            ];
-            const listMessage = {
-                text: `「 ${config.BOT} 」
+            if (!text) return await reply("Need a query or link");
+            const soundcloudLinkRegrex =
+                /^(http(s)?:\/\/)?m\.soundcloud\.com\/.+/;
+            const mode = soundcloudLinkRegrex.test(text) ? "link" : "search";
+            switch (mode) {
+                case "search":
+                    {
+                        const search = await soundcloud.search(text);
+                        const data = search.result.filter(
+                            song => song.thumb && !song.views.includes("Follow")
+                        );
+                        if (data.length < 1)
+                            return await reply(global.responses.notFound);
+                        let srh = [];
+                        for (let i = 0; i < data.length; i++) {
+                            srh.push({
+                                description:
+                                    data[i].title +
+                                    " | " +
+                                    data[i].artist +
+                                    " | " +
+                                    data[i].views +
+                                    " | " +
+                                    data[i].release +
+                                    " | " +
+                                    data[i].timestamp,
+                                title: i + 1,
+                                rowId: prefix + "soundcloud " + data[i].url
+                            });
+                        }
+                        const sections = [
+                            {
+                                title: "_[Result from m.soundcloud.com]_",
+                                rows: srh
+                            }
+                        ];
+                        const listMessage = {
+                            image: { url: data[0].thumb },
+                            caption: `「 ${config.BOT} 」
 
-   *SOUNDCLOUD DOWNLOADER*
+   *「 SOUNDCLOUD DOWNLOADER 」*
 
-*📱 Entered Name:* ${q}`,
-                footer: config.FOOTER,
-                title: "Result from m.soundcloud.com 📲",
-                buttonText: "*🔢 Reply below number*",
-                sections
-            };
-            await conn.replyList(from, listMessage, { quoted: mek });
+*📱 Search term:* ${text}`,
+                            footer: config.FOOTER,
+                            title: "Result from m.soundcloud.com 📲",
+                            buttonText: "*🔢 Reply below number*",
+                            sections
+                        };
+                        await conn.replyList(from, listMessage, {
+                            quoted: mek
+                        });
+                    }
+                    break;
+                case "link":
+                    {
+                        const song = await soundcloud.dl(text);
+                        const caption = `*🎶 Song Title:* ${song.title}
+*🔉Bitrate:* ${song.bitrate}
+*🔗 Link:* ${text}`;
+                        const playerImage = await createSongPreview(
+                            "https://en.ephoto360.com/create-two-layer-music-player-photo-effect-online-772.html",
+                            song.thumbnail,
+                            song.title,
+                            text
+                        );
+                        const sections = [
+                            {
+                                title: "SELECT SONG TYPE",
+                                rows: [
+                                    {
+                                        title: "1",
+                                        rowId:
+                                            prefix +
+                                            "soundaud " +
+                                            `${song.title}|${text}|${song.link}|${song.thumbnail}`,
+                                        description: "AUDIO SONG"
+                                    },
+                                    {
+                                        title: "2",
+                                        rowId:
+                                            prefix +
+                                            "sounddoc " +
+                                            `${song.title}|${text}|${song.link}|${song.thumbnail}`,
+                                        description: "DOCUMENT SONG"
+                                    }
+                                ]
+                            }
+                        ];
+                        const listMessage = {
+                            image: { url: playerImage },
+                            caption,
+                            footer: config.FOOTER,
+                            title: "SELECT SONG TYPE",
+                            buttonText: "🔢 Reply below number,",
+                            sections,
+                            contextInfo: {
+                                externalAdReply: {
+                                    title: `「 ${config.BOT} 」`,
+                                    body: "「 SOUNDCLOUD DOWNLOADER 」",
+                                    mediaType: 1,
+                                    sourceUrl: global.link,
+                                    thumbnailUrl: config.LOGO,
+                                    renderLargerThumbnail: false,
+                                    showAdAttribution: true
+                                }
+                            }
+                        };
+
+                        return await conn.replyList(from, listMessage, {
+                            quoted: mek
+                        });
+                    }
+                    break;
+            }
         } catch (e) {
             m.sendError(e);
         }
@@ -197,155 +196,39 @@ cmd(
 
 cmd(
     {
-        alias: ["selectaud2"],
-        filename: __filename
-    },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            prefix,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
-        try {
-            let dat = `「 ${config.BOT} 」
-            
-  *SELECT SONG TYPE*`;
-
-            const sections = [
-                {
-                    title: "",
-                    rows: [
-                        {
-                            title: "1",
-                            rowId: prefix + "soundaud " + q,
-                            description: "AUDIO SONG"
-                        },
-                        {
-                            title: "2",
-                            rowId: prefix + "sounddoc " + q,
-                            description: "DOCUMENT SONG"
-                        }
-                    ]
-                }
-            ];
-            const listMessage = {
-                text: dat,
-                footer: config.FOOTER,
-                buttonText: "🔢 Reply below number,",
-                sections,
-                contextInfo: {
-                    externalAdReply: {
-                        title: `「 ${config.BOT} 」`,
-                        body: "🄲🅁🄴🄰🅃🄴🄳 🄱🅈 🅃🄺🄼 🄸🄽🄲",
-                        mediaType: 1,
-                        sourceUrl: global.link,
-                        thumbnailUrl: config.LOGO,
-                        renderLargerThumbnail: false,
-                        showAdAttribution: true
-                    }
-                }
-            };
-
-            return await conn.replyList(from, listMessage, { quoted: mek });
-        } catch (e) {
-            m.sendError(e, N_FOUND);
-        }
-    }
-);
-
-cmd(
-    {
         pattern: "sounddoc",
         dontAddCommandList: true,
-        filename: __filename
+        filename: __filename,
+        category: "download"
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, command, q, reply, sender }) => {
         try {
             await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
+                react: { text: global.reactions.download, key: mek.key }
             });
-            if (!q)
-                return await conn.sendMessage(
-                    from,
-                    { text: "*Need link...*" },
-                    { quoted: mek }
-                );
-            const data = await soundcloud(q);
-            let listdata = `*📚 Name :* ${data.judul}
-*📺 Down Count :* ${data.download_count}`;
-            await conn.sendMessage(
-                from,
-                { image: { url: data.thumb }, caption: listdata },
-                { quoted: mek }
-            );
-            let sendapk = await conn.sendMessage(
+            if (!q) return await reply("*Need info...*");
+            const [name, link, directLink, thumbnail] = q.split("|");
+            if (!name || !link || !directLink || !thumbnail)
+                return await reply(global.responses.humanSpy);
+            const filename = name + ".mp3";
+            const audMessage = await conn.sendMessage(
                 from,
                 {
-                    document: { url: data.link },
-                    mimetype: "audio/mpeg",
-                    fileName: data.judul + "." + "mp3"
+                    document: { url: directLink },
+                    fileName: filename,
+                    mimetype: mime.lookup(filename),
+                    jpegThumbnail: thumbnail || "https://picsum.photos/512/512",
+                    contextInfo: {
+                        mentionedJid: [sender]
+                    }
                 },
                 { quoted: mek }
             );
             await conn.sendMessage(from, {
-                react: { text: "📁", key: sendapk.key }
+                react: { text: global.reactions.file, key: audMessage.key }
             });
             await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
+                react: { text: global.reactions.done, key: mek.key }
             });
         } catch (e) {
             m.sendError(e);
@@ -357,73 +240,347 @@ cmd(
     {
         pattern: "soundaud",
         dontAddCommandList: true,
-        filename: __filename
+        filename: __filename,
+        category: "download"
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            body,
-            isCmd,
-            command,
-            args,
-            q,
-            isGroup,
-            sender,
-            senderNumber,
-            botNumber2,
-            botNumber,
-            pushname,
-            isMe,
-            isOwner,
-            groupMetadata,
-            groupName,
-            participants,
-            groupAdmins,
-            isBotAdmins,
-            isAdmins,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, command, q, reply, sender }) => {
         try {
             await conn.sendMessage(from, {
-                react: { text: "📥", key: mek.key }
+                react: { text: global.reactions.download, key: mek.key }
             });
-            if (!q)
-                return await conn.sendMessage(
-                    from,
-                    { text: "*Need link...*" },
-                    { quoted: mek }
-                );
-            const data = await soundcloud(q);
-            let listdata = `*📚 Name :* ${data.judul}
-*📺 Down Count :* ${data.download_count}`;
-            await conn.sendMessage(
-                from,
-                { image: { url: data.thumb }, caption: listdata },
-                { quoted: mek }
-            );
-            let sendapk = await conn.sendMessage(
-                from,
-                {
-                    audio: { url: data.link },
-                    mimetype: "audio/mpeg",
-                    fileName: data.judul + "." + "mp3"
-                },
-                { quoted: mek }
-            );
-            await conn.sendMessage(from, {
-                react: { text: "📁", key: sendapk.key }
+            if (!q) return await reply("*Need info...*");
+            const [name, link, directLink, thumbnail] = q.split("|");
+            if (!name || !link || !directLink || !thumbnail)
+                return await reply(global.responses.humanSpy);
+            const audMessage = conn.sendMessage(from, {
+                audio: await getBuffer(directLink),
+                fileName: name + ".mp3",
+                mimetype: "audio/mpeg",
+                ptt: true,
+                contextInfo: {
+                    mentionedJid: [sender],
+                    externalAdReply: {
+                        title: `「 SOUNDCLOUD DOWNLOADER 」`,
+                        body: name,
+                        thumbnail: await getBuffer(thumbnail || config.LOGO),
+                        mediaType: 2,
+                        mediaUrl: link
+                    }
+                }
             });
             await conn.sendMessage(from, {
-                react: { text: "✔", key: mek.key }
+                react: { text: global.reactions.file, key: audMessage.key }
+            });
+            await conn.sendMessage(from, {
+                react: { text: global.reactions.done, key: mek.key }
             });
         } catch (e) {
             m.sendError(e);
         }
     }
 );
+//=======================================
+
+// <==============spotify===============>
+cmd(
+    {
+        pattern: "spotify",
+        category: "download",
+        desc: "download musics from spotify",
+        alias: ["sdl", "sp", "spdl"],
+        use: ".spotify <query/link>",
+        filename: __filename
+    },
+    async (conn, mek, m, { from, q, reply, prefix, command }) => {
+        let text = q;
+        if (m.quoted) {
+            text = m.quoted.body;
+            text = text
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
+        }
+        if (!text) return reply("Need a query or link");
+        const spotLinkRegrex = /^((https|http):\/\/)?open\.spotify\.com\/.+/;
+        let mode = "link";
+        if (!spotLinkRegrex.test(text)) mode = "search";
+        switch (mode) {
+            case "link":
+                {
+                    m.react(global.reactions.loading);
+                    const song = await spotify.dl(text);
+                    if (!song.success)
+                        return m.sendError(
+                            new Error("An error occurred Fetching song.")
+                        );
+                    await conn.sendMessage(from, {
+                        audio: await getBuffer(song.link),
+                        fileName: song.metadata.title + ".mp3",
+                        mimetype: "audio/mpeg",
+                        ptt: true,
+                        contextInfo: {
+                            mentionedJid: [from],
+                            externalAdReply: {
+                                title: `「 SP DOWNLOADER 」`,
+                                body: song.metadata.title,
+                                thumbnail: await getBuffer(
+                                    song.metadata.cover || config.LOGO
+                                ),
+                                mediaType: 2,
+                                mediaUrl: text
+                            }
+                        }
+                    });
+                }
+                break;
+            case "search":
+                {
+                    m.react(global.reactions.search);
+                    const song = await spotify.play(text);
+                    if (!song.success)
+                        return m.sendError(
+                            new Error(
+                                "An error occurred fetching searching song."
+                            )
+                        );
+                    const caption = `*🎶 Song Title:* ${song.name}
+*🎤 Artist:* ${song.artist}
+*📅 Release Date:* ${song.release_date}
+*⏰ Duration:* ${song.duration}
+*🔗 Link:* ${song.link}`;
+                    const songMsg = await conn.sendMessage(
+                        from,
+                        {
+                            image: {
+                                url: encodeURI(
+                                    `https://api.yanzbotz.live/api/maker/spotify-card?author=${song.artist}&title=${song.name}&album=${song.name}&img=${song.image_url}`
+                                )
+                            },
+                            caption,
+                            contextInfo: {
+                                mentionedJid: [from],
+                                externalAdReply: {
+                                    title: `「 SP DOWNLOADER 」`,
+                                    body: `${song.name}:${song.artist}`,
+                                    mediaType: 1,
+                                    sourceUrl: song.link,
+                                    thumbnailUrl: song.image_url || config.LOGO,
+                                    renderLargerThumbnail: false,
+                                    showAdAttribution: true
+                                }
+                            }
+                        },
+                        { quoted: mek }
+                    );
+                    const dlsong = await song.dlink();
+                    if (!dlsong)
+                        return reply("An error occurred downloading song");
+                    await conn.sendMessage(
+                        from,
+                        {
+                            audio: await getBuffer(dlsong.link),
+                            fileName: song.name + ".mp3",
+                            mimetype: "audio/mpeg",
+                            ptt: true,
+                            contextInfo: {
+                                mentionedJid: [from],
+                                externalAdReply: {
+                                    title: `「 SP DOWNLODER 」`,
+                                    body: dlsong.metadata.title,
+                                    thumbnail: await getBuffer(
+                                        dlsong.metadata.cover || config.LOGO
+                                    ),
+                                    mediaType: 2,
+                                    mediaUrl: song.link
+                                }
+                            }
+                        },
+                        { quoted: songMsg.key }
+                    );
+                }
+                break;
+        }
+        m.react(global.reactions.success);
+    }
+);
+//=======================================
+// <=============appleMusic=============>
+function parseISO8601Duration(duration) {
+    const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+    if (!match) return "Invalid format";
+
+    const hours = match[1] ? parseInt(match[1]) : 0;
+    const minutes = match[2] ? parseInt(match[2]) : 0;
+    const seconds = match[3] ? parseInt(match[3]) : 0;
+
+    const parts = [];
+    if (hours) parts.push(`${hours} hour${hours > 1 ? "s" : ""}`);
+    if (minutes) parts.push(`${minutes} minute${minutes > 1 ? "s" : ""}`);
+    if (seconds) parts.push(`${seconds} second${seconds > 1 ? "s" : ""}`);
+
+    return parts.join(", ");
+}
+
+cmd(
+    {
+        pattern: "applemusic",
+        category: "download",
+        desc: "download musics from apple music",
+        alias: ["apm", "aplm", "apmdl"],
+        use: ".applemusic <query/link>",
+        filename: __filename
+    },
+    async (conn, mek, m, { from, prefix, command, q, reply }) => {
+        try {
+            let text = q;
+            if (m.quoted) {
+                text = m.quoted.body;
+                text = text
+                    .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                    .trim();
+            }
+            if (!text) return await reply("Need a query or link");
+            const applemusicLinkRegrex =
+                /^(http(s)?:\/\/)?music\.apple\.com\/.+/;
+            const mode = applemusicLinkRegrex.test(text) ? "link" : "search";
+            switch (mode) {
+                case "search":
+                    {
+                        const results = await appleMusic.search(text);
+
+                        if (results.length < 1)
+                            return await reply(global.responses.notFound);
+                        let srh = [];
+                        for (let i = 0; i < results.length; i++) {
+                            srh.push({
+                                description: results[i].title,
+                                title: i + 1,
+                                rowId: prefix + "applemusic " + results[i].url
+                            });
+                        }
+                        const sections = [
+                            {
+                                title: "_[Result from music.apple.com]_",
+                                rows: srh
+                            }
+                        ];
+                        const listMessage = {
+                            image: {
+                                url: results[0].thumbnails.slice(-1)[0].url
+                            },
+                            caption: `「 ${config.BOT} 」
+
+   *「 APPLE MUSIC DOWNLOADER 」*
+
+*📱 Search term:* ${text}`,
+                            footer: config.FOOTER,
+                            title: "Result from music.apple.com 📲",
+                            buttonText: "*🔢 Reply below number*",
+                            sections
+                        };
+                        await conn.replyList(from, listMessage, {
+                            quoted: mek
+                        });
+                    }
+                    break;
+                case "link":
+                    {
+                        const response = await appleMusic.request(text);
+                        const song = response.data[0];
+                        const caption = `*🎶 Title:* ${song.title}
+*🎤 Artist:* ${song.artist}
+*📅 Release Date:* ${song.releaseDate}  
+*🕒 Duration:* ${parseISO8601Duration(song.duration)}
+*💿 Description:* ${song.description}  
+*🔗 Artist Link:* ${song.artistUrl}
+> ${config.FOOTER}`;
+                        const playerImage = await createSongPreview(
+                            "https://en.ephoto360.com/make-notebook-music-effect-346.html",
+                            song.imageUrl,
+                            song.title,
+                            text
+                        );
+
+                        const songMsg = await conn.sendMessage(
+                            from,
+                            {
+                                image: {
+                                    url: playerImage
+                                },
+                                caption,
+                                contextInfo: {
+                                    mentionedJid: [from],
+                                    externalAdReply: {
+                                        title: `「 APM DOWNLOADER 」`,
+                                        body: `${song.description}:${song.artist}`,
+                                        mediaType: 1,
+                                        sourceUrl: text,
+                                        thumbnailUrl:
+                                            song.imageUrl || config.LOGO,
+                                        renderLargerThumbnail: false,
+                                        showAdAttribution: true
+                                    }
+                                }
+                            },
+                            { quoted: mek }
+                        );
+                        const dlsong = song.download.error ? [] : song.download;
+                        if (dlsong.length < 1)
+                            return await reply(
+                                "An error occurred downloading song"
+                            );
+                        await conn.sendMessage(
+                            from,
+                            {
+                                audio: await getBuffer(dlsong[0].link),
+                                fileName: song.title + ".mp3",
+                                mimetype: "audio/mpeg",
+                                ptt: true,
+                                contextInfo: {
+                                    mentionedJid: [from],
+                                    externalAdReply: {
+                                        title: `「 APM DOWNLODER 」`,
+                                        body: song.title,
+                                        thumbnail: await getBuffer(
+                                            dlsong[1].link || config.LOGO
+                                        ),
+                                        mediaType: 2,
+                                        mediaUrl: text
+                                    }
+                                }
+                            },
+                            { quoted: songMsg.key }
+                        );
+                    }
+                    break;
+            }
+        } catch (e) {
+            m.sendError(e);
+        }
+    }
+);
+//=======================================
+// <===============player===============>
+function getPlayer(player) {
+    const defualtPlayer = commands.filter(
+        cmd => cmd.pattern === "soundcloud"
+    )[0];
+    const playerCommand = commands.filter(cmd => cmd.pattern === "player")[0];
+    if (!playerCommand) {
+        console.error("Player not found using defualt");
+        return defualtPlayer.function;
+    }
+    return playerCommand.function;
+}
+cmd(
+    {
+        pattern: "play",
+        category: "download",
+        alias: ["song"],
+        react: global.reactions.music,
+        desc: "Music player",
+        use: ".play <query or link>",
+        filename: __filename
+    },
+    getPlayer(config.PLAYER)
+);
+//=======================================

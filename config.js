@@ -25,7 +25,12 @@ module.exports = {
     ONLY_GROUP: process.env.ONLY_GROUP || "false",
     ANTI_LINK: process.env.ANTI_LINK || "false",
     ANTI_BOT: process.env.ANTI_BOT || "false",
-    AUTO_REACT: convertToBool(process.env.AUTO_REACT || process.env.REACT, "false") ? false : true,
+    AUTO_REACT: convertToBool(
+        process.env.AUTO_REACT || process.env.REACT,
+        "false"
+    )
+        ? false
+        : true,
     ALIVE: process.env.ALIVE || `default`,
     // AUTHOR: process.env.AUTHOR || "TKM",
     FOOTER: process.env.FOOTER || "𝙿𝚘𝚠𝚎𝚛𝚎𝚍 𝚋𝚢 𝚃𝙺𝙼-𝙱𝙾𝚃",
@@ -39,5 +44,7 @@ module.exports = {
     TZ: process.env.TZ || process.env.TIME_ZONE || "Etc/GMT",
     LOG: convertToBool(process.env.LOG) ? true : false,
     NSFW: convertToBool(process.env.NSFW) ? true : false,
-    // PM_PERMIT: convertToBool(process.env.PM_PERMIT || process.env.PERMIT || true);
+    // PM_PERMIT: convertToBool(process.env.PM_PERMIT || process.env.PERMIT || true);,
+    EFFECTS_CONFIG: process.env.EFFECTS_CONFIG || "",
+    PLAYER: process.env.PLAYER || "soundcloud" // values are soundcloud, spotify, aplmate
 };

@@ -1,12 +1,9 @@
 const config = require("../config");
 const { GDriveError, fetchInfo: GDriveDl } = require("gdrive-file-info");
-const { cmd, commands } = require("../command");
+const { cmd } = require("../command");
 const parseCommand = require("../lib/commands/commandParser");
 const {
     isUrl,
-    Json,
-    sleep,
-    fetchJson,
     fetchBuffer,
     getBuffer,
     formatSize,
@@ -20,7 +17,6 @@ const {
     aiodl,
     mediaFire,
     igdl,
-    spotify,
     threads
 } = require("../lib/scrapers");
 const fetch = (...args) =>
@@ -298,7 +294,7 @@ cmd(
                     return await reply("*This file is too big !!*");
                 if (
                     file.size.includes("GB") &&
-                    Number(data.size.replace(" GB", "")) * 1024 >
+                    Number(file.size.replace(" GB", "")) * 1024 >
                         config.MAX_SIZE
                 )
                     return await reply("*This file is too big !!*");
@@ -313,7 +309,7 @@ cmd(
                             mentionedJid: [sender]
                         }
                     },
-                    { quoted: mek }
+                    { quoted: info }
                 );
                 await conn.sendMessage(from, {
                     react: { text: global.reactions.file, key: mfile.key }
@@ -473,121 +469,6 @@ cmd(
     }
 );
 
-cmd(
-    {
-        pattern: "spotify",
-        category: "download",
-        desc: "download musics from spotify",
-        alias: ["sdl", "sp", "spdl"],
-        use: ".spotify <query/link>",
-        filename: __filename
-    },
-    async (conn, mek, m, { from, q, reply, prefix, command }) => {
-        let text = q;
-        if (m.quoted) {
-            text = m.quoted.body;
-            text = text
-                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
-                .trim();
-        }
-        if (!text) return reply("Need a query or link");
-        const spotLinkRegrex = /^((https|http):\/\/)?open\.spotify\.com\/.+/;
-        let mode = "link";
-        if (!spotLinkRegrex.test(text)) mode = "search";
-        switch (mode) {
-            case "link":
-                {
-                    m.react(global.reactions.loading);
-                    const song = await spotify.dl(text);
-                    if (!song.success)
-                        return m.sendError(
-                            new Error("An error occured Fetching song.")
-                        );
-                    await conn.sendMessage(from, {
-                        audio: await getBuffer(song.link),
-                        fileName: song.metadata.title + ".mp3",
-                        mimetype: "audio/mpeg",
-                        ptt: true,
-                        contextInfo: {
-                            mentionedJid: [from],
-                            externalAdReply: {
-                                title: `「 SP DOWNLOADER 」`,
-                                body: song.metadata.title,
-                                thumbnail: await getBuffer(
-                                    song.metadata.cover || config.LOGO
-                                ),
-                                mediaType: 2,
-                                mediaUrl: text
-                            }
-                        }
-                    });
-                }
-                break;
-            case "search":
-                {
-                    m.react(global.reactions.search);
-                    const song = await spotify.play(text);
-                    if (!song.success)
-                        return m.sendError(
-                            new Error(
-                                "An error occured fetching searching song."
-                            )
-                        );
-                    const caption = `*🎶 Song Title:* ${song.name}
-*🎤 Artist:* ${song.artist}
-*📅 Release Date:* ${song.release_date}
-*⏰ Duration:* ${song.duration}
-*🔗 Link:* ${song.link}`;
-                    const songMsg = await conn.sendMessage(
-                        from,
-                        {
-                            image: {
-                                url: encodeURI(
-                                    `https://api.yanzbotz.live/api/maker/spotify-card?author=${song.artist}&title=${song.name}&album=${song.name}&img=${song.image_url}`
-                                )
-                            },
-                            caption,
-                            contextInfo: {
-                                mentionedJid: [from],
-                                externalAdReply: {
-                                    title: `「 SP DOWNLOADER 」`,
-                                    body: `${song.name}:${song.artist}`,
-                                    mediaType: 1,
-                                    sourceUrl: song.link,
-                                    thumbnailUrl: song.image_url || config.LOGO,
-                                    renderLargerThumbnail: false,
-                                    showAdAttribution: true
-                                }
-                            }
-                        },
-                        { quoted: mek }
-                    );
-                    const dlsong = await song.dlink();
-                    await conn.sendMessage(from, {
-                        audio: await getBuffer(dlsong.link),
-                        fileName: song.name + ".mp3",
-                        mimetype: "audio/mpeg",
-                        ptt: true,
-                        contextInfo: {
-                            mentionedJid: [from],
-                            externalAdReply: {
-                                title: `「 SP DOWNLODER 」`,
-                                body: dlsong.metadata.title,
-                                thumbnail: await getBuffer(
-                                    dlsong.metadata.cover || config.LOGO
-                                ),
-                                mediaType: 2,
-                                mediaUrl: song.link
-                            }
-                        }
-                    });
-                }
-                break;
-        }
-        m.react(global.reactions.success);
-    }
-);
-
 // <============clone===============>
 cmd(
     {
@@ -599,7 +480,7 @@ cmd(
         use: ".gitclone <repo link>",
         filename: __filename
     },
-    async (conn, mek, m, { q, reply, prefix, command, sender }) => {
+    async (conn, mek, m, { from, q, reply, prefix, command, sender }) => {
         if (!q && !m.quoted?.body)
             return reply(
                 `Please enter the necessary information to generate the image.`
@@ -659,7 +540,7 @@ cmd(
                     mentionedJid: [sender]
                 }
             },
-            { quoted: info }
+            { quoted: mek }
         );
         await conn.sendMessage(from, {
             react: { text: global.reactions.file, key: repoFile.key }
