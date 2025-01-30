@@ -9,8 +9,8 @@ apt-get upgrade -y && \
 npm i pm2 -g && \
 rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/DannyAkintunde/tkmv3 /root/TKM-bot
-WORKDIR /root/TKM-bot/
+RUN git clone https://github.com/DannyAkintunde/Devd /root/DEVD-BOT
+WORKDIR /root/DEVD-BOT/
 
 
 COPY package.json .
