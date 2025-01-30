@@ -2,13 +2,13 @@
     "name": "TKM-MD",
     "version": "3.0.0",
     "scripts": {
-        "start": "pm2 start index.js --deep-monitoring --attach --name TKM-BOT",
-        "stop": "pm2 stop TKM-BOT",
+        "start": "pm2 start index.js --deep-monitoring --attach --name DEVD-BOT",
+        "stop": "pm2 stop DEVD-BOT",
         "restart": "git pull && npm stop && npm start",
         "stash": "git stash && git stash drop"
     },
     "author": {
-        "name": "TKM"
+        "name": "Danny"
     },
     "dependencies": {
         "@whiskeysockets/baileys": "git+https://github.com/WhiskeySockets/Baileys.git",
