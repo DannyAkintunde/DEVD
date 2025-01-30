@@ -9,7 +9,7 @@ apt-get upgrade -y && \
 npm i pm2 -g && \
 rm -rf /var/lib/apt/lists/*
 
-RUN git clone https://github.com/DannyAkintunde/Devd /root/DEVD-BOT
+RUN https://github.com/DannyAkintunde/DEVD.git /root/DEVD-BOT
 WORKDIR /root/DEVD-BOT/
 
 
