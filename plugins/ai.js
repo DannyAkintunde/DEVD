@@ -1051,7 +1051,7 @@ cmd(
                                           buttons: [
                                               {
                                                   type: 1,
-                                                  buttonId: `${prefix}mj ${q}`,
+                                                  buttonId: `${prefix}imagine ${q}`,
                                                   buttonText: {
                                                       displayText:
                                                           "Regenerate 🔁"

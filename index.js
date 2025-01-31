@@ -6,6 +6,7 @@ const {
     fetchLatestBaileysVersion,
     jidNormalizedUser,
     getContentType,
+    generateWAMessage,
     makeCacheableSignalKeyStore,
     makeInMemoryStore,
     Browsers
@@ -827,19 +828,14 @@ async function connectToWA() {
                 }
             };
 
-            conn.edite = async (gg, newmg) => {
+            conn.edite = async (oldmg, newmg) => {
                 await conn.relayMessage(
                     from,
                     {
                         protocolMessage: {
-                            key: gg.key,
+                            key: oldmg.key,
                             type: 14,
-                            editedMessage: {
-                                conversation: newmg.text,
-                                imageMessage: newmg,
-                                videoMessage: newmg,
-                                extendedTextMessage: newmg
-                            }
+                            editedMessage: generateWAMessage(newmg)
                         }
                     },
                     {}
