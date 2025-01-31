@@ -90,7 +90,12 @@ global.link = "https://whatsapp.com/channel/0029VaPwIObFXUua2VemtQ0x";
 global.cid = "120363220858658436@newsletter";
 // Create temp dir
 if (!fs.existsSync(global.mediaPath)) {
-    await fs.promises.mkdir(global.mediaPath, { recursive: true });
+    fs.promises
+        .mkdir(global.mediaPath, { recursive: true })
+        .then(() => console.log("Temp folder created"))
+        .catch(e => console.error("Error occored creating temp folder."));
+} else {
+    console.log("Temp folder already exists");
 }
 // <<==========THEMES===========>>
 process.emit("theme.update");
