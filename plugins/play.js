@@ -372,30 +372,26 @@ cmd(
                         { quoted: mek }
                     );
                     const dlsong = await song.dlink();
-                    if (!dlsong)
+                    if (!dlsong.success)
                         return reply("An error occurred downloading song");
-                    await conn.sendMessage(
-                        from,
-                        {
-                            audio: await getBuffer(dlsong.link),
-                            fileName: song.name + ".mp3",
-                            mimetype: "audio/mpeg",
-                            ptt: true,
-                            contextInfo: {
-                                mentionedJid: [from],
-                                externalAdReply: {
-                                    title: `「 SP DOWNLODER 」`,
-                                    body: dlsong.metadata.title,
-                                    thumbnail: await getBuffer(
-                                        dlsong.metadata.cover || config.LOGO
-                                    ),
-                                    mediaType: 2,
-                                    mediaUrl: song.link
-                                }
+                    await conn.sendMessage(from, {
+                        audio: await getBuffer(dlsong.link),
+                        fileName: song.name + ".mp3",
+                        mimetype: "audio/mpeg",
+                        ptt: true,
+                        contextInfo: {
+                            mentionedJid: [from],
+                            externalAdReply: {
+                                title: `「 SP DOWNLODER 」`,
+                                body: dlsong.metadata.title,
+                                thumbnail: await getBuffer(
+                                    dlsong.metadata.cover || config.LOGO
+                                ),
+                                mediaType: 2,
+                                mediaUrl: song.link
                             }
-                        },
-                        { quoted: songMsg.key }
-                    );
+                        }
+                    });
                 }
                 break;
         }
