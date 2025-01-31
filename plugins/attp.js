@@ -27,7 +27,7 @@ cmd(
         use: ".ttp HI",
         filename: __filename
     },
-    async (conn, mek, m, { q, reply, pushname, parsedCommand }) => {
+    async (conn, mek, m, { q, from, reply, pushname, parsedCommand }) => {
         try {
             if (!q) return await reply("*Please give me a text !*");
             const options = parsedCommand.options;
@@ -77,7 +77,7 @@ cmd(
             const categories = options.categories?.split(",");
             const pack = options.pack;
             const text = parsedCommand.args.join(" ");
-            const gifUrl = attp.request({ text });
+            const gifUrl = await attp.request({ text });
             let buff = await getBuffer(gifUrl);
             buff = await videoToWebp(buff, 5);
             const sticker = new Sticker(buff, {

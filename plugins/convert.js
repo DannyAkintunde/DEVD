@@ -9,6 +9,7 @@ const {
 } = require("../lib/functions");
 const { fileUploader } = require("../lib/scrapers");
 const { getVideoDuration, toPTT } = require("../lib/editor");
+const { Sticker, StickerTypes } = require("wa-sticker-formatter");
 const fs = require("fs");
 const fileType = require("file-type");
 
@@ -27,6 +28,7 @@ cmd(
             const imageBuffer = await m.getImage();
             if (imageBuffer) {
                 fileUploader.uploadFromBuffer(imageBuffer).then(async url => {
+                    reply(url);
                     conn.buttonMessage(
                         from,
                         {
