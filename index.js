@@ -827,7 +827,6 @@ async function connectToWA() {
                     // await updateCMDStore(text.key.id, CMD_ID_MAP);
                 }
             };
-
             conn.edite = async (oldmg, newmg) => {
                 await conn.relayMessage(
                     from,
@@ -835,7 +834,9 @@ async function connectToWA() {
                         protocolMessage: {
                             key: oldmg.key,
                             type: 14,
-                            editedMessage: generateWAMessage(newmg)
+                            editedMessage: {
+                                conversation: newmg.text
+                            }
                         }
                     },
                     {}
