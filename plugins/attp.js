@@ -10,7 +10,8 @@ const {
 const {
     videoToWebp,
     addColoredBgToGif,
-    addImageBgToGif
+    addImageBgToGif,
+    addVideoBgToGif
 } = require("../lib/editor");
 const { messageType } = require("../lib/msg");
 const { attp } = require("../lib/scrapers");
