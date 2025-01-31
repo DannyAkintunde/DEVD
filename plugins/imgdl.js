@@ -5,7 +5,6 @@ const { sleep } = require("../lib/functions");
 const { image: googleImage } = require("googlethis");
 const { randomUUID } = require("crypto");
 
-
 const googleImageSearchs = {};
 
 cmd(
@@ -34,7 +33,7 @@ cmd(
         const commandStr = `${prefix}${command} ${text}`;
         const parsedCommand = parseCommand(commandStr);
         const options = parsedCommand.options;
-        const page = parseInt(options.page || options.p);
+        const page = parseInt(options.page || options.p) || 0;
         if (isNaN(page) || page < 0)
             return reply("Page must be an integer greater than or equal to 0.");
         const resultLength = parseInt(options.l) || 5;

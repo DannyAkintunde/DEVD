@@ -857,7 +857,7 @@ cmd(
                 },
                 { quoted: m }
             );
-            midjourney(
+            midjourney.create(
                 prompt,
                 negative_prompt,
                 style,
@@ -1005,7 +1005,8 @@ cmd(
                 },
                 { quoted: m }
             );
-            stablediff(prompt, negative_prompt, guidanceScale)
+            stablediff
+                .create(prompt, negative_prompt, guidanceScale)
                 .then(images => {
                     if (images && images.length > 0) {
                         m.react(global.reactions.upload);

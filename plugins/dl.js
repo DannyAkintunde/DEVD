@@ -529,6 +529,7 @@ cmd(
             format === "tarball" ? ".tar.gz" : ".zip"
         }`;
         const preview = await fetchSocialPreview(repoInfo["html_url"]);
+        await reply(`${downloadLink} ${preview}`);
         const repoFile = await conn.sendMessage(
             from,
             {

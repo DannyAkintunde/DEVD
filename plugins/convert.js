@@ -71,7 +71,7 @@ cmd(
         use: ".sticker <Reply to image/video/sticker>",
         filename: __filename
     },
-    async (conn, mek, m, { from, pushname, reply }) => {
+    async (conn, mek, m, { from, pushname, reply, parsedCommand }) => {
         const options = parsedCommand.options;
         const isCropped = options.cropped || options.c;
         const categories = options.categories?.split(",");
