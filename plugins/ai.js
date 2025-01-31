@@ -514,7 +514,7 @@ cmd(
                 return await conn.buttonMessage(
                     from,
                     {
-                        text: `*Qurey*: ${args.join("")}\n*Prompt*: ${result}`,
+                        text: `*Qurey*: ${q}\n*Prompt*: ${result}`,
                         footer: config.FOOTER,
                         ...(config.BUTTON
                             ? {
