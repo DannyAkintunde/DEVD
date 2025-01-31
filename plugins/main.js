@@ -332,7 +332,7 @@ cmd(
                 image: {
                     url: config.MENU_MEDIA
                         ? randChoice(config.MENU_MEDIA.split(","))
-                        : undefined ||
+                        : "undefined" ||
                           randChoice(global.THEME.menus.MENU.images)
                 },
                 footer: config.FOOTER,

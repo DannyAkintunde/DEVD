@@ -48,6 +48,7 @@
         "googlethis": "^1.8.0",
         "gdrive-file-info": "^1.2.0",
         "megajs": "^1.1.0",
+        "sqlite3": "^5.1.7",
         "stream": "^0.0.2",
         "sharp": "^0.33.5",
         "vm": "^0.1.0",
