@@ -947,7 +947,6 @@ cmd(
         pattern: "imagine",
         alias: [
             "texttoimage",
-            "toimage",
             "aiimage",
             "stablediffusion",
             "stablediff",
@@ -1021,7 +1020,6 @@ cmd(
                                     images.length
                                 }`
                             });
-                            reply(JSON.stringify(image));
                             conn.sendMessage(from, {
                                 image: { url: image },
                                 contextInfo: { mentionedJid: [sender] }
