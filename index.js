@@ -603,7 +603,7 @@ async function connectToWA() {
                     let result = "";
                     const CMD_ID_MAP = [];
                     msgData.buttons
-                        .filter(button => button.type == 1)
+                        ?.filter(button => button.type == 1)
                         .forEach((button, bttnIndex) => {
                             const mainNumber = `${bttnIndex + 1}`;
                             result += `\n*${mainNumber} | ${button.buttonText.displayText}*\n`;
@@ -835,7 +835,7 @@ async function connectToWA() {
                             key: gg.key,
                             type: 14,
                             editedMessage: {
-                                conversation: newmg
+                                newmg
                             }
                         }
                     },
