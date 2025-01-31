@@ -38,11 +38,13 @@ module.exports = {
         process.env.LOGO || `https://telegra.ph/file/18d25675835c1486fc63e.jpg`,
     MENU_MEDIA: process.env.MENU_LINKS,
     PORT: parseInt(process.env.PORT) || 8000,
-    BUTTON: convertToBool(process.env.BUTTON, (fault = "false")) ? false : true,
+    BUTTON: convertToBool(process.env.BUTTON, (fault = "false"))
+        ? false
+        : false,
     PRESENCE: process.env.PRESENCE || "avaliable",
     THEME: process.env.THEME?.toUpperCase() || "DEFAULT",
     TZ: process.env.TZ || process.env.TIME_ZONE || "Etc/GMT",
-    LOG: convertToBool(process.env.LOG) ? true : false,
+    LOG: convertToBool(process.env.LOG) ? true : true,
     NSFW: convertToBool(process.env.NSFW) ? true : false,
     // PM_PERMIT: convertToBool(process.env.PM_PERMIT || process.env.PERMIT || true);,
     EFFECTS_CONFIG: process.env.EFFECTS_CONFIG || "",

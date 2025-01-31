@@ -333,8 +333,7 @@ cmd(
                 image: {
                     url: config.MENU_MEDIA
                         ? randChoice(config.MENU_MEDIA.split(","))
-                        : "" ||
-                          randChoice(global.THEME.menus.MENU.images)
+                        : "" || randChoice(global.THEME.menus.MENU.images)
                 },
                 footer: config.FOOTER,
                 buttonText: "🔢 Reply below number,",
