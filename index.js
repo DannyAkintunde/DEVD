@@ -6,7 +6,7 @@ const {
     fetchLatestBaileysVersion,
     jidNormalizedUser,
     getContentType,
-    generateWAMessage,
+    proto,
     makeCacheableSignalKeyStore,
     makeInMemoryStore,
     Browsers

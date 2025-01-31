@@ -866,28 +866,31 @@ cmd(
                     height,
                     guidanceScale
                 )
-                .then(images => {
+                .then(async images => {
                     if (images && images.length > 0) {
                         m.react(global.reactions.upload);
-                        conn.edite(infoMsg, {
-                            text: `Uploding Images generated images`
+                        await conn.sendMessage(from, {
+                            text: `Uploding Images generated images`,
+                            edit: infoMsg.key
                         });
                         let i = 1;
-                        images.forEach(image => {
-                            conn.edite(infoMsg, {
+                        images.forEach(async image => {
+                            await conn.sendMessage(from, {
                                 text: `Uploding Images ${i++} of ${
                                     images.length
-                                }`
+                                }`,
+                                edit: infoMsg.key
                             });
-                            conn.sendMessage(from, {
+                            await conn.sendMessage(from, {
                                 image: { url: image },
                                 contextInfo: { mentionedJid: [sender] }
                             });
                         });
-                        conn.edite(infoMsg, {
+                        conn.sendMessage(from, {
                             text: `Sucessfully generated ${
                                 images.length
-                            } image${images.length > 1 ? "s" : ""}`
+                            } image${images.length > 1 ? "s" : ""}`,
+                            edit: infoMsg.key
                         });
                         const caption = `*Prompt:* ${prompt}${
                             negative_prompt
@@ -1007,28 +1010,31 @@ cmd(
             );
             stablediff
                 .create(prompt, negative_prompt, guidanceScale)
-                .then(images => {
+                .then(async images => {
                     if (images && images.length > 0) {
                         m.react(global.reactions.upload);
-                        conn.edite(infoMsg, {
-                            text: `Uploding Images generated images`
+                        await conn.sendMessage(from, {
+                            text: `Uploding Images generated images`,
+                            edit: infoMsg.key
                         });
                         let i = 1;
-                        images.forEach(image => {
-                            conn.edite(infoMsg, {
+                        images.forEach(async image => {
+                            await conn.sendMessage(from, {
                                 text: `Uploding Images ${i++} of ${
                                     images.length
-                                }`
+                                }`,
+                                edit: infoMsg.key
                             });
                             conn.sendMessage(from, {
                                 image: { url: image },
                                 contextInfo: { mentionedJid: [sender] }
                             });
                         });
-                        conn.edite(infoMsg, {
+                        await conn.sendMessage(from, {
                             text: `Sucessfully generated ${
                                 images.length
-                            } image${images.length > 1 ? "s" : ""}`
+                            } image${images.length > 1 ? "s" : ""}`,
+                            edit: infoMsg.key
                         });
                         const caption = `*Prompt:* ${prompt}${
                             negative_prompt
