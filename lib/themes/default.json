@@ -108,36 +108,6 @@
         "question": "❔",
         "overload": "🤯"
     },
-    "anim": {
-        "loading": {
-            "meta": {
-                "type": "dynamic",
-                "length": 20, // Length of the progress bar
-                "delay": 0 // Delay between updates
-            },
-            "frames": {
-                "bar": {
-                    "filled": "█", // Character for filled part
-                    "empty": "░", // Character for empty part
-                    "completed": "[-------Done-------]"
-                },
-                "body": {
-                    "left": "[", // Left bracket of the progress bar
-                    "right": "]" // Right bracket of the progress bar
-                }
-            }
-        },
-        "charge": {
-            "meta": {
-                "type": "static",
-                "mode": "forward",
-                "repeat": 1,
-                "done": "",
-                "stop": ""
-            },
-            "frames": {}
-        }
-    },
     "styles": {
         "fonts": []
     },
