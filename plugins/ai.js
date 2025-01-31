@@ -1330,7 +1330,7 @@ cmd(
     },
     async (conn, mek, m, { from, q, reply }) => {
         try {
-            const imageBuffer = m.getImageFromMsg();
+            const imageBuffer = await m.getImage();
             if (imageBuffer) {
                 fileUploader.uploadFromBuffer(imageBuffer).then(async url => {
                     try {
@@ -1368,7 +1368,7 @@ cmd(
     },
     async (conn, mek, m, { from, reply }) => {
         try {
-            const imageBuffer = m.getImage();
+            const imageBuffer = await m.getImage();
             if (imageBuffer) {
                 fileUploader.uploadFromBuffer(imageBuffer).then(async url => {
                     await conn.sendMessage(
@@ -1401,7 +1401,7 @@ cmd(
     },
     async (conn, mek, m, { from, reply }) => {
         try {
-            const imageBuffer = m.getImage();
+            const imageBuffer = await m.getImage();
             if (imageBuffer) {
                 fileUploader.uploadFromBuffer(imageBuffer).then(async url => {
                     try {

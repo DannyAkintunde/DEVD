@@ -3,13 +3,8 @@ const { cmd, commands } = require("../command");
 const got = require("got");
 const {
     getBuffer,
-    getGroupAdmins,
     getRandom,
-    h2k,
-    isUrl,
-    Json,
-    runtime,
-    sleep,
+    getFullFilePath,
     fetchJson
 } = require("../lib/functions");
 const {
@@ -24,22 +19,13 @@ const FormData = require("form-data");
 const stream = require("stream");
 const pipeline = promisify(stream.pipeline);
 const fileType = require("file-type");
-var imgmsg = "";
-if (config.LANG === "SI") imgmsg = "*ඡායාරූපයකට mention දෙන්න !*";
-else imgmsg = "*Reply to a photo !*";
-var descg = "";
-if (config.LANG === "SI")
-    descg = "එය ඔබගේ mention දුන් ඡායාරූපය background remove කරයි.";
-else descg = "It remove background your replied photo.";
-var cant = "";
-if (config.LANG === "SI") cant = "මට මෙම රූපයේ පසුබිම ඉවත් කළ නොහැක.";
-else cant = "I can't remove background on this image.";
+
 cmd(
     {
         pattern: "removebg",
         react: "🔮",
         alias: ["rmbg"],
-        desc: descg,
+        desc: "It remove background your replied photo.",
         category: "convert",
         use: ".removebg <Reply to image>",
         filename: __filename
@@ -76,34 +62,13 @@ cmd(
         }
     ) => {
         try {
-            const isQuotedViewOnce = m.quoted
-                ? m.quoted.type === "viewOnceMessage"
-                : false;
-            const isQuotedImage = m.quoted
-                ? m.quoted.type === "imageMessage" ||
-                  (isQuotedViewOnce
-                      ? m.quoted.msg.type === "imageMessage"
-                      : false)
-                : false;
-            const isQuotedVideo = m.quoted
-                ? m.quoted.type === "videoMessage" ||
-                  (isQuotedViewOnce
-                      ? m.quoted.msg.type === "videoMessage"
-                      : false)
-                : false;
-            const isQuotedSticker = m.quoted
-                ? m.quoted.type === "stickerMessage"
-                : false;
-            if (m.type === "imageMessage" || isQuotedImage) {
-                var nameJpg = getRandom("");
-                var namePng = getRandom("");
-                let buff = isQuotedImage
-                    ? await m.quoted.download(nameJpg)
-                    : await m.download(nameJpg);
-                let type = await fileType.fromBuffer(buff);
-                await fs.promises.writeFile("./" + type.ext, buff);
+            imageBuffer = await m.getImage();
+            if (imageBuffer) {
+                let type = await fileType.fromBuffer(imageBuffer);
+                const imageFilePath = getFullFilePath(getRandom(".png"));
+                await fs.promises.writeFile(imageFilePath, imageBuffer);
                 var form = new FormData();
-                form.append("image_file", fs.createReadStream("./" + type.ext));
+                form.append("image_file", fs.createReadStream(imageFilePath));
                 form.append("size", "auto");
 
                 var rbg = await got.stream.post(
@@ -111,7 +76,7 @@ cmd(
                     {
                         body: form,
                         headers: {
-                            "X-Api-Key": "fLYByZwbPqdyqkdKK6zcBN9H"
+                            "X-Api-Key": config.RMBG_APIKEY
                         }
                     }
                 );
@@ -150,9 +115,9 @@ cmd(
                     headerType: 1
                 };
                 await conn.replyList(from, listMessage, { quoted: mek });
-            } else return await reply(imgmsg);
+            } else return await reply("*Reply to a photo !*");
         } catch (e) {
-            m.sendError(e, cant);
+            m.sendError(e, "I can't remove background on this image.");
         }
     }
 );
