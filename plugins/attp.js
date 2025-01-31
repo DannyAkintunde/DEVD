@@ -45,7 +45,7 @@ cmd(
                     }
                 }
             );
-            const sticker = new Sticker(buff, {
+            const sticker = new Sticker(Buffer.from(buff), {
                 pack: pack || config.BOT, // The pack name
                 author: pushname, // The author name
                 type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
