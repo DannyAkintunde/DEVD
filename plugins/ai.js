@@ -818,7 +818,7 @@ cmd(
                 text.trim().split("|").length > 1
                     ? text.split("|")
                     : [text, options.negative_prompt || options.np];
-            const style = options.style || options.s || "";
+            const style = options.style || options.s || "(No style)";
             const [width, height] = options.size?.split("x").map(Number) || [
                 1024, 1024
             ];
@@ -853,7 +853,7 @@ cmd(
                 from,
                 {
                     text: `Image generation process requsted by ${pushname}`,
-                    contextInfo: { mentionedJid: sender }
+                    contextInfo: { mentionedJid: [sender] }
                 },
                 { quoted: m }
             );
@@ -881,7 +881,7 @@ cmd(
                             });
                             conn.sendMessage(from, {
                                 image: { url: image },
-                                contextInfo: { mentionedJid: sender }
+                                contextInfo: { mentionedJid: [sender] }
                             });
                         });
                         conn.edite(infoMsg, {
@@ -1002,7 +1002,7 @@ cmd(
                 from,
                 {
                     text: `Image generation process requsted by ${pushname}`,
-                    contextInfo: { mentionedJid: sender }
+                    contextInfo: { mentionedJid: [sender] }
                 },
                 { quoted: m }
             );
@@ -1011,27 +1011,27 @@ cmd(
                 .then(images => {
                     if (images && images.length > 0) {
                         m.react(global.reactions.upload);
-                        /*conn.edite(infoMsg, {
+                        conn.edite(infoMsg, {
                             text: `Uploding Images generated images`
-                        });*/
+                        });
                         let i = 1;
                         images.forEach(image => {
-                            /*conn.edite(infoMsg, {
+                            conn.edite(infoMsg, {
                                 text: `Uploding Images ${i++} of ${
                                     images.length
                                 }`
-                            });*/
+                            });
                             reply(JSON.stringify(image));
                             conn.sendMessage(from, {
                                 image: { url: image },
-                                contextInfo: { mentionedJid: sender }
+                                contextInfo: { mentionedJid: [sender] }
                             });
                         });
-                        /*conn.edite(infoMsg, {
+                        conn.edite(infoMsg, {
                             text: `Sucessfully generated ${
                                 images.length
                             } image${images.length > 1 ? "s" : ""}`
-                        });*/
+                        });
                         const caption = `*Prompt:* ${prompt}${
                             negative_prompt
                                 ? "\n*Negative Prompt:* " + negative_prompt

@@ -835,7 +835,10 @@ async function connectToWA() {
                             key: gg.key,
                             type: 14,
                             editedMessage: {
-                                newmg
+                                conversation: newmg.text,
+                                imageMessage: newmg,
+                                videoMessage: newmg,
+                                extendedTextMessage: newmg
                             }
                         }
                     },
@@ -1128,13 +1131,13 @@ async function connectToWA() {
                 }
             }
             //============================================================================
-            var bad = await fetchJson(
-                "https://github.com/vihangayt0/server-/raw/main/xeonsl_bad.json"
-            );
+            var bad = []; // await fetchJson(
+            //     "https://github.com/vihangayt0/server-/raw/main/xeonsl_bad.json"
+            // );
             if (isAnti(config.ANTI_BAD) && isBotAdmins) {
                 if (!isAdmins) {
-                    for (any in bad) {
-                        if (body.toLowerCase().includes(bad[any])) {
+                    for (word in bad) {
+                        if (body.toLowerCase().includes(bad[word])) {
                             if (!body.includes("tent")) {
                                 if (!body.includes("docu")) {
                                     if (!body.includes("http")) {
