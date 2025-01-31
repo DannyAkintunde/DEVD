@@ -526,7 +526,7 @@ cmd(
         const downloadLink = `https://api.github.com/repos/${user}/${repo}/${format}/${branch}`;
         m.react(global.reactions.upload);
         const filename = `${repo}-${branch}.${
-            format === "tarball" ? ".tar.gz" : ".zip"
+            format === "tarball" ? "tar.gz" : "zip"
         }`;
         const preview = await fetchSocialPreview(repoInfo["html_url"]);
         await reply(`${downloadLink} ${preview}`);
