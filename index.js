@@ -44,7 +44,7 @@ const parseCommand = require("./lib/commands/commandParser");
 const Prefix = require("./lib/commands/Prefix");
 const msgRetryCounterCache = new NodeCache();
 // const prefix = config.PREFIX;
-global.Prefix = Prefix(config.PREFIX);
+global.Prefix = new Prefix(config.PREFIX);
 const ownerNumber = config.OWNER_NUMBER.split(",");
 const l = console.log;
 const lsuss = mess => console.log(chalk.green(mess));
