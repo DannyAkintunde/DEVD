@@ -279,6 +279,7 @@ cmd(
         }
     ) => {
         try {
+            let hostname;
             if (os.hostname().length == 12) hostname = "replit";
             else if (os.hostname().length == 36) hostname = "heroku";
             else if (os.hostname().length == 8) hostname = "koyeb";
@@ -332,7 +333,7 @@ cmd(
                 image: {
                     url: config.MENU_MEDIA
                         ? randChoice(config.MENU_MEDIA.split(","))
-                        : "undefined" ||
+                        : "" ||
                           randChoice(global.THEME.menus.MENU.images)
                 },
                 footer: config.FOOTER,
@@ -400,7 +401,7 @@ cmd(
                             txt += `- 🍫 *Chocolatey*: ${versi.chocoVersion.trim()}\n\n`;
                             txt += `> *🐧 Linux*\n${infoLinux}\n`;
 
-                            replyad(txt);
+                            conn.replyad(txt);
                         });
                     });
                 });
