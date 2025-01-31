@@ -498,7 +498,7 @@ cmd(
         use: ".text2prompt <prompt>",
         filename: __filename
     },
-    async (conn, mek, m, { q, reply, prefix }) => {
+    async (conn, mek, m, { from, q, reply, prefix }) => {
         if (!q)
             return await reply(
                 `text argument is required \n> try ${prefix}text2prompt a sad cat`
@@ -857,14 +857,15 @@ cmd(
                 },
                 { quoted: m }
             );
-            midjourney.create(
-                prompt,
-                negative_prompt,
-                style,
-                width,
-                height,
-                guidanceScale
-            )
+            midjourney
+                .create(
+                    prompt,
+                    negative_prompt,
+                    style,
+                    width,
+                    height,
+                    guidanceScale
+                )
                 .then(images => {
                     if (images && images.length > 0) {
                         m.react(global.reactions.upload);
