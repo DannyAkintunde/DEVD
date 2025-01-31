@@ -199,7 +199,7 @@ cmd(
     async (conn, mek, m, { q, reply }) => {
         let question = q || m.quoted?.body;
         if (!question) return reply("Ask a question");
-        let image = getImageFromMsg(m);
+        let image = await getImageFromMsg(m);
         const mode = image ? "image" : "text";
         let sessionId;
         async function handleResponse(response) {
@@ -1261,7 +1261,7 @@ cmd(
         filename: __filename
     },
     async (conn, msg, m, { q, prefix, from }) => {
-        const image = getImageFromMsg(m);
+        const image = await getImageFromMsg(m);
         const url = q || m.quoted?.body;
         let imageUrl = url;
         if (!(image || isUrl(url)))
