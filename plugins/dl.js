@@ -136,7 +136,7 @@ cmd(
                             })) || "https://picsum.photos/1280/720"
                     },
                     caption: `*📃 File name:*  ${data.fileName}
-*💈 File Size:* ${formatSize(data.sizeBytes)}
+*💈 File Size:* ${await formatSize(data.sizeBytes)}
 *🕹️ File type:* ${mime.lookup(data.fileName)}`,
                     contextInfo: {
                         externalAdReply: {
@@ -301,7 +301,7 @@ cmd(
                 const mfile = await conn.sendMessage(
                     from,
                     {
-                        document: { url: file.downloadLink },
+                        document: await getBuffer(file.downloadLink),
                         jpegThumbnail: file.thumbnail,
                         fileName: file.name,
                         mimetype: file.mime,
