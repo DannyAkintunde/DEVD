@@ -90,9 +90,14 @@ cmd(
                     type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
                     categories
                 });
-                return conn.sendMessage(from, await stickerImg.toMessage(), {
-                    quoted: mek
-                });
+                const stickerBuffer = await stickerImg.toBuffer();
+                return conn.sendMessage(
+                    from,
+                    { sticker: stickerBuffer },
+                    {
+                        quoted: mek
+                    }
+                );
             } else if (video) {
                 // converts video to sticker
                 const maxDuration = 3; // seconds
@@ -107,9 +112,14 @@ cmd(
                     type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
                     categories
                 });
-                return conn.sendMessage(from, await stickerGIF.toMessage(), {
-                    quoted: mek
-                });
+                const stickerBuffer = await stickerGIF.toBuffer();
+                return conn.sendMessage(
+                    from,
+                    { sticker: stickerBuffer },
+                    {
+                        quoted: mek
+                    }
+                );
             } else if (sticker) {
                 // converts existing sticker tk sticker (purpost to ching meta data)
                 const stickerObj = new Sticker(sticker, {
@@ -118,9 +128,14 @@ cmd(
                     type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
                     categories
                 });
-                return conn.sendMessage(from, await stickerObj.toMessage(), {
-                    quoted: mek
-                });
+                const stickerBuffer = await stickerObj.toBuffer();
+                return conn.sendMessage(
+                    from,
+                    { sticker: stickerBuffer },
+                    {
+                        quoted: mek
+                    }
+                );
             } else
                 return await reply(
                     "*Please reply to a photo, video or existing sticker!*"

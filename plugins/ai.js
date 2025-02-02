@@ -196,7 +196,7 @@ cmd(
         use: ".gemini hey there",
         filename: __filename
     },
-    async (conn, mek, m, { q, reply }) => {
+    async (conn, mek, m, { q, reply, from }) => {
         let question = q || m.quoted?.body;
         if (!question) return reply("Ask a question");
         let image = await getImageFromMsg(m);
@@ -832,7 +832,7 @@ cmd(
             const guidanceScale = !isNaN(
                 Number(options.g || options.guidancescale)
             )
-                ? min(10, options.g || options.guidancescale)
+                ? Math.min(10, options.g || options.guidancescale)
                 : 6;
             const availableStyles = [
                 "Anime",
@@ -849,7 +849,7 @@ cmd(
                     )}`
                 );
             m.react(global.reactions.loading);
-            const infoMsg = conn.sendMessage(
+            const infoMsg = await conn.sendMessage(
                 from,
                 {
                     text: `Image generation process requsted by ${pushname}`,
@@ -997,7 +997,7 @@ cmd(
             const guidanceScale = !isNaN(
                 Number(options.g || options.guidancescale)
             )
-                ? min(10, options.g || options.guidancescale)
+                ? Math.min(10, options.g || options.guidancescale)
                 : 6;
             m.react(global.reactions.loading);
             const infoMsg = await conn.sendMessage(
@@ -1290,7 +1290,7 @@ cmd(
             );
             const caption = `Upscaled Image`;
             if (res) {
-                await conn.buttonMessage(
+                await conn.buttonMessage2(
                     from,
                     {
                         image: res,

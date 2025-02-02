@@ -159,7 +159,7 @@ cmd(
             const gfile = await conn.sendMessage(
                 from,
                 {
-                    document: { url: data.downloadUrl },
+                    document: getBuffer(data.downloadUrl),
                     fileName: data.fileName,
                     mimetype: mime.lookup(data.fileName),
                     jpegThumbnail:
