@@ -341,14 +341,14 @@ cmd(
             case "play":
                 {
                     m.react(global.reactions.search);
-                    const songs = await spotify.play(text);
-                    if (!songs.success)
+                    const search = await spotify.play(text);
+                    if (!search.success)
                         return m.sendError(
                             new Error(
                                 "An error occurred fetching searching song."
                             )
                         );
-                    const song = songs[0];
+                    const song = search.songs[0];
                     const caption = `*🎶 Song Title:* ${song.name}
 *🎤 Artist:* ${song.artist}
 *📅 Release Date:* ${song.release_date}
@@ -414,21 +414,22 @@ cmd(
                                 "An error occurred fetching searching song."
                             )
                         );
-                    if (search.length < 1)
+                    const songs = search.songs;
+                    if (songs.length < 1)
                         return await reply(global.responses.notFound);
                     let srh = [];
-                    for (let i = 0; i < search.length; i++) {
+                    for (let i = 0; i < songs.length; i++) {
                         srh.push({
                             description:
-                                search[i].name +
+                                songs[i].name +
                                 " | " +
-                                search[i].artist +
+                                songs[i].artist +
                                 " | " +
-                                search[i].release_date +
+                                songs[i].release_date +
                                 " | " +
-                                search[i].duration,
+                                songs[i].duration,
                             title: i + 1,
-                            rowId: prefix + "spotify " + search[i].link
+                            rowId: prefix + "spotify " + songs[i].link
                         });
                     }
                     const sections = [
@@ -438,7 +439,7 @@ cmd(
                         }
                     ];
                     const listMessage = {
-                        image: { url: data[0].thumb },
+                        image: { url: songs[0].image_url },
                         caption: `
    *「 SP DOWNLOADER 」*
 
