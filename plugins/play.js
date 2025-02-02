@@ -10,6 +10,7 @@ const {
     isUrl,
     getBuffer
 } = require("../lib/functions");
+const parseCommand = require("../lib/commands/commandParser");
 const { Maker, spotify, soundcloud, appleMusic } = require("../lib/scrapers");
 
 async function createSongPreview(template, img, songName, smallText) {
@@ -300,9 +301,14 @@ cmd(
                 .trim();
         }
         if (!text) return reply("Need a query or link");
+        const commandStr = `${prefix}spotify ${text}`;
+        const parsedCommand = parseCommand(commandStr);
+        const options = parsedCommand.options;
+        text = parsedCommand.args.join(" ");
         const spotLinkRegrex = /^((https|http):\/\/)?open\.spotify\.com\/.+/;
         let mode = "link";
-        if (!spotLinkRegrex.test(text)) mode = "search";
+        if (!spotLinkRegrex.test(text)) mode = "play";
+        if (options.s || options.search) mode = "search";
         switch (mode) {
             case "link":
                 {
@@ -332,16 +338,17 @@ cmd(
                     });
                 }
                 break;
-            case "search":
+            case "play":
                 {
                     m.react(global.reactions.search);
-                    const song = await spotify.play(text);
-                    if (!song.success)
+                    const songs = await spotify.play(text);
+                    if (!songs.success)
                         return m.sendError(
                             new Error(
                                 "An error occurred fetching searching song."
                             )
                         );
+                    const song = songs[0];
                     const caption = `*🎶 Song Title:* ${song.name}
 *🎤 Artist:* ${song.artist}
 *📅 Release Date:* ${song.release_date}
@@ -374,23 +381,75 @@ cmd(
                     const dlsong = await song.dlink();
                     if (!dlsong.success)
                         return reply("An error occurred downloading song");
-                    await conn.sendMessage(from, {
-                        audio: await getBuffer(dlsong.link),
-                        fileName: song.name + ".mp3",
-                        mimetype: "audio/mpeg",
-                        ptt: true,
-                        contextInfo: {
-                            mentionedJid: [from],
-                            externalAdReply: {
-                                title: `「 SP DOWNLODER 」`,
-                                body: dlsong.metadata.title,
-                                thumbnail: await getBuffer(
-                                    dlsong.metadata.cover || config.LOGO
-                                ),
-                                mediaType: 2,
-                                mediaUrl: song.link
+                    await conn.sendMessage(
+                        from,
+                        {
+                            audio: await getBuffer(dlsong.link),
+                            fileName: song.name + ".mp3",
+                            mimetype: "audio/mpeg",
+                            ptt: true,
+                            contextInfo: {
+                                mentionedJid: [from],
+                                externalAdReply: {
+                                    title: `「 SP DOWNLODER 」`,
+                                    body: dlsong.metadata.title,
+                                    thumbnail: await getBuffer(
+                                        dlsong.metadata.cover || config.LOGO
+                                    ),
+                                    mediaType: 2,
+                                    mediaUrl: song.link
+                                }
                             }
+                        },
+                        { quoted: songMsg }
+                    );
+                }
+                break;
+            case "search":
+                {
+                    const search = await await spotify.play(text);
+                    if (!search.success)
+                        return m.sendError(
+                            new Error(
+                                "An error occurred fetching searching song."
+                            )
+                        );
+                    if (search.length < 1)
+                        return await reply(global.responses.notFound);
+                    let srh = [];
+                    for (let i = 0; i < search.length; i++) {
+                        srh.push({
+                            description:
+                                search[i].name +
+                                " | " +
+                                search[i].artist +
+                                " | " +
+                                search[i].release_date +
+                                " | " +
+                                search[i].duration,
+                            title: i + 1,
+                            rowId: prefix + "spotify " + search[i].link
+                        });
+                    }
+                    const sections = [
+                        {
+                            title: "_[Result from open.spotify.com]_",
+                            rows: srh
                         }
+                    ];
+                    const listMessage = {
+                        image: { url: data[0].thumb },
+                        caption: `
+   *「 SP DOWNLOADER 」*
+
+*📱 Search term:* ${text}`,
+                        footer: config.FOOTER,
+                        title: "Result from open.spotify.com 📲",
+                        buttonText: "*🔢 Reply below number*",
+                        sections
+                    };
+                    await conn.replyList(from, listMessage, {
+                        quoted: mek
                     });
                 }
                 break;

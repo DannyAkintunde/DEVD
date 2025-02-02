@@ -119,7 +119,7 @@ cmd(
         use: ".gdrive <googledrive link>",
         filename: __filename
     },
-    async (conn, mek, m, { from, q, reply }) => {
+    async (conn, mek, m, { from, q, reply, sender }) => {
         try {
             const url = m.quoted?.body || q;
             if (!url || !url.includes("drive.google.com") || !isUrl(url))

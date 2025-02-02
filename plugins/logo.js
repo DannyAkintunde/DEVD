@@ -60,7 +60,7 @@ function createTextEffectCommands(effects, platform) {
                     m.react(global.reactions.success);
                     let caption = `${global.responses.effectCreated}`;
                     caption += `\n>${config.FOOTER}`;
-                    reply(effect.directURL)
+                    reply(effect.directURL);
                     m.replyImg(await getBuffer(result.directURL), caption);
                 } catch (e) {
                     m.sendError(e, e.message);
@@ -160,8 +160,11 @@ function createImageEffectCommands(effects, platform) {
                     m.react(global.reactions.success);
                     let caption = `${global.responses.effectCreated}`;
                     caption += `\n>${config.FOOTER}`;
-                    reply(effect.directURL)
-                    m.replyImg( await getBuffer(effectResult.directURL) , caption);
+                    reply(effect.directURL);
+                    m.replyImg(
+                        await getBuffer(effectResult.directURL),
+                        caption
+                    );
                 } catch (e) {
                     m.sendError(e, e.message);
                 } finally {
@@ -245,7 +248,7 @@ function generateEffectGenerator(platform) {
             m.react(global.reactions.success);
             let caption = `${global.responses.effectCreated}`;
             caption += `\n>${config.FOOTER}`;
-            reply(effect.directURL)
+            reply(effect.directURL);
             m.replyImg(await getBuffer(effect.directURL), caption);
         } catch (e) {
             m.sendError(e, e.message);
