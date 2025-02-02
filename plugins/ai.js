@@ -824,7 +824,7 @@ cmd(
             ];
             if (
                 (options.g || options.guidancescale) &&
-                !isNaN(Number(options.g || options.guidancescale))
+                isNaN(Number(options.g || options.guidancescale))
             )
                 conn.replyad(
                     `Invalid guidance scale specfied using 6 as default`
@@ -989,11 +989,12 @@ cmd(
                     : [text, options.negative_prompt || options.np];
             if (
                 (options.g || options.guidancescale) &&
-                !isNaN(Number(options.g || options.guidancescale))
-            )
+                isNaN(Number(options.g || options.guidancescale))
+            ) {
                 conn.replyad(
                     `Invalid guidance scale specfied using 6 as default`
                 );
+            }
             const guidanceScale = !isNaN(
                 Number(options.g || options.guidancescale)
             )
@@ -1160,7 +1161,7 @@ cmd(
                     },
                     { quoted: mek }
                 );
-            } else if (response.result.length == 0) {
+            } else if (response.result?.length == 0) {
                 m.react(global.reactions.notFound);
                 reply("No images found for the given prompt");
             } else if (!response.status) {
