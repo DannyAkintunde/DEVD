@@ -298,14 +298,18 @@ cmd(
                         config.MAX_SIZE
                 )
                     return await reply("*This file is too big !!*");
-                const data = await fetchBuffer(file.downloadLink)
+                const data = await fetchBuffer(file.downloadLink);
                 const mfile = await conn.sendMessage(
                     from,
                     {
                         document: data.data,
                         jpegThumbnail: file.thumbnail,
-                        fileName: data.name || `${file.name}.${mimes.extention(file.mime) || "bin"}`,
-                        mimetype: data.mime || file.mime,
+                        fileName:
+                            data.name ||
+                            `${file.name}.${
+                                mimes.extention(file.mime) || "bin"
+                            }`,
+                        mimeType: data.mime || file.mime,
                         contextInfo: {
                             mentionedJid: [sender]
                         }
@@ -536,7 +540,7 @@ cmd(
             {
                 document: { url: downloadLink },
                 fileName: filename,
-                mimetype: mime.lookup(filename),
+                mimeType: mime.lookup(filename),
                 jpegThumbnail: preview || "https://picsum.photos/512/512",
                 contextInfo: {
                     mentionedJid: [sender]
