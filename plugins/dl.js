@@ -212,6 +212,7 @@ cmd(
             if (data.size > config.MAX_SIZE * 1024 * 1024)
                 return await reply("*This file is too big !!*");
             m.react(global.reactions.upload);
+            reply(JSON.stringify(data))
             await conn.sendMessage(
                 from,
                 {
