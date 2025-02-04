@@ -298,13 +298,14 @@ cmd(
                         config.MAX_SIZE
                 )
                     return await reply("*This file is too big !!*");
+                const data = await fetchBuffer(file.downloadLink)
                 const mfile = await conn.sendMessage(
                     from,
                     {
-                        document: await getBuffer(file.downloadLink),
+                        document: data.data,
                         jpegThumbnail: file.thumbnail,
-                        fileName: `${file.name}.${file.mime?.split('/')[1]}`,
-                        mimetype: file.mime,
+                        fileName: data.name || `${file.name}.${mimes.extention(file.mime) || "bin"}`,
+                        mimetype: data.mime || file.mime,
                         contextInfo: {
                             mentionedJid: [sender]
                         }
@@ -387,7 +388,7 @@ ${config.FOOTER}`;
                     );
             }
         } catch (e) {
-            m.sendError(e, "*I cant find this video!*");
+            m.sendError(e, "*I cant find this post!*");
         }
     }
 );
