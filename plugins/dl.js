@@ -208,11 +208,11 @@ cmd(
             const response = await igdl(url);
             if (!response.success)
                 return await reply("*I cant find this video!*");
-            const data = fetchBuffer(response.downloadLink);
+            const data = await fetchBuffer(response.downloadLink);
             if (data.size > config.MAX_SIZE * 1024 * 1024)
                 return await reply("*This file is too big !!*");
             m.react(global.reactions.upload);
-            reply(JSON.stringify(data))
+            reply(JSON.stringify(data));
             await conn.sendMessage(
                 from,
                 {
