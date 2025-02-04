@@ -21,7 +21,7 @@ module.exports = {
     OWNER_NUMBER:
         process.env.OWNER_NUMBER || process.env.OWNER_NUM || "2348098309204",
     ANTI_BAD: process.env.ANTI_BAD || "false",
-    MAX_SIZE: process.env.MAX_SIZE || 300, // max file download size in magabytes
+    MAX_SIZE: process.env.MAX_SIZE || 150, // max file download size in magabytes
     ONLY_GROUP: process.env.ONLY_GROUP || "false",
     ANTI_LINK: process.env.ANTI_LINK || "false",
     ANTI_BOT: process.env.ANTI_BOT || "false",

@@ -212,7 +212,6 @@ cmd(
             if (data.size > config.MAX_SIZE * 1024 * 1024)
                 return await reply("*This file is too big !!*");
             m.react(global.reactions.upload);
-            reply(JSON.stringify(data));
             await conn.sendMessage(
                 from,
                 {
@@ -304,7 +303,7 @@ cmd(
                     {
                         document: await getBuffer(file.downloadLink),
                         jpegThumbnail: file.thumbnail,
-                        fileName: file.name,
+                        fileName: `${file.name}.${file.mime?.split('/')[1]}`,
                         mimetype: file.mime,
                         contextInfo: {
                             mentionedJid: [sender]
