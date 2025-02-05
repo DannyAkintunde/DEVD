@@ -303,13 +303,13 @@ cmd(
                     from,
                     {
                         document: data.data,
-                        jpegThumbnail: file.thumbnail,
+                        jpegThumbnail: await getBuffer(file.thumbnail),
                         fileName:
                             data.name ||
                             `${file.name}.${
                                 mimes.extention(file.mime) || "bin"
                             }`,
-                        mimeType: data.mime || file.mime,
+                        mimetype: data.mime || file.mime,
                         contextInfo: {
                             mentionedJid: [sender]
                         }
