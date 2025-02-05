@@ -166,7 +166,8 @@ cmd(
                         (await data.thumbnailUrl({
                             width: 512,
                             height: 512
-                        })) || "https://picsum.photos/512/512"),
+                        })) || "https://picsum.photos/512/512"
+                    ),
                     contextInfo: {
                         mentionedJid: [sender]
                     }
@@ -536,10 +537,15 @@ cmd(
             {
                 document: { url: downloadLink },
                 fileName: filename,
+                caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
                 mimeType: mime.lookup(filename),
-                jpegThumbnail: await getBuffer(
-                    preview || "https://picsum.photos/512/512"
-                ),
+                jpegThumbnail: (
+                    await convertBufferToJpeg(
+                        await getBuffer(
+                            preview
+                        )
+                    )
+                ).data || await getBuffer("https://picsum.photos/512/512"),
                 contextInfo: {
                     mentionedJid: [sender]
                 }
