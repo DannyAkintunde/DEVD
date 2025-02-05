@@ -539,9 +539,9 @@ cmd(
                 fileName: filename,
                 caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
                 mimeType: mimes.lookup(filename),
-                jpegThumbnail: await getBuffer(
-                    "https://files.catbox.moe/e8v5tv.png"
-                ),
+                // jpegThumbnail: await getBuffer(
+                //     "https://files.catbox.moe/e8v5tv.png"
+                // ),
                 contextInfo: {
                     mentionedJid: [sender],
                     externalAdReply: {
