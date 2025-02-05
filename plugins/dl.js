@@ -126,15 +126,21 @@ cmd(
             if (!url || !url.includes(".google.com") || !isUrl(url))
                 return await reply("*Please give me google drive url !!*");
             let data = await GDriveDl(url);
+            async function fetchThumbnail(gdriveObj) {
+                const thumb = await getBuffer(
+                    await gdriveObj.thumbnailUrl({
+                        width: 1280,
+                        height: 720
+                    })
+                );
+                if (thumb.status)
+                    return await getBuffer("https://picsum.photos/1280/720");
+                return thumb;
+            }
             const info = await conn.sendMessage(
                 from,
                 {
-                    image: await getBuffer(
-                        (await data.thumbnailUrl({
-                            width: 1280,
-                            height: 720
-                        })) || "https://picsum.photos/1280/720"
-                    ),
+                    image: await fetchThumbnail(data),
                     caption: `*📃 File name:*  ${data.fileName}
 *💈 File Size:* ${await formatSize(data.sizeBytes)}
 *🕹️ File type:* ${mimes.lookup(data.fileName)}`,
@@ -162,12 +168,6 @@ cmd(
                     document: await getBuffer(data.downloadUrl),
                     fileName: data.fileName,
                     mimetype: mimes.lookup(data.fileName),
-                    jpegThumbnail: await getBuffer(
-                        (await data.thumbnailUrl({
-                            width: 512,
-                            height: 512
-                        })) || "https://picsum.photos/512/512"
-                    ),
                     contextInfo: {
                         mentionedJid: [sender]
                     }
