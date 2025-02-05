@@ -532,11 +532,6 @@ cmd(
             format === "tarball" ? "tar.gz" : "zip"
         }`;
         const preview = await fetchSocialPreview(repoInfo["html_url"]);
-        reply(
-            (await convertBufferToJpeg(await getBuffer(preview)))?.toString(
-                "base64"
-            )
-        );
         const repoFile = await conn.sendMessage(
             from,
             {
@@ -544,14 +539,18 @@ cmd(
                 fileName: filename,
                 caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
                 mimeType: mimes.lookup(filename),
-                jpegThumbnail:
-                    "data:image/jpeg;base64," +
-                    (
-                        await convertBufferToJpeg(await getBuffer(preview))
-                    )?.toString("base64") ||
-                    (await getBuffer("https://picsum.photos/512/512")),
+                jpegThumbnail: null,
                 contextInfo: {
-                    mentionedJid: [sender]
+                    mentionedJid: [sender],
+                    externalAdReply: {
+                        title: `「 GIT CLONE 」`,
+                        body: repoInfo["full_name"],
+                        mediaType: 1,
+                        sourceUrl: repoInfo["html_url"],
+                        thumbnailUrl: preview || config.LOGO,
+                        renderLargerThumbnail: true,
+                        showAdAttribution: true
+                    }
                 }
             },
             { quoted: mek }
