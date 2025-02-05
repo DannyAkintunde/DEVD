@@ -539,12 +539,14 @@ cmd(
                 fileName: filename,
                 caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
                 mimeType: mimes.lookup(filename),
-                jpegThumbnail: null,
+                jpegThumbnail: getBuffer("https://files.catbox.moe/p4szsj.jpg"),
                 contextInfo: {
                     mentionedJid: [sender],
                     externalAdReply: {
-                        title: `「 GIT CLONE 」`,
-                        body: repoInfo["full_name"],
+                        title: repoInfo["full_name"],
+                        body: `Language: ${
+                            repoInfo["language"] || "Unknown"
+                        } | Stars: ${repoInfo["stargazers_count"]} ⭐`,
                         mediaType: 1,
                         sourceUrl: repoInfo["html_url"],
                         thumbnailUrl: preview || config.LOGO,
