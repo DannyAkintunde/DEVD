@@ -123,19 +123,18 @@ cmd(
     async (conn, mek, m, { from, q, reply, sender }) => {
         try {
             const url = m.quoted?.body || q;
-            if (!url || !url.includes("drive.google.com") || !isUrl(url))
+            if (!url || !url.includes(".google.com") || !isUrl(url))
                 return await reply("*Please give me google drive url !!*");
             let data = await GDriveDl(url);
             const info = await conn.sendMessage(
                 from,
                 {
-                    image: {
-                        url:
-                            (await data.thumbnailUrl({
-                                width: 1280,
-                                height: 720
-                            })) || "https://picsum.photos/1280/720"
-                    },
+                    image: await getBuffer(
+                        (await data.thumbnailUrl({
+                            width: 1280,
+                            height: 720
+                        })) || "https://picsum.photos/1280/720"
+                    ),
                     caption: `*📃 File name:*  ${data.fileName}
 *💈 File Size:* ${await formatSize(data.sizeBytes)}
 *🕹️ File type:* ${mimes.lookup(data.fileName)}`,
