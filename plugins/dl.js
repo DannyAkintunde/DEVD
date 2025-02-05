@@ -540,8 +540,9 @@ cmd(
                 caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
                 mimeType: mimes.lookup(filename),
                 jpegThumbnail:
-                    (await convertBufferToJpeg(await getBuffer(preview)))
-                        .data ||
+                    (
+                        await convertBufferToJpeg(await getBuffer(preview))
+                    )?.toString("base64") ||
                     (await getBuffer("https://picsum.photos/512/512")),
                 contextInfo: {
                     mentionedJid: [sender]
