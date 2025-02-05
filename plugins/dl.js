@@ -7,10 +7,11 @@ const {
     fetchBuffer,
     getBuffer,
     formatSize,
-    fetchSocialPreview
+    fetchSocialPreview,
+    convertBufferToJpeg
 } = require("../lib/functions");
 const { toPTT } = require("../lib/editor");
-const mime = require("mime-types");
+const mimes = require("mime-types");
 const {
     tiktok,
     fbsaver,
@@ -137,7 +138,7 @@ cmd(
                     },
                     caption: `*📃 File name:*  ${data.fileName}
 *💈 File Size:* ${await formatSize(data.sizeBytes)}
-*🕹️ File type:* ${mime.lookup(data.fileName)}`,
+*🕹️ File type:* ${mimes.lookup(data.fileName)}`,
                     contextInfo: {
                         externalAdReply: {
                             title: `「 GD DOWNLODER 」`,
@@ -161,7 +162,7 @@ cmd(
                 {
                     document: getBuffer(data.downloadUrl),
                     fileName: data.fileName,
-                    mimetype: mime.lookup(data.fileName),
+                    mimetype: mimes.lookup(data.fileName),
                     jpegThumbnail: await getBuffer(
                         (await data.thumbnailUrl({
                             width: 512,
@@ -531,21 +532,17 @@ cmd(
             format === "tarball" ? "tar.gz" : "zip"
         }`;
         const preview = await fetchSocialPreview(repoInfo["html_url"]);
-        await reply(`${downloadLink} ${preview}`);
         const repoFile = await conn.sendMessage(
             from,
             {
                 document: { url: downloadLink },
                 fileName: filename,
                 caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
-                mimeType: mime.lookup(filename),
-                jpegThumbnail: (
-                    await convertBufferToJpeg(
-                        await getBuffer(
-                            preview
-                        )
-                    )
-                ).data || await getBuffer("https://picsum.photos/512/512"),
+                mimeType: mimes.lookup(filename),
+                jpegThumbnail:
+                    (await convertBufferToJpeg(await getBuffer(preview)))
+                        .data ||
+                    (await getBuffer("https://picsum.photos/512/512")),
                 contextInfo: {
                     mentionedJid: [sender]
                 }
