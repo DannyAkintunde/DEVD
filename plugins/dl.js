@@ -538,7 +538,7 @@ cmd(
                 document: { url: downloadLink },
                 fileName: filename,
                 caption: `*Repo:* ${repo}\n*Branch:* ${branch}`,
-                mimeType: mimes.lookup(filename),
+                mimetype: mimes.lookup(filename),
                 // jpegThumbnail: await getBuffer(
                 //     "https://files.catbox.moe/e8v5tv.png"
                 // ),
