@@ -532,6 +532,9 @@ cmd(
             format === "tarball" ? "tar.gz" : "zip"
         }`;
         const preview = await fetchSocialPreview(repoInfo["html_url"]);
+        reply(                    (
+                        await convertBufferToJpeg(await getBuffer(preview))
+                    )?.toString("base64") )
         const repoFile = await conn.sendMessage(
             from,
             {
