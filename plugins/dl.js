@@ -162,11 +162,11 @@ cmd(
                     document: getBuffer(data.downloadUrl),
                     fileName: data.fileName,
                     mimetype: mime.lookup(data.fileName),
-                    jpegThumbnail:
+                    jpegThumbnail: await getBuffer(
                         (await data.thumbnailUrl({
                             width: 512,
                             height: 512
-                        })) || "https://picsum.photos/512/512",
+                        })) || "https://picsum.photos/512/512"),
                     contextInfo: {
                         mentionedJid: [sender]
                     }

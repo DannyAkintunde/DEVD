@@ -218,7 +218,7 @@ cmd(
                     document: { url: directLink },
                     fileName: filename,
                     mimetype: mime.lookup(filename),
-                    jpegThumbnail: thumbnail || "https://picsum.photos/512/512",
+                    jpegThumbnail: await getBuffer(thumbnail || "https://picsum.photos/512/512"),
                     contextInfo: {
                         mentionedJid: [sender]
                     }
