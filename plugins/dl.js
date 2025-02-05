@@ -304,11 +304,7 @@ cmd(
                     {
                         document: data.data,
                         jpegThumbnail: await getBuffer(file.thumbnail),
-                        fileName:
-                            data.name ||
-                            `${file.name}.${
-                                mimes.extention(file.mime) || "bin"
-                            }`,
+                        fileName: data.name,
                         mimetype: data.mime || file.mime,
                         contextInfo: {
                             mentionedJid: [sender]
@@ -541,7 +537,9 @@ cmd(
                 document: { url: downloadLink },
                 fileName: filename,
                 mimeType: mime.lookup(filename),
-                jpegThumbnail: preview || "https://picsum.photos/512/512",
+                jpegThumbnail: await getBuffer(
+                    preview || "https://picsum.photos/512/512"
+                ),
                 contextInfo: {
                     mentionedJid: [sender]
                 }
