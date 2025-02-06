@@ -305,8 +305,8 @@ cmd(
                     {
                         document: data.data,
                         jpegThumbnail: await getBuffer(file.thumbnail),
-                        fileName: data.name,
-                        mimetype: data.mime || file.mime,
+                        fileName: `${file.name}.${mimes.extention(file.mime)}`,
+                        mimetype: file.mime|| data.mime,
                         contextInfo: {
                             mentionedJid: [sender]
                         }
