@@ -1,6 +1,6 @@
 const { cmd, commands, categories } = require("../command");
 const config = require("../config");
-const { randomInt, randChoice } = require("../lib/functions");
+const { randomInt, randChoice, getBuffer } = require("../lib/functions");
 const { convertTemplateToES6 } = require("../lib/templar");
 
 const defualtBtn = [
@@ -80,11 +80,11 @@ function genMenu(
                 ${convertTemplateToES6(menu.templates.body, obj)}
                 ${convertTemplateToES6(menu.templates.footer, obj)}`;
                 let buttonMessage = {
-                    image: {
-                        url: config.MENU_MEDIA
+                    image: await getBuffer(
+                        config.MENU_MEDIA
                             ? randChoice(config.MENU_MEDIA.split(","))
                             : undefined || randChoice(images)
-                    },
+                    ),
                     caption: menuc,
                     footer: config.FOOTER,
                     headerType: 4,
@@ -104,7 +104,7 @@ function init(conn) {
     for (let i = 0; i < categories.length; i++) {
         const cat = global.THEME.menus[categories[i].toUpperCase()];
         let pattern = cat?.pattern ? cat?.pattern : categories[i] + "menu";
-        let images = cat?.images ? cat?.images : [config.LOGO];
+        let images = cat?.images ? cat.images : [config.LOGO];
         genMenu(categories[i], pattern, images, cat?.react, cat?.buttons);
     }
 }

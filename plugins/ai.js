@@ -203,7 +203,7 @@ cmd(
         const mode = image ? "image" : "text";
         let sessionId;
         async function handleResponse(response) {
-            if (response.status) {
+            if (response.status && response.result) {
                 sessionId = sessionId ? sessionId : response.ids;
                 await conn.sendMessage(
                     from,
