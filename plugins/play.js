@@ -76,9 +76,15 @@ cmd(
                     .trim();
             }
             if (!text) return await reply("Need a query or link");
+            const commandStr = `${prefix}spotify ${text}`;
+            const parsedCommand = parseCommand(commandStr);
+            const options = parsedCommand.options;
+            text = parsedCommand.args.join(" ");
             const soundcloudLinkRegrex =
                 /^(http(s)?:\/\/)?m\.soundcloud\.com\/.+/;
-            const mode = soundcloudLinkRegrex.test(text) ? "link" : "search";
+            let mode = "link";
+            if (!soundcloudLinkRegrex.test(text)) mode = "play";
+            if (options.s || options.search) mode = "search";
             switch (mode) {
                 case "search":
                     {
@@ -113,9 +119,7 @@ cmd(
                         ];
                         const listMessage = {
                             image: { url: data[0].thumb },
-                            caption: `「 ${config.BOT} 」
-
-   *「 SOUNDCLOUD DOWNLOADER 」*
+                            caption: `「 *SOUNDCLOUD DOWNLOADER* 」
 
 *📱 Search term:* ${text}`,
                             footer: config.FOOTER,
@@ -164,7 +168,7 @@ cmd(
                             }
                         ];
                         const listMessage = {
-                            image: { url: playerImage },
+                            image: await getBuffer(playerImage),
                             caption,
                             footer: config.FOOTER,
                             title: "SELECT SONG TYPE",
@@ -186,6 +190,73 @@ cmd(
                         return await conn.replyList(from, listMessage, {
                             quoted: mek
                         });
+                    }
+                    break;
+                case "play":
+                    {
+                        const search = await soundcloud.search(text);
+                        const data = search.result.filter(
+                            song => song.thumb && !song.views.includes("Follow")
+                        );
+                        if (data.length < 1)
+                            return await reply(global.responses.notFound);
+                        const songData = data[0];
+                        const caption = `*🎶 Song Title:* ${songData.title}
+*🎤 Artist:* ${songData.artist}
+*📅 Release Date:* ${songData.release}
+*⏰ Duration:* ${songData.timestamp}
+*👥 Views:* ${songData.views}
+*🔗 Link:* ${songData.url}`;
+                        const playerImage = await createSongPreview(
+                            "https://en.ephoto360.com/create-two-layer-music-player-photo-effect-online-772.html",
+                            songData.thumb,
+                            songData.title,
+                            songData.url
+                        );
+                        const songMsg = await conn.sendMessage(
+                            from,
+                            {
+                                image: await getBuffer(playerImage),
+                                caption,
+                                contextInfo: {
+                                    mentionedJid: [from],
+                                    externalAdReply: {
+                                        title: "「 SOUNDCLOUD DOWNLOADER 」",
+                                        body: `${songData.title}:${songData.artist}`,
+                                        mediaType: 1,
+                                        sourceUrl: songData.url,
+                                        thumbnailUrl:
+                                            songData.thumb || config.LOGO,
+                                        renderLargerThumbnail: false,
+                                        showAdAttribution: true
+                                    }
+                                }
+                            },
+                            { quoted: mek }
+                        );
+                        const dlSong = await soundcloud.dl(songData.url);
+                        await conn.sendMessage(
+                            from,
+                            {
+                                audio: await getBuffer(dlSong.link),
+                                fileName: songData.name + ".mp3",
+                                mimetype: "audio/mpeg",
+                                ptt: true,
+                                contextInfo: {
+                                    mentionedJid: [from],
+                                    externalAdReply: {
+                                        title: `「 SP DOWNLODER 」`,
+                                        body: `${dlSong.title}:${dlSong.bitrate}`,
+                                        thumbnail: await getBuffer(
+                                            dlSong.thumbnail || config.LOGO
+                                        ),
+                                        mediaType: 2,
+                                        mediaUrl: songData.url
+                                    }
+                                }
+                            },
+                            { quoted: songMsg }
+                        );
                     }
                     break;
             }
@@ -218,7 +289,9 @@ cmd(
                     document: { url: directLink },
                     fileName: filename,
                     mimetype: mime.lookup(filename),
-                    jpegThumbnail: await getBuffer(thumbnail || "https://picsum.photos/512/512"),
+                    jpegThumbnail: await getBuffer(
+                        thumbnail || "https://picsum.photos/512/512"
+                    ),
                     contextInfo: {
                         mentionedJid: [sender]
                     }
@@ -495,14 +568,19 @@ cmd(
                     .trim();
             }
             if (!text) return await reply("Need a query or link");
+            const commandStr = `${prefix}spotify ${text}`;
+            const parsedCommand = parseCommand(commandStr);
+            const options = parsedCommand.options;
+            text = parsedCommand.args.join(" ");
             const applemusicLinkRegrex =
                 /^(http(s)?:\/\/)?music\.apple\.com\/.+/;
-            const mode = applemusicLinkRegrex.test(text) ? "link" : "search";
+            let mode = "link";
+            if (!applemusicLinkRegrex.test(text)) mode = "play";
+            if (options.s || options.search) mode = "search";
             switch (mode) {
                 case "search":
                     {
                         const results = await appleMusic.search(text);
-
                         if (results.length < 1)
                             return await reply(global.responses.notFound);
                         let srh = [];
@@ -541,71 +619,155 @@ cmd(
                 case "link":
                     {
                         const response = await appleMusic.request(text);
-                        const song = response.data[0];
-                        const caption = `*🎶 Title:* ${song.title}
+                        if (response.status === "error")
+                            return await reply(response.message);
+                        if (dlsong.data?.length < 1)
+                            return await reply(global.reactions.notFound);
+                        response.data.forEach(async song => {
+                            const caption = `*🎶 Title:* ${song.title}
 *🎤 Artist:* ${song.artist}
 *📅 Release Date:* ${song.releaseDate}  
 *🕒 Duration:* ${parseISO8601Duration(song.duration)}
 *💿 Description:* ${song.description}  
 *🔗 Artist Link:* ${song.artistUrl}
 > ${config.FOOTER}`;
-                        const playerImage = await createSongPreview(
-                            "https://en.ephoto360.com/make-notebook-music-effect-346.html",
-                            song.imageUrl,
-                            song.title,
-                            text
-                        );
-
-                        const songMsg = await conn.sendMessage(
-                            from,
-                            {
-                                image: {
-                                    url: playerImage
-                                },
-                                caption,
-                                contextInfo: {
-                                    mentionedJid: [from],
-                                    externalAdReply: {
-                                        title: `「 APM DOWNLOADER 」`,
-                                        body: `${song.description}:${song.artist}`,
-                                        mediaType: 1,
-                                        sourceUrl: text,
-                                        thumbnailUrl:
-                                            song.imageUrl || config.LOGO,
-                                        renderLargerThumbnail: false,
-                                        showAdAttribution: true
-                                    }
-                                }
-                            },
-                            { quoted: mek }
-                        );
-                        const dlsong = song.download.error ? [] : song.download;
-                        if (dlsong.length < 1)
-                            return await reply(
-                                "An error occurred downloading song"
+                            const playerImage = await createSongPreview(
+                                "https://en.ephoto360.com/make-notebook-music-effect-346.html",
+                                song.imageUrl,
+                                song.title,
+                                text
                             );
-                        await conn.sendMessage(
-                            from,
-                            {
-                                audio: await getBuffer(dlsong[0].link),
-                                fileName: song.title + ".mp3",
-                                mimetype: "audio/mpeg",
-                                ptt: true,
-                                contextInfo: {
-                                    mentionedJid: [from],
-                                    externalAdReply: {
-                                        title: `「 APM DOWNLODER 」`,
-                                        body: song.title,
-                                        thumbnail: await getBuffer(
-                                            dlsong[1].link || config.LOGO
-                                        ),
-                                        mediaType: 2,
-                                        mediaUrl: text
+
+                            const songMsg = await conn.sendMessage(
+                                from,
+                                {
+                                    image: await getBuffer(playerImage),
+                                    caption,
+                                    contextInfo: {
+                                        mentionedJid: [from],
+                                        externalAdReply: {
+                                            title: `「 APM DOWNLOADER 」`,
+                                            body: `${song.description}:${song.artist}`,
+                                            mediaType: 1,
+                                            sourceUrl: text,
+                                            thumbnailUrl:
+                                                song.imageUrl || config.LOGO,
+                                            renderLargerThumbnail: false,
+                                            showAdAttribution: true
+                                        }
                                     }
-                                }
-                            },
-                            { quoted: songMsg.key }
-                        );
+                                },
+                                { quoted: mek }
+                            );
+                            const dlsong = song.download.error
+                                ? []
+                                : song.download;
+                            if (dlsong.length != 2)
+                                return await reply(
+                                    "An error occurred downloading song"
+                                );
+                            await conn.sendMessage(
+                                from,
+                                {
+                                    audio: await getBuffer(dlsong[0].link),
+                                    fileName: song.title + ".mp3",
+                                    mimetype: "audio/mpeg",
+                                    ptt: true,
+                                    contextInfo: {
+                                        mentionedJid: [from],
+                                        externalAdReply: {
+                                            title: `「 APM DOWNLODER 」`,
+                                            body: song.title,
+                                            thumbnail: await getBuffer(
+                                                dlsong[1].link || config.LOGO
+                                            ),
+                                            mediaType: 2,
+                                            mediaUrl: text
+                                        }
+                                    }
+                                },
+                                { quoted: songMsg }
+                            );
+                        });
+                    }
+                    break;
+                case "play":
+                    {
+                        const results = await appleMusic.search(text);
+                        if (results.length < 1)
+                            return await reply(global.responses.notFound);
+                        const song = results[0];
+                        const dlsong = await appleMusic.request(song.url);
+                        if (dlsong.status === "error")
+                            return await reply(dlsong.message);
+                        if (dlsong.data?.length < 1)
+                            return await reply(global.reactions.notFound);
+                        dlsong.data.forEach(async song => {
+                            const caption = `*🎶 Title:* ${song.title}
+*🎤 Artist:* ${song.artist}
+*📅 Release Date:* ${song.releaseDate}  
+*🕒 Duration:* ${parseISO8601Duration(song.duration)}
+*💿 Description:* ${song.description}  
+*🔗 Artist Link:* ${song.artistUrl}
+> ${config.FOOTER}`;
+                            const playerImage = await createSongPreview(
+                                "https://en.ephoto360.com/make-notebook-music-effect-346.html",
+                                song.imageUrl,
+                                song.title,
+                                text
+                            );
+
+                            const songMsg = await conn.sendMessage(
+                                from,
+                                {
+                                    image: await getBuffer(playerImage),
+                                    caption,
+                                    contextInfo: {
+                                        mentionedJid: [from],
+                                        externalAdReply: {
+                                            title: `「 APM DOWNLOADER 」`,
+                                            body: `${song.description}:${song.artist}`,
+                                            mediaType: 1,
+                                            sourceUrl: text,
+                                            thumbnailUrl:
+                                                song.imageUrl || config.LOGO,
+                                            renderLargerThumbnail: false,
+                                            showAdAttribution: true
+                                        }
+                                    }
+                                },
+                                { quoted: mek }
+                            );
+                            const dlsong = song.download.error
+                                ? []
+                                : song.download;
+                            if (dlsong.length != 2)
+                                return await reply(
+                                    "An error occurred downloading song"
+                                );
+                            await conn.sendMessage(
+                                from,
+                                {
+                                    audio: await getBuffer(dlsong[0].link),
+                                    fileName: song.title + ".mp3",
+                                    mimetype: "audio/mpeg",
+                                    ptt: true,
+                                    contextInfo: {
+                                        mentionedJid: [from],
+                                        externalAdReply: {
+                                            title: `「 APM DOWNLODER 」`,
+                                            body: song.title,
+                                            thumbnail: await getBuffer(
+                                                dlsong[1].link || config.LOGO
+                                            ),
+                                            mediaType: 2,
+                                            mediaUrl: text
+                                        }
+                                    }
+                                },
+                                { quoted: songMsg }
+                            );
+                        });
                     }
                     break;
             }
