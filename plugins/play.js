@@ -698,10 +698,11 @@ cmd(
                             return await reply(global.responses.notFound);
                         const song = results[0];
                         const dlsong = await appleMusic.request(song.url);
+                        return reply(JSON.stringify(dlsong));
                         if (dlsong.status === "error")
                             return await reply(dlsong.message);
                         if (dlsong.data?.length < 1)
-                            return await reply(global.reactions.notFound);
+                            return await reply(global.response.notFound);
                         dlsong.data.forEach(async song => {
                             const caption = `*🎶 Title:* ${song.title}
 *🎤 Artist:* ${song.artist}
