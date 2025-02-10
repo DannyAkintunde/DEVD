@@ -239,7 +239,7 @@ cmd(
                             from,
                             {
                                 audio: await getBuffer(dlSong.link),
-                                fileName: songData.name + ".mp3",
+                                fileName: songData.title + ".mp3",
                                 mimetype: "audio/mpeg",
                                 ptt: true,
                                 contextInfo: {
