@@ -462,7 +462,7 @@ cmd(
                     if (!dlsong.success)
                         return m.sendError(
                             new Error(
-                                "Song download link was not scraped successfully"
+                                "Song download link was not scraped successfully:"+dlsong.message  
                             ),
                             "An error occurred downloading song"
                         );
