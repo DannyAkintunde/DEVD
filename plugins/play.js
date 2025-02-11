@@ -399,7 +399,7 @@ cmd(
                             new Error("An error occurred Fetching song.")
                         );
                     await conn.sendMessage(from, {
-                        audio: await getBuffer(song.link),
+                        audio: await getBuffer(song.dlLinks[0].link),
                         fileName: song.metadata.title + ".mp3",
                         mimetype: "audio/mpeg",
                         ptt: true,
@@ -407,7 +407,7 @@ cmd(
                             mentionedJid: [from],
                             externalAdReply: {
                                 title: `「 SP DOWNLOADER 」`,
-                                body: song.metadata.title,
+                                body: `${song.metadata.title}:${song.metadata.artist}`,
                                 thumbnail: await getBuffer(
                                     song.metadata.cover || config.LOGO
                                 ),
@@ -460,11 +460,16 @@ cmd(
                     );
                     const dlsong = await song.dlink();
                     if (!dlsong.success)
-                        return m.sendError(new Error("Song download link was not scraped successfully"), "An error occurred downloading song");
+                        return m.sendError(
+                            new Error(
+                                "Song download link was not scraped successfully"
+                            ),
+                            "An error occurred downloading song"
+                        );
                     await conn.sendMessage(
                         from,
                         {
-                            audio: await getBuffer(dlsong.link),
+                            audio: await getBuffer(dlsong.dlLinks[0].link),
                             fileName: song.name + ".mp3",
                             mimetype: "audio/mpeg",
                             ptt: true,
@@ -472,7 +477,7 @@ cmd(
                                 mentionedJid: [from],
                                 externalAdReply: {
                                     title: `「 SP DOWNLODER 」`,
-                                    body: dlsong.metadata.title,
+                                    body: `${dlsong.metadata.title}:${dlsong.metadata.artist}`,
                                     thumbnail: await getBuffer(
                                         dlsong.metadata.cover || config.LOGO
                                     ),
