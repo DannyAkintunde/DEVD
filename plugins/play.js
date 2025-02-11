@@ -221,7 +221,7 @@ cmd(
                                 contextInfo: {
                                     mentionedJid: [from],
                                     externalAdReply: {
-                                        title: "「 SOUNDCLOUD DOWNLOADER 」",
+                                        title: "「 SD DOWNLOADER 」",
                                         body: `${songData.title}:${songData.artist}`,
                                         mediaType: 1,
                                         sourceUrl: songData.url,
@@ -235,8 +235,13 @@ cmd(
                             { quoted: mek }
                         );
                         const dlSong = await soundcloud.dl(songData.url);
-                        reply(dlSong);
-                        if (!dlSong.link) return reply("Not found");
+                        if (!dlSong.link)
+                            return m.sendError(
+                                new Error(
+                                    "No download link found in scraper response."
+                                ),
+                                "Error occured downloading song"
+                            );
                         await conn.sendMessage(
                             from,
                             {
@@ -455,7 +460,7 @@ cmd(
                     );
                     const dlsong = await song.dlink();
                     if (!dlsong.success)
-                        return reply("An error occurred downloading song");
+                        return m.sendError(new Error("Song download link was not scraped successfully"), "An error occurred downloading song");
                     await conn.sendMessage(
                         from,
                         {
