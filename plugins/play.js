@@ -235,6 +235,8 @@ cmd(
                             { quoted: mek }
                         );
                         const dlSong = await soundcloud.dl(songData.url);
+                        reply(dlSong);
+                        if (!dlSong.link) return reply("Not found");
                         await conn.sendMessage(
                             from,
                             {
