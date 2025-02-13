@@ -14,7 +14,7 @@ cmd(
         pattern: "github",
         alias: ["githubstalk"],
         category: "stalk",
-        reaction: "🔎",
+        react: "🔎",
         desc: "It gives details of given github username.",
         filename: __filename,
         use: ".github <user name>"
@@ -22,24 +22,23 @@ cmd(
 
     async (conn, mek, m, { q, reply, from }) => {
         if (!q) return await reply("*Please give me a github username !*");
-        try {
-            const githubProfileData = await githubstalk(q);
-            let info = `*── 「 GITHUB USER INFO 」 ──*\n`;
-            const profileDescription =
-                await githubDescription(githubProfileData);
-            info += profileDescription;
-            info += `└───────────◉`;
-            await conn.sendMessage(
-                from,
-                {
-                    image: { url: githubProfileData.profile_pic },
-                    caption: info
-                },
-                { quoted: mek }
-            );
-        } catch (e) {
-            m.sendError(e, "*I cant find this user on github !*");
-        }
+        githubstalk(q)
+            .then(async githubProfileData => {
+                let info = `*── 「 GITHUB USER INFO 」 ──*\n`;
+                const profileDescription =
+                    await githubDescription(githubProfileData);
+                info += profileDescription;
+                info += `└───────────◉`;
+                await conn.sendMessage(
+                    from,
+                    {
+                        image: { url: githubProfileData.profile_pic },
+                        caption: info
+                    },
+                    { quoted: mek }
+                );
+            })
+            .catch(e => m.sendError(e, "*I cant find this user on github !*"));
     }
 );
 
