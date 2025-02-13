@@ -63,8 +63,8 @@ cmd(
             let translatedRoast =
                 config.LANG === "ID" || config.LANG === "IND"
                     ? roast
-                    : trans(roast, { to: config.LANG?.toLowerCase() });
-            return conn.replyad(roast, "Roasted 🤣");
+                    : await trans(roast, { to: config.LANG?.toLowerCase() });
+            return conn.replyad(translatedRoast, "Roasted 🤣");
         } catch (e) {
             return m.sendError(e, "*I cant find this user on github !*");
         }
