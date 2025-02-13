@@ -1,8 +1,13 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
-const { igstalker, tikstalk, githubstalk, githubDescription, githubRoasting } = require("../lib/scrapers/stalker");
+const {
+    igstalker,
+    tikstalk,
+    githubstalk,
+    githubDescription,
+    githubRoasting
+} = require("../lib/scrapers/stalker");
 const { fetchJson, trans } = require("../lib/functions.js");
-
 
 cmd(
     {
@@ -19,8 +24,9 @@ cmd(
         if (!q) return await reply("*Please give me a github username !*");
         try {
             const githubProfileData = await githubstalk(q);
-            let info = `*── 「 GITHUB USER INFO 」 ──*\n`
-            const profileDescription = await githubDescription(githubProfileData);
+            let info = `*── 「 GITHUB USER INFO 」 ──*\n`;
+            const profileDescription =
+                await githubDescription(githubProfileData);
             info += profileDescription;
             info += `└───────────◉`;
             await conn.sendMessage(
@@ -38,26 +44,32 @@ cmd(
 );
 
 cmd(
-  {
-    pattern: 'githubroast',
-    alias: ['ghroast'],
-    react: '🤣',
-    desc: 'Give a github account a good roast',
-    category: 'stalk',
-    filename: __filename,
-    use: '.githubroast <username>'
-  },
-  async (conn, mek, m, {q, reply, replyad}) => {
-    if (!q) return await reply("*Please give me a github username to inspect!*");
-    try {
-      const roast = await githubRoasting(q);
-      let translatedRoast = config.LANG === 'ID' || config.LANG === 'IND' ? roast : trans(roast, { to: config.LANG?.toLowerCase() });
-      return replyad(roast, "Roasted 🤣");
-    } catch (e) {
-      return m.sendError(e, "*I cant find this user on github !*");
+    {
+        pattern: "githubroast",
+        alias: ["ghroast"],
+        react: "🤣",
+        desc: "Give a github account a good roast",
+        category: "stalk",
+        filename: __filename,
+        use: ".githubroast <username>"
+    },
+    async (conn, mek, m, { q, reply }) => {
+        if (!q)
+            return await reply(
+                "*Please give me a github username to inspect!*"
+            );
+        try {
+            const roast = await githubRoasting(q);
+            let translatedRoast =
+                config.LANG === "ID" || config.LANG === "IND"
+                    ? roast
+                    : trans(roast, { to: config.LANG?.toLowerCase() });
+            return conn.replyad(roast, "Roasted 🤣");
+        } catch (e) {
+            return m.sendError(e, "*I cant find this user on github !*");
+        }
     }
-  }
-  );
+);
 
 cmd(
     {
@@ -69,17 +81,7 @@ cmd(
         use: ".stiktok <tiktok username>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            args,
-            q,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, args, q, reply }) => {
         try {
             if (!q) return reply("*Please give me a tiktok username !*");
             const dataget = await tikstalk(args[0]);
@@ -121,19 +123,7 @@ cmd(
         use: ".igstalk <instagram username>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            args,
-            q,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, l, quoted, args, q, reply }) => {
         try {
             if (!q) return reply("*Please give me a instagram username !*");
             const dataget = await igstalker(q);
@@ -175,19 +165,7 @@ cmd(
         use: ".ipstalk 112.134.193.130",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            l,
-            quoted,
-            args,
-            q,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, l, quoted, args, q, reply }) => {
         try {
             if (!q) return reply("*Please give me a ip !*");
             if (!q.includes(".")) return reply(needus);
@@ -278,7 +256,8 @@ cmd(
     }
 );
 
-cmd({
+cmd(
+    {
         pattern: "wachannel",
         alias: ["wachannelstalk", "iwac"],
         react: "🌐",
@@ -286,4 +265,6 @@ cmd({
         category: "stalk",
         use: ".wachannel <channel-link>",
         filename: __filename
-    },async () => {})
+    },
+    async () => {}
+);
