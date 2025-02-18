@@ -88,7 +88,10 @@ cmd(
                     pack,
                     author: pushname,
                     type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
-                    categories
+                    categories,
+                    id: "123456",
+                    quality: 70,
+                    background: "transparent"
                 });
                 const stickerBuffer = await stickerImg.toBuffer();
                 return conn.sendMessage(
