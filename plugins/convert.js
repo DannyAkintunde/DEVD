@@ -9,7 +9,7 @@ const {
 } = require("../lib/functions");
 const { fileUploader } = require("../lib/scrapers");
 const { getVideoDuration, toPTT } = require("../lib/editor");
-const { Sticker, StickerTypes } = require("wa-sticker-formatter");
+const { Sticker, StickerTypes } = require("@shibam/sticker-maker");
 const fs = require("fs");
 const fileType = require("file-type");
 
@@ -87,11 +87,10 @@ cmd(
                 const stickerImg = new Sticker(image, {
                     pack,
                     author: pushname,
-                    type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
-                    categories,
-                    id: "123456",
-                    quality: 70,
-                    background: "transparent"
+                    type: isCropped
+                        ? StickerTypes.CIRCLE
+                        : StickerTypes.DEFAULT,
+                    categories
                 });
                 const stickerBuffer = await stickerImg.toBuffer();
                 return conn.sendMessage(
@@ -112,7 +111,9 @@ cmd(
                 const stickerGIF = new Sticker(video, {
                     pack,
                     author: pushname,
-                    type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
+                    type: isCropped
+                        ? StickerTypes.CIRCLE
+                        : StickerTypes.DEFAULT,
                     categories
                 });
                 const stickerBuffer = await stickerGIF.toBuffer();
@@ -128,7 +129,9 @@ cmd(
                 const stickerObj = new Sticker(sticker, {
                     pack,
                     author: pushname,
-                    type: isCropped ? StickerTypes.CROPPED : StickerTypes.FULL,
+                    type: isCropped
+                        ? StickerTypes.CIRCLE
+                        : StickerTypes.DEFAULT,
                     categories
                 });
                 const stickerBuffer = await stickerObj.toBuffer();
