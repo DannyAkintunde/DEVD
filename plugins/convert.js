@@ -9,7 +9,6 @@ const {
 } = require("../lib/functions");
 const { fileUploader } = require("../lib/scrapers");
 const { getVideoDuration, toPTT } = require("../lib/editor");
-const { Sticker, StickerTypes } = require("@shibam/sticker-maker");
 const fs = require("fs");
 const fileType = require("file-type");
 
@@ -74,6 +73,7 @@ cmd(
         filename: __filename
     },
     async (conn, mek, m, { from, pushname, reply, parsedCommand }) => {
+        const { Sticker, StickerTypes } = await import("@shibam/sticker-maker");
         const options = parsedCommand.options;
         const isCropped = options.cropped || options.c;
         const categories = options.categories?.split(",");
