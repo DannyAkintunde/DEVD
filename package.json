@@ -39,7 +39,7 @@
         "form-data": "^4.0.0",
         "@shibam/sticker-maker": "^1.2.16",
         "wa-sticker-formatter": "^4.4.4",
-                "wa-sticker-toolkit": "^0.0.1",
+        "wa-sticker-toolkit": "^0.0.1",
         "ejs": "^3.1.10",
         "cheerio": "^1.0.0-rc.12",
         "@bochilteam/scraper": "^4.0.22-alpha.0",

@@ -1299,17 +1299,20 @@ async function connectToWA() {
                 case "<":
                 case "ev":
                     {
+                        m.react(global.reactions.loading);
                         let code = q
                             .replace("°", ".toString()")
                             .replace("ⁿ", "console.log");
-                        if (commamd === "<") code = `(async () => {${code}})()`
+                        if (command === "<") code = `(async () => {${code}})()`;
                         try {
                             let resultTest = await eval(code);
                             // if (typeof resultTest === "object") {
                             //     reply(util.format(resultTest));
                             // }
+                            m.react(global.reactions.success);
                             reply(util.format(resultTest));
                         } catch (err) {
+                            m.react(global.reactions.error);
                             reply(util.format(err));
                         }
                     }

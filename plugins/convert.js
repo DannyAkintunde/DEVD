@@ -124,6 +124,7 @@ cmd(
                 author: options.author || options.a || pushname,
                 pack
             },
+            type,
             background,
             borderWidth,
             borderColor,
@@ -137,9 +138,9 @@ cmd(
             }
         };
         try {
-            const image = await m.getImage()//.catch(() => null);
-            const video = await m.getVideo()//.catch(() => null);
-            const sticker = await m.getSticker()//.catch(() => null);
+            const image = await m.getImage(); //.catch(() => null);
+            const video = await m.getVideo(); //.catch(() => null);
+            const sticker = await m.getSticker(); //.catch(() => null);
             if (image) {
                 // converts image to sticker
                 const stickerImg = new Sticker(image, stickerOptions);
