@@ -73,75 +73,95 @@ cmd(
         filename: __filename
     },
     async (conn, mek, m, { from, pushname, reply, parsedCommand }) => {
-        const { Sticker, StickerTypes } = await import("@shibam/sticker-maker");
+        // const { Sticker, StickerTypes } = await import("@shibam/sticker-maker");
+        const {
+            Sticker,
+            StickerTypes,
+            TextPositions
+        } = require("wa-sticker-toolkit");
         const options = parsedCommand.options;
-        const isCropped = options.cropped || options.c;
+        const isCircle = options.circle || options.c;
+        const isCropped = options.cropped || options.crop || options.cp;
+        const isFill = options.fill || options.f;
+        let type = options.type || options.t || StickerTypes.DEFAULT;
+        if (isCircle) {
+            type = StickerTypes.CIRCLE;
+        } else if (isCropped) {
+            type = StickerTypes.CROPPED;
+        } else if (isFill) {
+            type = StickerTypes.FILL;
+        }
         const categories = options.categories?.split(",");
         const pack = options.pack || parsedCommand.args.join(" ") || config.BOT;
+        const background =
+            options.background ||
+            options.backgroundcolor ||
+            options.color ||
+            options.bg;
+        const borderWidth = options.borderwidth || options.bw;
+        const borderColor = options.bordercolor || options.bc;
+        const borderRadius =
+            options.borderRadius || options.Radius || options.br || options.r;
+        const textContent = options.text || options.caption || options.t;
+        const textColor = options.textcolor || options.tc;
+        const font = options.font || options.f;
+        const fontSize = options.fontsize || options.fs;
+        let textPosition = TextPositions.CENTER;
+        switch (options.textposition || options.tp) {
+            case "top":
+                textPosition = TextPositions.TOP;
+                break;
+            case "center":
+                textPosition = TextPositions.CENTER;
+                break;
+            case "bottom":
+                textPosition = TextPositions.BOTTOM;
+                break;
+        }
+        const stickerOptions = {
+            metadata: {
+                // id: "",
+                author: options.author || options.a || pushname,
+                pack
+            },
+            background,
+            borderWidth,
+            borderColor,
+            borderRadius,
+            text: {
+                content: textContent,
+                color: textColor,
+                font,
+                fontSize,
+                position: textPosition
+            }
+        };
         try {
-            const image = await m.getImage();
-            const video = await m.getVideo();
-            const sticker = await m.getSticker();
+            const image = await m.getImage()//.catch(() => null);
+            const video = await m.getVideo()//.catch(() => null);
+            const sticker = await m.getSticker()//.catch(() => null);
             if (image) {
                 // converts image to sticker
-                const stickerImg = new Sticker(image, {
-                    pack,
-                    author: pushname,
-                    type: isCropped
-                        ? StickerTypes.CIRCLE
-                        : StickerTypes.DEFAULT,
-                    categories
-                });
+                const stickerImg = new Sticker(image, stickerOptions);
                 const stickerBuffer = await stickerImg.toBuffer();
-                return conn.sendMessage(
-                    from,
-                    { sticker: stickerBuffer },
-                    {
-                        quoted: mek
-                    }
-                );
+                m.replyS(stickerBuffer);
             } else if (video) {
                 // converts video to sticker
-                const maxDuration = 3; // seconds
+                const maxDuration = 5; // seconds
+                reply(getVideoDuration(video));
                 if (getVideoDuration(video) > maxDuration) {
                     return reply(
                         `Use a video that has a duration less than or equal to ${maxDuration} seconds.`
                     );
                 }
-                const stickerGIF = new Sticker(video, {
-                    pack,
-                    author: pushname,
-                    type: isCropped
-                        ? StickerTypes.CIRCLE
-                        : StickerTypes.DEFAULT,
-                    categories
-                });
+                const stickerGIF = new Sticker(video, stickerOptions);
                 const stickerBuffer = await stickerGIF.toBuffer();
-                return conn.sendMessage(
-                    from,
-                    { sticker: stickerBuffer },
-                    {
-                        quoted: mek
-                    }
-                );
+                m.replyS(stickerBuffer);
             } else if (sticker) {
-                // converts existing sticker tk sticker (purpost to ching meta data)
-                const stickerObj = new Sticker(sticker, {
-                    pack,
-                    author: pushname,
-                    type: isCropped
-                        ? StickerTypes.CIRCLE
-                        : StickerTypes.DEFAULT,
-                    categories
-                });
+                // converts existing sticker to sticker (purpost to change metadata)
+                const stickerObj = new Sticker(sticker, stickerOptions);
                 const stickerBuffer = await stickerObj.toBuffer();
-                return conn.sendMessage(
-                    from,
-                    { sticker: stickerBuffer },
-                    {
-                        quoted: mek
-                    }
-                );
+                m.replyS(stickerBuffer);
             } else
                 return await reply(
                     "*Please reply to a photo, video or existing sticker!*"

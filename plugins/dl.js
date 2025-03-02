@@ -18,7 +18,8 @@ const {
     aiodl,
     mediaFire,
     igdl,
-    threads
+    threads,
+    pinterest
 } = require("../lib/scrapers");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
@@ -113,7 +114,7 @@ cmd(
 cmd(
     {
         pattern: "gdrive",
-        alias: ["googledrive'"],
+        alias: ["googledrive"],
         react: "📑",
         desc: "Download googledrive files.",
         category: "download",

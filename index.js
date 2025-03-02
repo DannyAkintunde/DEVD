@@ -88,7 +88,7 @@ const restart = () => {
 };
 // channel link
 global.link = "https://whatsapp.com/channel/0029VaPwIObFXUua2VemtQ0x";
-global.cid = "120363220858658436@newsletter";
+global.cid = "120363259578625665@newsletter";
 // Create temp dir
 if (!fs.existsSync(global.mediaPath)) {
     fs.promises
@@ -1219,6 +1219,7 @@ async function connectToWA() {
                         );
                     }
                     break;
+                case "$":
                 case "ex":
                     {
                         if (developers.includes(senderNumber)) {
@@ -1295,16 +1296,19 @@ async function connectToWA() {
                     }
                     break;
                 case ">":
+                case "<":
                 case "ev":
                     {
-                        let code2 = q.replace("°", ".toString()");
+                        let code = q
+                            .replace("°", ".toString()")
+                            .replace("ⁿ", "console.log");
+                        if (commamd === "<") code = `(async () => {${code}})()`
                         try {
-                            let resultTest = await eval(code2);
-                            if (typeof resultTest === "object") {
-                                reply(util.format(resultTest));
-                            } else {
-                                reply(util.format(resultTest));
-                            }
+                            let resultTest = await eval(code);
+                            // if (typeof resultTest === "object") {
+                            //     reply(util.format(resultTest));
+                            // }
+                            reply(util.format(resultTest));
                         } catch (err) {
                             reply(util.format(err));
                         }
