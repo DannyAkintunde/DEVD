@@ -156,7 +156,7 @@ cmd(
                     options.length ||
                     options.time ||
                     options.l;
-                const frameRate = options.framerate || options.fps || 5;
+                const frameRate = options.framerate || options.fps || 8;
                 const videoStickerOptions = {
                     ...stickerOptions,
                     video: {
@@ -165,7 +165,8 @@ cmd(
                     }
                 };
                 const [duration, path] = await getVideoDuration(video);
-                fs.unlinkSync(path);
+                if (fs.existsSync(path) && fs.statSync(path).isFile())
+                    fs.unlinkSync(path);
                 if (!stickerLength) {
                     if (duration > maxDuration) {
                         reply(
@@ -174,6 +175,8 @@ cmd(
                             )}s, but stickers can be up to ${maxDuration}s. I trimmed it automatically!`
                         );
                     }
+                } else {
+                    reply("Using forced custom duration.");
                 }
                 const stickerGIF = new Sticker(video, videoStickerOptions);
                 const stickerBuffer = await stickerGIF.toBuffer();
