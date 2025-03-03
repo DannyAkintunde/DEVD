@@ -89,7 +89,7 @@ cmd(
         }
         const categories = options.categories?.split(",");
         const pack = options.pack || parsedCommand.args.join(" ") || config.BOT;
-        const quality = options.quality || options.q;
+        const quality = options.quality || options.q || 70;
         const background =
             options.background ||
             options.backgroundcolor ||
@@ -150,27 +150,28 @@ cmd(
                 m.replyS(stickerBuffer);
             } else if (video) {
                 // converts video to sticker
-                const maxDuration = 5; // seconds
+                const maxDuration = 10; // seconds
                 const stickerLength =
                     options.stickerlength ||
                     options.length ||
                     options.time ||
-                    options.t ||
                     options.l;
                 const frameRate = options.framerate || options.fps || 5;
                 const videoStickerOptions = {
                     ...stickerOptions,
                     video: {
                         fps: frameRate,
-                        length: stickerLength
+                        length: stickerLength || maxDuration
                     }
                 };
                 const [duration, path] = await getVideoDuration(video);
                 fs.unlinkSync(path);
                 if (!stickerLength) {
-                    if (maxDuration > 0 && duration > maxDuration) {
-                        return reply(
-                            `Use a video that has a duration less than or equal to ${maxDuration} seconds.`
+                    if (duration > maxDuration) {
+                        reply(
+                            `Your video was ${duration.toFixed(
+                                1
+                            )}s, but stickers can be up to ${maxDuration}s. I trimmed it automatically!`
                         );
                     }
                 }
