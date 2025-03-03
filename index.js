@@ -422,7 +422,7 @@ async function connectToWA() {
                             forwardingScore: 1,
                             isForwarded: true,
                             forwardedNewsletterMessageInfo: {
-                                newsletterJid: "120363220858658436@newsletter",
+                                newsletterJid: global.cid,
                                 serverMessageId: 127
                             },
                             externalAdReply: {
@@ -470,8 +470,7 @@ async function connectToWA() {
                                     forwardingScore: 1,
                                     isForwarded: true,
                                     forwardedNewsletterMessageInfo: {
-                                        newsletterJid:
-                                            "120363220858658436@newsletter",
+                                        newsletterJid: global.cid,
                                         serverMessageId: 127
                                     },
                                     externalAdReply: {
@@ -501,8 +500,7 @@ async function connectToWA() {
                                     forwardingScore: 1,
                                     isForwarded: true,
                                     forwardedNewsletterMessageInfo: {
-                                        newsletterJid:
-                                            "120363220858658436@newsletter",
+                                        newsletterJid: global.cid,
                                         serverMessageId: 127
                                     },
                                     externalAdReply: {
@@ -630,8 +628,7 @@ async function connectToWA() {
                                     forwardingScore: 1,
                                     isForwarded: true,
                                     forwardedNewsletterMessageInfo: {
-                                        newsletterJid:
-                                            "120363220858658436@newsletter",
+                                        newsletterJid: global.cid,
                                         serverMessageId: 127
                                     },
                                     externalAdReply: {
@@ -668,8 +665,7 @@ async function connectToWA() {
                                     forwardingScore: 1,
                                     isForwarded: true,
                                     forwardedNewsletterMessageInfo: {
-                                        newsletterJid:
-                                            "120363220858658436@newsletter",
+                                        newsletterJid: global.cid,
                                         serverMessageId: 127
                                     },
                                     externalAdReply: {
@@ -726,8 +722,7 @@ async function connectToWA() {
                                 forwardingScore: 1,
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterJid:
-                                        "120363220858658436@newsletter",
+                                    newsletterJid: global.cid,
                                     serverMessageId: 127
                                 },
                                 externalAdReply: {
@@ -800,8 +795,7 @@ async function connectToWA() {
                                 forwardingScore: 1,
                                 isForwarded: true,
                                 forwardedNewsletterMessageInfo: {
-                                    newsletterJid:
-                                        "120363220858658436@newsletter",
+                                    newsletterJid: global.cid,
                                     serverMessageId: 127
                                 },
                                 externalAdReply: {

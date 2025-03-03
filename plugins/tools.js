@@ -101,8 +101,8 @@ cmd(
             });
             const output = util.format(response);
             if (/text|json|html|plain/.test(response.headers["content-type"])) {
+                reply(util.format(new Buffer(response.data).toString()));
                 reply(output);
-                reply(util.format(response.data));
             } else if (/image/.test(response.headers["content-type"])) {
                 m.replyImg(response.data, `${output}`);
             } else if (/video/.test(response.headers["content-type"])) {
