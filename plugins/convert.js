@@ -11,6 +11,7 @@ const { fileUploader } = require("../lib/scrapers");
 const { getVideoDuration, toPTT } = require("../lib/editor");
 const fs = require("fs");
 const fileType = require("file-type");
+const { Sticker, StickerTypes, TextPositions } = require("wa-sticker-toolkit");
 
 cmd(
     {
@@ -73,17 +74,12 @@ cmd(
         filename: __filename
     },
     async (conn, mek, m, { from, pushname, reply, parsedCommand }) => {
-        // const { Sticker, StickerTypes } = await import("@shibam/sticker-maker");
-        const {
-            Sticker,
-            StickerTypes,
-            TextPositions
-        } = require("wa-sticker-toolkit");
         const options = parsedCommand.options;
         const isCircle = options.circle || options.c;
         const isCropped = options.cropped || options.crop || options.cp;
         const isFill = options.fill || options.f;
-        let type = options.type || options.t || StickerTypes.DEFAULT;
+        let type =
+            options.type || options.style || options.s || StickerTypes.DEFAULT;
         if (isCircle) {
             type = StickerTypes.CIRCLE;
         } else if (isCropped) {
@@ -104,16 +100,19 @@ cmd(
             options.borderRadius || options.Radius || options.br || options.r;
         const textContent = options.text || options.caption || options.t;
         const textColor = options.textcolor || options.tc;
-        const font = options.font || options.f;
+        const font = options.font || options.tf;
         const fontSize = options.fontsize || options.fs;
         let textPosition = TextPositions.CENTER;
         switch (options.textposition || options.tp) {
+            case "t":
             case "top":
                 textPosition = TextPositions.TOP;
                 break;
+            case "c":
             case "center":
                 textPosition = TextPositions.CENTER;
                 break;
+            case "b":
             case "bottom":
                 textPosition = TextPositions.BOTTOM;
                 break;
@@ -122,7 +121,7 @@ cmd(
             metadata: {
                 // id: "",
                 author: options.author || options.a || pushname,
-                pack
+                packname: pack
             },
             type,
             background,

@@ -1,6 +1,13 @@
 const config = require("../config");
 const { cmd, commands } = require("../command");
-const { trans, isValidLangCode } = require("../lib/functions");
+const {
+    trans,
+    isValidLangCode,
+    isUrl,
+    fetchBuffer
+} = require("../lib/functions");
+const axios = require("axios");
+const utils = require("utils");
 
 cmd(
     {
@@ -52,13 +59,61 @@ cmd(
         if (m.quoted) {
             text = m.quoted.body;
             text = text
-                    .replace(new RegExp(`${prefix}${command}`, "gi"), "")
-                    .trim();
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
         }
         trans(text, { to: args[0].toLowerCase() })
             .then(res => reply(res))
             .catch(e => {
                 m.sendError(e);
             });
+    }
+);
+
+cmd(
+    {
+        pattern: "fetch",
+        alias: "get",
+        react: global.reactions.loading,
+        desc: "fetch data from URL/URI",
+        category: "tools",
+        use: ".fetch <URL/URI>",
+        filename: __filename
+    },
+    async (conn, mek, m, { q, prefix, command, args, reply, isSuperUser }) => {
+        if (!q) return reply("i need a <URL/URI> !");
+        if (args.length < 1 && !m.quoted)
+            return reply("invalid format try\n> .fetch https://example.com");
+        if (!isSuperUser)
+            return reply("You are not authorised to use this command.");
+        let text = args.join(" ");
+        if (m.quoted) {
+            text = m.quoted.body;
+            text = text
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
+        }
+        if (!isUrl(text)) return reply("Need a valid <URL/URI>.");
+        try {
+            const url = encodeURI(text);
+            const response = await axios.get(url);
+            const output = utils.format(response);
+            if (/text|json|html|plain/.test(response.headers["content-type"])) {
+                reply(output);
+            } else if (/image/.test(response.headers["content-type"])) {
+                m.replyImg(response.data, `${output}`);
+            } else if (/video/.test(response.headers["content-type"])) {
+                m.replyVid(response.data, `${output}`);
+            } else {
+                const file = await fetchBuffer(response.data);
+                m.replyDoc(file.data, m.chat, {
+                    mentions: [m.sender],
+                    filename: file.name,
+                    mimetype: file.mime
+                });
+            }
+        } catch (e) {
+            m.sendError(e);
+        }
     }
 );

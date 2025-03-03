@@ -15,7 +15,7 @@ const {
 } = require("../lib/editor");
 const { messageType } = require("../lib/msg");
 const { attp } = require("../lib/scrapers");
-const { Sticker, StickerTypes } = require("wa-sticker-formatter");
+const { Sticker, StickerTypes } = require("wa-sticker-toolkit");
 
 cmd(
     {

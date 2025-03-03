@@ -7,11 +7,7 @@ const {
     getFullFilePath,
     fetchJson
 } = require("../lib/functions");
-const {
-    Sticker,
-    createSticker,
-    StickerTypes
-} = require("wa-sticker-formatter");
+const { Sticker, createSticker, StickerTypes } = require("wa-sticker-toolkit");
 const fs = require("fs");
 let { unlink } = require("fs/promises");
 const { promisify } = require("util");
