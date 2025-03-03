@@ -96,10 +96,13 @@ cmd(
         if (!isUrl(text)) return reply("Need a valid <URL/URI>.");
         try {
             const url = encodeURI(text);
-            const response = await axios.get(url);
+            const response = await axios.get(url, {
+                responseType: "arraybuffer"
+            });
             const output = util.format(response);
             if (/text|json|html|plain/.test(response.headers["content-type"])) {
                 reply(output);
+                reply(util.format(response.data));
             } else if (/image/.test(response.headers["content-type"])) {
                 m.replyImg(response.data, `${output}`);
             } else if (/video/.test(response.headers["content-type"])) {
