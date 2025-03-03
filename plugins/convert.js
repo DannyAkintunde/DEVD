@@ -168,6 +168,7 @@ cmd(
                 };
                 const [duration, path] = await getVideoDuration(video);
                 fs.unlinkSync(path);
+                reply(duration);
                 if (!stickerLength) {
                     if (maxDuration && duration > maxDuration) {
                         return reply(
