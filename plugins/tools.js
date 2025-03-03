@@ -7,7 +7,7 @@ const {
     fetchBuffer
 } = require("../lib/functions");
 const axios = require("axios");
-const utils = require("utils");
+const util = require("util");
 
 cmd(
     {
@@ -97,7 +97,7 @@ cmd(
         try {
             const url = encodeURI(text);
             const response = await axios.get(url);
-            const output = utils.format(response);
+            const output = util.format(response);
             if (/text|json|html|plain/.test(response.headers["content-type"])) {
                 reply(output);
             } else if (/image/.test(response.headers["content-type"])) {
