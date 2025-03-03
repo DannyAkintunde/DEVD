@@ -150,13 +150,31 @@ cmd(
             } else if (video) {
                 // converts video to sticker
                 const maxDuration = 5; // seconds
-
-                if ((await getVideoDuration(video)) > maxDuration) {
-                    return reply(
-                        `Use a video that has a duration less than or equal to ${maxDuration} seconds.`
-                    );
+                const stickerLength =
+                    options.stickerlength ||
+                    options.length ||
+                    options.time ||
+                    options.t ||
+                    options.l ||
+                    maxDuration;
+                const frameRate = options.framerate || options.fps;
+                const videoStickerOptions = {
+                    ...stickerOptions,
+                    video: {
+                        fps: frameRate,
+                        length: stickerLength
+                    }
+                };
+                const [duration, path] = await getVideoDuration(video);
+                fs.unlinkSync(path);
+                if (!stickerLength) {
+                    if (maxDuration && duration > maxDuration) {
+                        return reply(
+                            `Use a video that has a duration less than or equal to ${maxDuration} seconds.`
+                        );
+                    }
                 }
-                const stickerGIF = new Sticker(video, stickerOptions);
+                const stickerGIF = new Sticker(video, videoStickerOptions);
                 const stickerBuffer = await stickerGIF.toBuffer();
                 m.replyS(stickerBuffer);
             } else if (sticker) {
