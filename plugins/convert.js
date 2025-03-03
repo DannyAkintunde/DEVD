@@ -158,7 +158,7 @@ cmd(
                     options.t ||
                     options.l ||
                     maxDuration;
-                const frameRate = options.framerate || options.fps;
+                const frameRate = options.framerate || options.fps || 8;
                 const videoStickerOptions = {
                     ...stickerOptions,
                     video: {
