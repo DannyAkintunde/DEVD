@@ -122,7 +122,8 @@ cmd(
             metadata: {
                 // id: "",
                 author: options.author || options.a || pushname,
-                packname: pack
+                packname: pack,
+                categories
             },
             type,
             quality,
