@@ -89,6 +89,7 @@ cmd(
         }
         const categories = options.categories?.split(",");
         const pack = options.pack || parsedCommand.args.join(" ") || config.BOT;
+        const quality = options.quality || options.q;
         const background =
             options.background ||
             options.backgroundcolor ||
@@ -124,6 +125,7 @@ cmd(
                 packname: pack
             },
             type,
+            quality,
             background,
             borderWidth,
             borderColor,
@@ -148,8 +150,8 @@ cmd(
             } else if (video) {
                 // converts video to sticker
                 const maxDuration = 5; // seconds
-                reply(getVideoDuration(video));
-                if (getVideoDuration(video) > maxDuration) {
+
+                if ((await getVideoDuration(video)) > maxDuration) {
                     return reply(
                         `Use a video that has a duration less than or equal to ${maxDuration} seconds.`
                     );
