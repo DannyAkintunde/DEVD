@@ -9,6 +9,8 @@ const {
 const axios = require("axios");
 const util = require("util");
 
+const readmore = String.fromCharCode(8206).repeat(999);
+
 cmd(
     {
         pattern: "tr",
@@ -67,6 +69,25 @@ cmd(
             .catch(e => {
                 m.sendError(e);
             });
+    }
+);
+
+cmd(
+    {
+        pattern: "readmore",
+        alias: ["readm"],
+        react: "📖",
+        use: ".readmore <text1> | <text2>",
+        desc: "generates readmore messages",
+        filename: __filename
+    },
+    async (conn, mek, m, { q, args, reply }) => {
+        if (!q) return reply(global.reactions.noquery);
+        const inputs = q.split("|");
+        const [text1, text2] =
+            inputs.length >= 2 ? inputs : [undefined, undefined];
+        m.react(global.reactions.done);
+        reply(text1 + readmore + text2);
     }
 );
 
