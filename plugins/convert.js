@@ -158,7 +158,7 @@ cmd(
                     options.t ||
                     options.l ||
                     maxDuration;
-                const frameRate = options.framerate || options.fps || 8;
+                const frameRate = options.framerate || options.fps || 5;
                 const videoStickerOptions = {
                     ...stickerOptions,
                     video: {
@@ -168,7 +168,7 @@ cmd(
                 };
                 const [duration, path] = await getVideoDuration(video);
                 fs.unlinkSync(path);
-                reply(duration);
+                reply(duration.toString());
                 if (!stickerLength) {
                     if (maxDuration && duration > maxDuration) {
                         return reply(
