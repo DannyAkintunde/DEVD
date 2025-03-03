@@ -98,7 +98,7 @@ cmd(
         const borderWidth = options.borderwidth || options.bw;
         const borderColor = options.bordercolor || options.bc;
         const borderRadius =
-            options.borderRadius || options.Radius || options.br || options.r;
+            options.borderradius || options.radius || options.br || options.r;
         const textContent = options.text || options.caption || options.t;
         const textColor = options.textcolor || options.tc;
         const font = options.font || options.tf;
@@ -156,8 +156,7 @@ cmd(
                     options.length ||
                     options.time ||
                     options.t ||
-                    options.l ||
-                    maxDuration;
+                    options.l;
                 const frameRate = options.framerate || options.fps || 5;
                 const videoStickerOptions = {
                     ...stickerOptions,
@@ -168,9 +167,8 @@ cmd(
                 };
                 const [duration, path] = await getVideoDuration(video);
                 fs.unlinkSync(path);
-                reply(duration.toString());
                 if (!stickerLength) {
-                    if (maxDuration && duration > maxDuration) {
+                    if (maxDuration > 0 && duration > maxDuration) {
                         return reply(
                             `Use a video that has a duration less than or equal to ${maxDuration} seconds.`
                         );
