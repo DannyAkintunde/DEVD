@@ -16,6 +16,60 @@ const {
 
 cmd(
     {
+        pattern: "dictionary",
+        alias: ["dict"],
+        react: "",
+        desc: "Gets the definition of a word.",
+        use: ".dictionary",
+        category: "search",
+        filename: __filename
+    },
+    async (conn, m, mek, { q, prefix, command, reply }) => {
+        let text = q;
+        if (m.quoted) {
+            text = m.quoted.body
+                .replace(new RegExp(`${prefix}${command}`, "gi"), "")
+                .trim();
+        }
+        if (!text) return reply("I need a word to fetch the definition for.");
+
+        try {
+            const options = {
+                additional_params: { hl: config.LANG.toLocaleLowerCase() }
+            };
+            const { dictionary } = await google.search(
+                `define ${text}`,
+                options
+            );
+
+            if (!dictionary || Object.keys(dictionary).length === 0) {
+                return reply(`No definition found for word: ${text}`);
+            }
+
+            const result = `📖 Word: ${dictionary.word}
+📌 Phonetic: ${dictionary.phonetic || "N/A"}
+📚 Definitions:
+${dictionary.definitions.map(def => "- " + def).join("\n")}
+
+📝 Examples:
+${
+    dictionary.examples?.map(exp => "- " + exp).join("\n") ||
+    "No examples available."
+}`;
+
+            await reply(result);
+            m.replyAud({ url: dictionary.audio }, m.chat, {
+                mentions: [m.sender],
+                ptt: true
+            });
+        } catch (e) {
+            m.sendError(e, `An error occurred while fetching word data.`);
+        }
+    }
+);
+
+cmd(
+    {
         pattern: "wabeta",
         alias: ["wabetainfo", "betawa"],
         react: "✔️",
@@ -23,14 +77,7 @@ cmd(
         category: "search",
         use: ".wabeta"
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from
-        }
-    ) => {
+    async (conn, mek, m, { from }) => {
         try {
             const data = (
                 await fetchJson("https://vihangayt.me/details/wabetainfo")
@@ -79,17 +126,7 @@ cmd(
         use: ".lyric <song name>",
         filename: __filename
     },
-    async (
-        conn,
-        mek,
-        m,
-        {
-            from,
-            q,
-            pushname,
-            reply
-        }
-    ) => {
+    async (conn, mek, m, { from, q, pushname, reply }) => {
         try {
             if (!q) return reply("*Please give me a song name. !*");
             const { data: result } = await fetchJson(
