@@ -110,9 +110,11 @@ cmd(
         let text = args.join(" ");
         if (m.quoted) {
             text = m.quoted.body;
+            reply(text)
             text = text
                 .replace(new RegExp(`${prefix}${command}`, "gi"), "")
                 .trim();
+            reply(text);
         }
         if (!isUrl(text)) return reply("Need a valid <URL/URI>.");
         try {
@@ -120,13 +122,20 @@ cmd(
             const response = await axios.get(url, {
                 responseType: "arraybuffer"
             });
+            const mimeType = response.headers["content-type"];
             const output = util.format(response);
-            if (/text|json|html|plain/.test(response.headers["content-type"])) {
+            if (/text|json|html|plain/.test(mimeType)) {
                 reply(util.format(new Buffer(response.data).toString()));
                 reply(output);
-            } else if (/image/.test(response.headers["content-type"])) {
+            } else if (/image/.test(mimeType)) {
                 m.replyImg(response.data, `${output}`);
-            } else if (/video/.test(response.headers["content-type"])) {
+            } else if (/audio/.test(mimeType)) {
+                m.replyAud(response.data, m.chat, {
+                    mentions: [m.sender],
+                    ptt: false,
+                    mimetype: mimeType
+                });
+            } else if (/video/.test(mimeType)) {
                 m.replyVid(response.data, `${output}`);
             } else {
                 const file = await fetchBuffer(response.data);
