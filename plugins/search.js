@@ -40,7 +40,9 @@ cmd(
             );
 
             if (!Array.isArray(results) || !results.length) {
-                return reply(`No definition found for word: ${text}`);
+                reply(`No definition found for word: ${text}`);
+                m.react(global.reactions.notFound);
+                return;
             }
 
             function getAccentFromAudioURL(url) {
