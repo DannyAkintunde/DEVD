@@ -102,7 +102,6 @@ cmd(
         filename: __filename
     },
     async (conn, mek, m, { q, prefix, command, args, reply, isSuperUser }) => {
-        if (!q) return reply("i need a <URL/URI> !");
         if (args.length < 1 && !m.quoted)
             return reply("invalid format try\n> .fetch https://example.com");
         if (!isSuperUser)
@@ -110,12 +109,11 @@ cmd(
         let text = args.join(" ");
         if (m.quoted) {
             text = m.quoted.body;
-            reply(text)
             text = text
                 .replace(new RegExp(`${prefix}${command}`, "gi"), "")
                 .trim();
-            reply(text);
         }
+        if (!text) return reply("I need a <URL/URI> !");
         if (!isUrl(text)) return reply("Need a valid <URL/URI>.");
         try {
             const url = encodeURI(text);
