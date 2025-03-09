@@ -114,41 +114,33 @@ cmd(
                         .map(url => "- " + url)
                         .join("\n")}`;
                 reply(result);
-                await wordData.phonetics
-                    .map(
-                        async phonetic =>
-                            await conn.sendMessage(
-                                m.chat,
-                                {
-                                    audio: await getBuffer(phonetic.audio),
-                                    fileName: phonetic.audio
-                                        .split("/")
-                                        .slice(-1)[0],
-                                    mimetype: "audio/mpeg",
-                                    ptt: true,
-                                    contextInfo: {
-                                        mentionedJid: [m.chat],
-                                        externalAdReply: {
-                                            title: "「 DICTIONARY 」",
-                                            body: `${
-                                                countryCodeToNameIntl(
-                                                    getAccentFromAudioURL(
-                                                        phonetic.audio
-                                                    )
-                                                ) || "General American"
-                                            } Pronunciation.`,
-                                            thumbnail: await getBuffer(
-                                                config.LOGO
-                                            ),
-                                            mediaType: 2,
-                                            mediaUrl: phonetic.audio
-                                        }
-                                    }
-                                },
-                                { quoted: songMsg }
-                            )
-                    )
-                    .get();
+                for (let phonetic of wordData.phonetics)
+                    await conn.sendMessage(
+                        m.chat,
+                        {
+                            audio: await getBuffer(phonetic.audio),
+                            fileName: phonetic.audio.split("/").slice(-1)[0],
+                            mimetype: "audio/mpeg",
+                            ptt: true,
+                            contextInfo: {
+                                mentionedJid: [m.chat],
+                                externalAdReply: {
+                                    title: "「 DICTIONARY 」",
+                                    body: `${
+                                        countryCodeToNameIntl(
+                                            getAccentFromAudioURL(
+                                                phonetic.audio
+                                            )
+                                        ) || "General American"
+                                    } Pronunciation.`,
+                                    thumbnail: await getBuffer(config.LOGO),
+                                    mediaType: 2,
+                                    mediaUrl: phonetic.audio
+                                }
+                            }
+                        },
+                        { quoted: songMsg }
+                    );
             }
         } catch (e) {
             m.sendError(e, `An error occurred while fetching word data.`);
