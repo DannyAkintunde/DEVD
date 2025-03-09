@@ -113,7 +113,7 @@ cmd(
                     result += `\n🌐 *Sources:* \n${wordData.sourceUrls
                         .map(url => "- " + url)
                         .join("\n")}`;
-                reply(result);
+                const definitionMsg = await reply(result);
                 for (let phonetic of wordData.phonetics)
                     await conn.sendMessage(
                         m.chat,
@@ -139,7 +139,7 @@ cmd(
                                 }
                             }
                         },
-                        { quoted: songMsg }
+                        { quoted: definitionMsg }
                     );
             }
         } catch (e) {
