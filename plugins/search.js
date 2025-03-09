@@ -35,11 +35,9 @@ cmd(
         if (!text) return reply("I need a word to fetch the definition for.");
 
         try {
-            const response = await axios.get(
+            const results = await fetchJson(
                 `https://api.dictionaryapi.dev/api/v2/entries/en/${text}`
             );
-
-            const results = response.data;
 
             if (!Array.isArray(results) || !results.length) {
                 return reply(`No definition found for word: ${text}`);
