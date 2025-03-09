@@ -11,14 +11,15 @@ const {
     Json,
     runtime,
     sleep,
-    fetchJson
+    fetchJson,
+    countryCodeToNameIntl
 } = require("../lib/functions");
 
 cmd(
     {
         pattern: "dictionary",
-        alias: ["dict"],
-        react: "",
+        alias: ["dict", "define"],
+        react: "📖",
         desc: "Gets the definition of a word.",
         use: ".dictionary",
         category: "search",
@@ -34,34 +35,123 @@ cmd(
         if (!text) return reply("I need a word to fetch the definition for.");
 
         try {
-            const options = {
-                additional_params: { hl: config.LANG.toLocaleLowerCase() }
-            };
-            const { dictionary } = await google.search(
-                `define ${text}`,
-                options
+            const response = await axios.get(
+                `https://api.dictionaryapi.dev/api/v2/entries/en/${text}`
             );
 
-            if (!dictionary || Object.keys(dictionary).length === 0) {
+            const results = response.data;
+
+            if (!Array.isArray(results) || !results.length) {
                 return reply(`No definition found for word: ${text}`);
             }
 
-            const result = `📖 Word: ${dictionary.word}
-📌 Phonetic: ${dictionary.phonetic || "N/A"}
-📚 Definitions:
-${dictionary.definitions.map(def => "- " + def).join("\n")}
+            function getAccentFromAudioURL(url) {
+                console.log(url);
+                return url
+                    .split("/")
+                    .slice(-1)[0]
+                    .split("-")
+                    .slice(-1)[0]
+                    .replace(/\.mp3|\.wav|\.ogg/, "")
+                    .toUpperCase();
+            }
 
-📝 Examples:
-${
-    dictionary.examples?.map(exp => "- " + exp).join("\n") ||
-    "No examples available."
-}`;
+            for (let wordData of results) {
+                let result = `📖 *Word:* ${wordData.word || text} \n`;
+                const phoneticList = wordData.phonetics?.map((phonetic, i) => {
+                    const accent =
+                        countryCodeToNameIntl(
+                            getAccentFromAudioURL(phonetic.audio)
+                        ) || "General American";
+                    return `- \`${
+                        phonetic.text || "No transcription"
+                    }\` (\`${accent}\`) (${i + 1}) \n`;
+                });
+                if (phoneticList.length > 0) {
+                    result += "📌 *Phonetic:* \n";
+                    result += phoneticList.join("");
+                }
+                const meaningList = wordData.meanings?.map(meaning => {
+                    // console.log(meaning);
+                    let meaningText = `- 📚 *${
+                        meaning.partOfSpeech[0].toUpperCase() +
+                        meaning.partOfSpeech.slice(1)
+                    }:* \n`;
+                    let definitionNumber = 1;
+                    meaning.definitions.forEach(definitionObj => {
+                        // console.log(definitionObj);
+                        meaningText += `\t${definitionNumber}. ${definitionObj.definition} \n`;
+                        if (definitionObj.example)
+                            meaningText += `\t\t▪︎ \`Example:\` _${definitionObj.example}_ \n`;
+                        if (definitionObj.synonyms.length)
+                            meaningText += `\t\t▪︎ \`Synonyms:\` _${definitionObj.synonyms?.join(
+                                ", "
+                            )}_ \n`;
+                        if (definitionObj.antonyms.length)
+                            meaningText += `\t\t▪︎ \`Antonyms:\` _${definitionObj.antonyms?.join(
+                                ", "
+                            )}_ \n`;
+                        definitionNumber++;
+                    });
+                    if (meaning.synonyms.length)
+                        meaningText += `\t\`Synonyms:\` _${meaning.synonyms.join(
+                            ", "
+                        )}_ \n`;
 
-            await reply(result);
-            m.replyAud({ url: dictionary.audio }, m.chat, {
-                mentions: [m.sender],
-                ptt: true
-            });
+                    if (meaning.antonyms.length)
+                        meaningText += `\t\`Antonyms:\` _${meaning.antonyms.join(
+                            ", "
+                        )}_\n`;
+
+                    return meaningText;
+                });
+                if (meaningList.length > 0) {
+                    result += "📖 *Meanings:* \n";
+                    result += meaningList.join(" \n");
+                }
+                if (Object.keys(wordData.license).length)
+                    result += `\n🪪 *License:* ${wordData.license.name} (${wordData.license.url})`;
+                if (wordData.sourceUrls.length)
+                    result += `\n🌐 *Sources:* \n${wordData.sourceUrls
+                        .map(url => "- " + url)
+                        .join("\n")}`;
+                reply(result);
+                await wordData.phonetics
+                    .map(
+                        async phonetic =>
+                            await conn.sendMessage(
+                                m.chat,
+                                {
+                                    audio: await getBuffer(phonetic.audio),
+                                    fileName: phonetic.audio
+                                        .split("/")
+                                        .slice(-1)[0],
+                                    mimetype: "audio/mpeg",
+                                    ptt: true,
+                                    contextInfo: {
+                                        mentionedJid: [m.chat],
+                                        externalAdReply: {
+                                            title: "「 DICTIONARY 」",
+                                            body: `${
+                                                countryCodeToNameIntl(
+                                                    getAccentFromAudioURL(
+                                                        phonetic.audio
+                                                    )
+                                                ) || "General American"
+                                            } Pronunciation.`,
+                                            thumbnail: await getBuffer(
+                                                config.LOGO
+                                            ),
+                                            mediaType: 2,
+                                            mediaUrl: phonetic.audio
+                                        }
+                                    }
+                                },
+                                { quoted: songMsg }
+                            )
+                    )
+                    .get();
+            }
         } catch (e) {
             m.sendError(e, `An error occurred while fetching word data.`);
         }
