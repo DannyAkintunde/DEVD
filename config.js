@@ -9,6 +9,7 @@ global.mediaPath = path.join(__dirname, "media", "temp"); // Base directory
 
 module.exports = {
     SESSION_ID: process.env.SESSION_ID || "youre session id",
+    INTERFACE: process.env.INTERFACE || "web",
     // POSTGRESQL_URL:
     //     process.env.POSTGRESQL_URL ||
     //     process.env.DATABASE_URL ||

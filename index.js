@@ -110,8 +110,14 @@ async function connectToWA() {
         version,
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
-        browser: Browsers.windows("FireFox"),
-        syncFullHistory: false,
+        browser: Browsers.windows(
+            config.INTERFACE.toLowerCase() === "web"
+                ? "FireFox"
+                : config.INTERFACE.toLowerCase() === "desktop"
+                ? "Desktop"
+                : config.INTERFACE
+        ),
+        syncFullHistory: config.INTERFACE.toLowerCase() === "web",
         generateHighQualityLinkPreview: true,
         auth: {
             creds: state.creds,
