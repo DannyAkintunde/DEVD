@@ -111,7 +111,7 @@ async function connectToWA() {
         logger: P({ level: "fatal" }).child({ level: "fatal" }),
         printQRInTerminal: true,
         browser: Browsers.windows("FireFox"),
-        syncFullHistory: true,
+        syncFullHistory: false,
         generateHighQualityLinkPreview: true,
         auth: {
             creds: state.creds,
