@@ -121,6 +121,7 @@ cmd(
                         countryCodeToNameIntl(
                             getAccentFromAudioURL(phonetic.audio)
                         ) || "General American";
+                    if (accent !== "General American") // Noticed, General American pronunciation can't be fetched.
                     try {
                         await conn.sendMessage(
                             m.chat,
