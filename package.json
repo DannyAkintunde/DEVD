@@ -13,7 +13,7 @@
         "name": "Danny"
     },
     "dependencies": {
-        "@whiskeysockets/baileys": "latest",
+        "@whiskeysockets/baileys": "npm:@fizzxydev/baileys-pro@latest",
         "@adiwajshing/keyed-db": "^0.2.4",
         "@hapi/boom": "^10.0.1",
         "pino": "^8.1.2",
