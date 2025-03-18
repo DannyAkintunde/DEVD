@@ -239,7 +239,7 @@ geminiPromptStore.initialize().then(store =>
                         {
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/gemini", {
-                                    text: prompt
+                                    q: prompt
                                 })
                             );
                             await handleResponse(response);
@@ -253,6 +253,7 @@ geminiPromptStore.initialize().then(store =>
                                     null,
                                     "image/jpeg"
                                 );
+                            reply(url)
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/geminiimg", {
                                     q: prompt,
