@@ -57,6 +57,7 @@
         "stream": "^0.0.2",
         "sharp": "^0.32.6",
         "vm": "^0.1.0",
-        "qrcode-terminal": "^0.12.0"
+        "qrcode-terminal": "^0.12.0",
+        "typeorm": "0.3.7"
     }
 }

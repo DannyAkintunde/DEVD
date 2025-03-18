@@ -24,6 +24,7 @@ const path = require("path");
 const axios = require("axios");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
+const PromptStore = require("../lib/database/store/PromptStore");
 
 cmd(
     {
@@ -187,80 +188,85 @@ cmd(
     }
 );
 
-cmd(
-    {
-        pattern: "gemini",
-        react: "📡",
-        category: "ai",
-        desc: "Gemini AI chat",
-        use: ".gemini hey there",
-        filename: __filename
-    },
-    async (conn, mek, m, { q, reply, from }) => {
-        let question = q || m.quoted?.body;
-        if (!question) return reply("Ask a question");
-        let image = await getImageFromMsg(m);
-        const mode = image ? "image" : "text";
-        let sessionId;
-        async function handleResponse(response) {
-            if (response.status && response.result) {
-                sessionId = sessionId ? sessionId : response.ids;
-                await conn.sendMessage(
-                    from,
-                    {
-                        text: response.result
-                        //edit: msg.key
-                    },
-                    { quoted: mek }
-                );
-                mek.react("🤖");
-            } else if (response.status == 429) {
-                m.sendError(
-                    new Error("Too Many Requests"),
-                    "Too many requests within 1 minute/daily/monthly. Please try again later"
-                );
-            } else {
-                m.sendError(
-                    new Error("Check api endpiont"),
-                    "*Server is busy. Try again later.!*"
-                );
+//old api nyxs /ai/gemini-advance-image
+const geminiPromptStore = new PromptStore("gemini", 10);
+geminiPromptStore.initialize().then(store =>
+    cmd(
+        {
+            pattern: "gemini",
+            react: "📡",
+            category: "ai",
+            desc: "Gemini AI chat",
+            use: ".gemini hey there",
+            filename: __filename
+        },
+        async (conn, mek, m, { q, reply, from }) => {
+            let question = q || m.quoted?.body;
+            if (!question) return reply("Ask a question");
+            let image = await getImageFromMsg(m);
+            const mode = image ? "image" : "text";
+
+            async function handleResponse(response) {
+                if (response.status && response.result) {
+                    // sessionId = sessionId ? sessionId : response.ids;
+                    await store.savePrompt(from, question, response.result);
+                    await conn.sendMessage(
+                        from,
+                        {
+                            text: response.result
+                            //edit: msg.key
+                        },
+                        { quoted: mek }
+                    );
+                    mek.react("🤖");
+                } else if (response.status == 429) {
+                    m.sendError(
+                        new Error("Too Many Requests"),
+                        "Too many requests within 1 minute/daily/monthly. Please try again later"
+                    );
+                } else {
+                    m.sendError(
+                        new Error("Check api endpiont"),
+                        "*Server is busy. Try again later.!*"
+                    );
+                }
+            }
+            try {
+                const prompt = await store.createPrompt(from, question);
+                switch (mode) {
+                    case "text":
+                        {
+                            let response = await fetchJson(
+                                global.getApi("bk9", "/ai/gemini", {
+                                    text: prompt
+                                })
+                            );
+                            await handleResponse(response);
+                        }
+                        break;
+                    case "image":
+                        {
+                            const url =
+                                await fileUploader.uploadFileWithMimeType(
+                                    image,
+                                    null,
+                                    "image/jpeg"
+                                );
+                            let response = await fetchJson(
+                                global.getApi("bk9", "/ai/geminiimg", {
+                                    q: prompt,
+                                    url
+                                })
+                            );
+                            await handleResponse(response);
+                        }
+                        break;
+                }
+            } catch (e) {
+                m.sendError(e);
             }
         }
-        try {
-            switch (mode) {
-                case "text":
-                    {
-                        let response = await fetchJson(
-                            global.getApi("nyxs", "/ai/gemini-advance-image", {
-                                text: question,
-                                ...(sessionId ? { sessionId } : {})
-                            })
-                        );
-                        await handleResponse(response);
-                    }
-                    break;
-                case "image":
-                    {
-                        const url = await fileUploader.uploadFileWithMimeType(
-                            image,
-                            null,
-                            "image/jpeg"
-                        );
-                        let response = fetchJson(
-                            global.getApi("nyxs", "/ai/gemini-advance-image", {
-                                text: question,
-                                url,
-                                ...(sessionId ? { sessionId } : {})
-                            })
-                        );
-                        await handleResponse(response);
-                    }
-                    break;
-            }
-        } catch (e) {
-            m.sendError(e);
-        }
-    }
+    )
 );
 
 cmd(
@@ -508,7 +514,9 @@ cmd(
             const response = await text2prompt(text);
             if (response.status) {
                 const result = response.result
-                    ? trans(response.result, { to: config.LANG?.toLowerCase() })
+                    ? await trans(response.result, {
+                          to: config.LANG?.toLowerCase()
+                      })
                     : null;
                 await m.react(global.reactions.success);
                 return await conn.buttonMessage(
@@ -874,7 +882,7 @@ cmd(
                             edit: infoMsg.key
                         });
                         let i = 1;
-                        images.forEach(async image => {
+                        for (image of images) {
                             await conn.sendMessage(from, {
                                 text: `Uploding Images ${i++} of ${
                                     images.length
@@ -885,8 +893,8 @@ cmd(
                                 image: { url: image },
                                 contextInfo: { mentionedJid: [sender] }
                             });
-                        });
-                        conn.sendMessage(from, {
+                        }
+                        await conn.sendMessage(from, {
                             text: `Sucessfully generated ${
                                 images.length
                             } image${images.length > 1 ? "s" : ""}`,
@@ -900,7 +908,7 @@ cmd(
                             "\n*Guidance Scale* " + guidanceScale
                         }${"\n*Size:* " + width + "x" + height}`;
                         m.react(global.reactions.success);
-                        return conn.buttonMessage(
+                        return await conn.buttonMessage(
                             from,
                             {
                                 caption: caption,
@@ -1019,7 +1027,7 @@ cmd(
                             edit: infoMsg.key
                         });
                         let i = 1;
-                        images.forEach(async image => {
+                        for (image of images) {
                             await conn.sendMessage(from, {
                                 text: `Uploding Images ${i++} of ${
                                     images.length
@@ -1030,7 +1038,7 @@ cmd(
                                 image: { url: image },
                                 contextInfo: { mentionedJid: [sender] }
                             });
-                        });
+                        }
                         await conn.sendMessage(from, {
                             text: `Sucessfully generated ${
                                 images.length
@@ -1043,7 +1051,7 @@ cmd(
                                 : ""
                         }`;
                         m.react(global.reactions.success);
-                        return conn.buttonMessage(
+                        return await conn.buttonMessage(
                             from,
                             {
                                 caption: caption,

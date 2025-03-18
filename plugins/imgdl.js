@@ -50,7 +50,7 @@ cmd(
         const searchId = randomUUID();
         googleImageSearchs[searchId] = {
             range: resultLength,
-            images,
+            images: [...images],
             query: text.trim()
         };
         for (let i = 0; i < resultLength; i++) {
