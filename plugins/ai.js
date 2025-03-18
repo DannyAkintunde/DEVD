@@ -24,7 +24,7 @@ const path = require("path");
 const axios = require("axios");
 const fetch = (...args) =>
     import("node-fetch").then(({ default: fetch }) => fetch(...args));
-const PromptStore = require("../lib/database/store/PromptStore");
+const PromptStore = require("../lib/database/stores/PromptStore");
 
 cmd(
     {

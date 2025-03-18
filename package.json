@@ -23,7 +23,7 @@
         "util": "^0.12.4",
         "youtubedl-core": "^4.11.7",
         "inrl-dl": "^1.0.0",
-        "express": "latest",
+        "express": "^4.20.0",
         "eventsource": "^2.0.2",
         "@sl-code-lords/github-db": "^1.1.0",
         "@sl-code-lords/js-extra-types": "^0.0.2-dev",
