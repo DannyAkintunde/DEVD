@@ -206,10 +206,14 @@ cmd(
                 { quoted: mek }
             );
             var final = new Date().getTime();
-            return await conn.sendMessage({
-                text: "*Pong*\n *" + (final - inital) + " ms* ",
-                edit: ping.key
-            });
+            return await conn.sendMessage(
+                from,
+                {
+                    text: "*Pong*\n *" + (final - inital) + " ms* ",
+                    edit: ping.key
+                },
+                { quoted: mek }
+            );
         } catch (e) {
             m.sendError(e);
         }

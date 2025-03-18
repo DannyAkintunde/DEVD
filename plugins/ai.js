@@ -233,6 +233,7 @@ geminiPromptStore.initialize().then(store =>
             }
             try {
                 const prompt = await store.createPrompt(from, question);
+                reply(prompt)
                 switch (mode) {
                     case "text":
                         {
