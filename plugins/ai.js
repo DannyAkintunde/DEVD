@@ -85,7 +85,7 @@ cmd(
         conn,
         mek,
         m,
-        { from, prefix, quoted, args, q, sender, pushname, isMe, isdev, reply }
+        { from, prefix, quoted, args, q, pushname, isMe, isdev, reply }
     ) => {
         try {
             if (!q)
@@ -200,20 +200,22 @@ geminiPromptStore.initialize().then(store =>
             use: ".gemini hey there",
             filename: __filename
         },
-        async (conn, mek, m, { q, reply, from }) => {
+        async (conn, mek, m, { q, reply, from, sender }) => {
             let question = q || m.quoted?.body;
             if (!question) return reply("Ask a question");
             let image = await getImageFromMsg(m);
             const mode = image ? "image" : "text";
 
             async function handleResponse(response) {
-                if (response.status && response.result) {
+                let message = "An error occurred, unable to generate response";
+                if (response.status && response.BK9) {
                     // sessionId = sessionId ? sessionId : response.ids;
-                    await store.savePrompt(from, question, response.result);
+                    message = response.BK9;
+
                     await conn.sendMessage(
                         from,
                         {
-                            text: response.result
+                            text: message
                             //edit: msg.key
                         },
                         { quoted: mek }
@@ -230,13 +232,16 @@ geminiPromptStore.initialize().then(store =>
                         "*Server is busy. Try again later.!*"
                     );
                 }
+                await store.savePrompt(from, question, message);
             }
             try {
-                const prompt = await store.createPrompt(from, question);
-                reply(prompt)
                 switch (mode) {
                     case "text":
                         {
+                            const prompt = await store.createPrompt(
+                                from,
+                                question
+                            );
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/gemini", {
                                     q: prompt
@@ -253,7 +258,10 @@ geminiPromptStore.initialize().then(store =>
                                     null,
                                     "image/jpeg"
                                 );
-                            reply(url)
+                            const prompt = await store.createPrompt(
+                                from,
+                                `[image ${url}] ${question}`
+                            );
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/geminiimg", {
                                     q: prompt,
