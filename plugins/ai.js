@@ -189,7 +189,7 @@ cmd(
 );
 
 //old api nyxs /ai/gemini-advance-image
-const geminiPromptStore = new PromptStore("gemini", 10);
+const geminiPromptStore = new PromptStore("gemini", 35);
 geminiPromptStore.initialize().then(store =>
     cmd(
         {
@@ -201,7 +201,13 @@ geminiPromptStore.initialize().then(store =>
             filename: __filename
         },
         async (conn, mek, m, { q, reply, from, sender }) => {
-            let question = q || m.quoted?.body;
+            let quotedText = m.quoted?.body || "";
+            let question = q || quotedText;
+            let chatOptions = {};
+            if (quotedText && !q) {
+                chatOptions.quoted = quotedText;
+            }
+
             if (!question) return reply("Ask a question");
             let image = await getImageFromMsg(m);
             const mode = image ? "image" : "text";
@@ -232,7 +238,7 @@ geminiPromptStore.initialize().then(store =>
                         "*Server is busy. Try again later.!*"
                     );
                 }
-                await store.savePrompt(from, question, message);
+                await store.savePrompt(from, question, message, chatOptions);
             }
             try {
                 switch (mode) {
@@ -240,7 +246,8 @@ geminiPromptStore.initialize().then(store =>
                         {
                             const prompt = await store.createPrompt(
                                 from,
-                                question
+                                question,
+                                chatOptions
                             );
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/gemini", {
@@ -258,9 +265,11 @@ geminiPromptStore.initialize().then(store =>
                                     null,
                                     "image/jpeg"
                                 );
+                            chatOptions.image = url;
                             const prompt = await store.createPrompt(
                                 from,
-                                `[image ${url}] ${question}`
+                                question,
+                                chatOptions
                             );
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/geminiimg", {
