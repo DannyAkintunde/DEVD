@@ -200,12 +200,15 @@ geminiPromptStore.initialize().then(store =>
             use: ".gemini hey there",
             filename: __filename
         },
-        async (conn, mek, m, { q, reply, from, sender }) => {
+        async (conn, mek, m, { q, reply, from, pushName }) => {
             let quotedText = m.quoted?.body || "";
             let question = q || quotedText;
-            let chatOptions = {};
+            let chatOptions = {
+                user: pushName
+            };
             if (quotedText && !q) {
                 chatOptions.quoted = quotedText;
+                chatOptions.user = m.quoted.fromMe ? "AI" : "User";
             }
 
             if (!question) return reply("Ask a question");
