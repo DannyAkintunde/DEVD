@@ -206,9 +206,9 @@ geminiPromptStore.initialize().then(store =>
             let chatOptions = {
                 userName: pushName
             };
-            if (quotedText && !q) {
+            if (quotedText && q) {
                 chatOptions.quoted = {};
-                chatOptions.quoted.xt = quotedText;
+                chatOptions.quoted.text = quotedText;
                 chatOptions.quoted.user = m.quoted.fromMe ? "AI" : "User";
             }
 
