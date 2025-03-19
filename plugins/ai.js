@@ -200,11 +200,11 @@ geminiPromptStore.initialize().then(store =>
             use: ".gemini hey there",
             filename: __filename
         },
-        async (conn, mek, m, { q, reply, from, pushName }) => {
+        async (conn, mek, m, { q, reply, from, pushname }) => {
             let quotedText = m.quoted?.body || "";
             let question = q || quotedText;
             let chatOptions = {
-                userName: pushName
+                userName: pushname
             };
             if (quotedText && q) {
                 chatOptions.quoted = {};
@@ -253,7 +253,6 @@ geminiPromptStore.initialize().then(store =>
                                 question,
                                 chatOptions
                             );
-                            reply(prompt);
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/gemini", {
                                     q: prompt
@@ -276,7 +275,6 @@ geminiPromptStore.initialize().then(store =>
                                 question,
                                 chatOptions
                             );
-                            reply(prompt);
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/geminiimg", {
                                     q: prompt,
