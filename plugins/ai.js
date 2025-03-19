@@ -204,11 +204,12 @@ geminiPromptStore.initialize().then(store =>
             let quotedText = m.quoted?.body || "";
             let question = q || quotedText;
             let chatOptions = {
-                user: pushName
+                userName: pushName
             };
             if (quotedText && !q) {
-                chatOptions.quoted = quotedText;
-                chatOptions.user = m.quoted.fromMe ? "AI" : "User";
+                chatOptions.quoted = {};
+                chatOptions.quoted.xt = quotedText;
+                chatOptions.quoted.user = m.quoted.fromMe ? "AI" : "User";
             }
 
             if (!question) return reply("Ask a question");
@@ -252,7 +253,7 @@ geminiPromptStore.initialize().then(store =>
                                 question,
                                 chatOptions
                             );
-                            reply(prompt)
+                            reply(prompt);
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/gemini", {
                                     q: prompt
@@ -275,7 +276,7 @@ geminiPromptStore.initialize().then(store =>
                                 question,
                                 chatOptions
                             );
-                            reply(prompt)
+                            reply(prompt);
                             let response = await fetchJson(
                                 global.getApi("bk9", "/ai/geminiimg", {
                                     q: prompt,
